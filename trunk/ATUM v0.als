@@ -5,9 +5,13 @@ module ATUM
 //===============================
 
 sig ATUM {
-	alunos: set Aluno,
-	disciplinas: set Disciplina,
-	cands: set Candidatura
+	inscritos: Aluno -> set Disciplina,
+
+	turnos: Disciplina -> set Turno,
+
+	preferencias: Aluno -> set Turno,
+
+	alocados: Disciplina -> set Turno
 }
 
 sig Aluno {
