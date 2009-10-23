@@ -36,6 +36,23 @@ pred Alocado_Apenas_Em_Turnos_De_Disciplinas_Matriculado [at: ATUM] {
 	all a: Aluno | all t: at.alocados[a] | one d: at.inscritos[a] | t in at.turnos[d]
 }
 
+pred Apenas_Alocado_Se_Tem_Preferencia [at: ATUM] {
+	all a: Aluno | at.alocados[a] in at.preferencias[a]
+}
+
+pred Apenas_Tem_Preferencia_Se_Inscrito [at: ATUM] {
+	all a: Aluno | at.preferencias[a] in at.inscritos[a].(at.turnos) 
+}
+
+
+assert TestaPrefsInsc {
+
+	all at : ATUM |  Todos_Predicados[at] => no at.preferencias[Aluno] - (at.inscritos[Aluno]).(at.turnos)
+}
+
+
+check TestaPrefsInsc for 3 but exactly 1 ATUM
+
 /*
 pred Candidatura_Todos_Turno_Uma_Disciplina [at: ATUM] {
 	all c: at.cands | (c.preferencias) = c.disciplina.turnos
@@ -54,6 +71,8 @@ pred Todos_Predicados [at: ATUM] {
 	Turno_Pertence_Uma_Disciplina [at]
 	Alocado_Num_Turno_Por_Disciplina [at]
 	Alocado_Apenas_Em_Turnos_De_Disciplinas_Matriculado [at]
+	Apenas_Alocado_Se_Tem_Preferencia [at]
+	Apenas_Tem_Preferencia_Se_Inscrito [at]
 --	Candidatura_Todos_Turno_Uma_Disciplina [at]
 --	Uma_Candidatura_Por_Disciplina [at]
 --	Alocado_Em_Disciplina_Candidatou [at]
@@ -65,20 +84,6 @@ pred Todos_Predicados [at: ATUM] {
 // ----- Operações- ----------------------------
 //===============================
 
-// Fazer uma candidatura
-/*
-pred Fazer_Uma_Candidatura [at, at':ATUM, c: Candidatura] {
-	c not in at.cands
-
-	at'.alunos = at.alunos
-	at'.disciplinas = at.disciplinas
-	at'.cands = at.cands + c
-}
-
-assert Fazer_Uma_Candidatura_Ok {
-	all at,at': ATUM | all c: Candidatura | Todos_Predicados [at] && Fazer_Uma_Candidatura [at, at' , c] =>Todos_Predicados [at']
-}*/
-
 //
 // Comandos
 //
@@ -87,7 +92,7 @@ assert Fazer_Uma_Candidatura_Ok {
 
 run {}
 
-run Todos_Predicados
+run Todos_Predicados for 3 but exactly 1 ATUM
 
 //check Fazer_Uma_Candidatura_Ok
 
