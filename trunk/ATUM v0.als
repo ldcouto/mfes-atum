@@ -7,36 +7,36 @@ module ATUM
 //
 
 sig ATUM {
-	objects: set Object
+	alunos: set Aluno,
+	disciplinas: set Disciplina,
+	cands: set Candidatura
 }
 
-abstract sig Object {}
-
-sig Aluno extends Object {
+sig Aluno {
 	inscrito: some Disciplina, // Um Aluno encontra-se matriculado num 
 											 // conjunto (não vazio) de Disciplinas
 
 	candidaturas: set Candidatura, // Um Aluno deve ter uma 
 													 // candidatura por Disciplina
 
-	alocado: some Turno // Um Aluno está alocado 
-								    // num conjunto de Turno. 
+	alocado: set Turno // Um Aluno está alocado 
+								    // num conjunto de Turnos.
 }
 
 
-sig Candidatura extends Object {
+sig Candidatura {
 	disciplina: one Disciplina,
 	preferencias: some Turno    // Cada Candidatura tem um conjunto 
 											  // de preferencias para uma Disciplina
 } 
 
 
-sig Disciplina extends Object {
+sig Disciplina {
 	turnos: set Turno // Cada disciplina tem um 
 								  // conjunto (não vazio) de turnos
 }
 
-sig Turno extends Object {}
+sig Turno {}
 
 //
 // Factos
