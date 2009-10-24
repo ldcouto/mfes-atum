@@ -101,8 +101,7 @@ pred Invariante_0 [at: ATUM] {
 }
 
 pred Invariante_1 [at: ATUM] {
-	Turno_Pertence_Uma_Disciplina [at]
-	Apenas_Tem_Preferencia_Se_Inscrito [at]
+	Invariante_0 [at]
 
 	Alocado_Num_Turno_Por_Disciplina [at]
 	Apenas_Alocado_Se_Tem_Preferencia [at]
