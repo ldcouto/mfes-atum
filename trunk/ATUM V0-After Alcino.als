@@ -20,6 +20,7 @@ sig Disciplina {}
 
 sig Turno {}
 
+
 //===============================
 // ----- Predicados ----------------------------
 //===============================
@@ -57,6 +58,104 @@ pred Apenas_Alocado_Se_Tem_Preferencia [at: ATUM] {
 	all a: Aluno | at.alocados[a] in at.preferencias[a]
 }
 
+pred Todos_Predicados [at: ATUM] {
+	Turno_Pertence_Uma_Disciplina [at]
+	Alocado_Num_Turno_Por_Disciplina [at]
+	Alocado_Apenas_Em_Turnos_De_Disciplinas_Matriculado [at]
+	Apenas_Alocado_Se_Tem_Preferencia [at]
+	Apenas_Tem_Preferencia_Se_Inscrito [at]
+}
+
+
+
+
+//===============================
+// ----- Invariantes -----------------------------
+//===============================
+
+pred Inv_AllPreds[at:ATUM] {
+	Turno_Pertence_Uma_Disciplina [at]
+	Alocado_Num_Turno_Por_Disciplina [at]
+	Alocado_Apenas_Em_Turnos_De_Disciplinas_Matriculado [at]
+	Apenas_Alocado_Se_Tem_Preferencia [at]
+	Apenas_Tem_Preferencia_Se_Inscrito [at]
+}
+
+pred Inv_PreAloc [at: ATUM] {
+	Turno_Pertence_Uma_Disciplina [at]
+	Apenas_Tem_Preferencia_Se_Inscrito [at]
+}
+
+pred Inv_PosAloc [at: ATUM] {
+	Inv_PreAloc [at]
+
+	Alocado_Apenas_Em_Turnos_De_Disciplinas_Matriculado [at]
+	Alocado_Num_Turno_Por_Disciplina [at]
+//	Apenas_Alocado_Se_Tem_Preferencia [at]
+}
+
+
+//===============================
+// ----- Operações -----------------------------
+//===============================
+
+pred Alocacao [at, at' : ATUM, a: Aluno] {
+	no at.alocados[a]
+	some at.preferencias[a]
+
+	at'.inscritos = at.inscritos
+	at'.turnos = at.turnos
+	at'.preferencias = at.preferencias
+	all d: at.inscritos[a] | one al: (at.turnos[d]) & (at.preferencias[a]) | at'.alocados = at.alocados + (a->al)
+
+--	one al : Turno |  at'.alocados[a] |
+
+	--	no 
+	--	at'.alocados = at.alocados +(a->al)
+		
+}
+
+/*
+pred Alocacao [at, at' : ATUM, a: Aluno] {
+	no at.alocados[a]
+	some at.preferencias[a]
+
+	at'.inscritos = at.inscritos
+	at'.turnos = at.turnos
+	one al : at.alocados[a] | 	at'.alocados = at.alocados +(a->al)
+}
+*/
+assert Alocacao_Ok {
+	all at, at': ATUM | all a: Aluno | Inv_PreAloc[at] && Alocacao[at,at',a] => Inv_PosAloc[at']
+}
+
+check Alocacao_Ok for 3 but exactly 1 Aluno, exactly 2 ATUM
+
+/*
+pred Alocacao_Test [at, at' : ATUM, a: Aluno] {
+	Inv[fs]
+	mkdir[fs,fs',d]
+}
+
+run mkdir_TEST for 3 but 2 FS
+*/
+//===============================
+// ----- Comandos -----------------------------
+//===============================
+
+// Facto para ajudar com os testes. Apagar no fina!
+
+run {}
+
+run Todos_Predicados for 3 but exactly 1 ATUM
+
+
+
+//===============================
+// ----- Tralha Velha Pra Apagar-----------
+//===============================
+
+
 
 /*assert TestaPrefsInsc {
 
@@ -79,64 +178,6 @@ pred Alocado_Em_Disciplina_Candidatou [at: ATUM] {
 	all a: at.alunos | a.alocado in a.candidaturas.preferencias
 }
 */
-
-pred Todos_Predicados [at: ATUM] {
-	Turno_Pertence_Uma_Disciplina [at]
-	Alocado_Num_Turno_Por_Disciplina [at]
-	Alocado_Apenas_Em_Turnos_De_Disciplinas_Matriculado [at]
-	Apenas_Alocado_Se_Tem_Preferencia [at]
-	Apenas_Tem_Preferencia_Se_Inscrito [at]
---	Candidatura_Todos_Turno_Uma_Disciplina [at]
---	Uma_Candidatura_Por_Disciplina [at]
---	Alocado_Em_Disciplina_Candidatou [at]
-}
-
-//===============================
-// ----- Invariantes -----------------------------
-//===============================
-
-pred Invariante_0 [at: ATUM] {
-	Turno_Pertence_Uma_Disciplina [at]
-	Apenas_Tem_Preferencia_Se_Inscrito [at]
-}
-
-pred Invariante_1 [at: ATUM] {
-	Invariante_0 [at]
-
-	Alocado_Num_Turno_Por_Disciplina [at]
-	Apenas_Alocado_Se_Tem_Preferencia [at]
-}
-
-//===============================
-// ----- Operações -----------------------------
-//===============================
-
-pred Alocacao [at, at' : ATUM, a: Aluno] {
-	at'.inscritos = at.inscritos
-	at'.turnos = at.turnos
-	at'.preferencias = at.preferencias - (a -> at.preferencias[a])
-	at'.alocados = at.alocados + (a -> at.preferencias[a])
-}
-
-assert Alocacao_Ok {
-	all at, at': ATUM | all a: Aluno | Invariante_0[at] && Alocacao[at,at',a] => Invariante_1[at']
-}
-
-check Alocacao_Ok for 3 but exactly 1 Aluno, exactly 2 ATUM
-
-//===============================
-// ----- Comandos -----------------------------
-//===============================
-
-// Facto para ajudar com os testes. Apagar no fina!
-
-run {}
-
-run Todos_Predicados for 3 but exactly 1 ATUM
-
-run Invariante_0 for 3 but exactly 1 ATUM
-
-
 
 //check Fazer_Uma_Candidatura_Ok
 
