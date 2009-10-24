@@ -24,34 +24,47 @@ sig Turno {}
 // ----- Predicados ----------------------------
 //===============================
 
+//===============================
+// ----- Predicados sobre Turnos -----------------
+
+// Garantir que um Turno pretence apenas a uma Disciplina
 pred Turno_Pertence_Uma_Disciplina [at: ATUM] {
 	all t: Turno | one d: Disciplina | d = (at.turnos).t 
 }
 
+//===============================
+// ----- Predicados sobre Alunos -----------------
+
+// Garantir que um Aluno apenas é alocado num turno por Disciplina
 pred Alocado_Num_Turno_Por_Disciplina [at: ATUM] {
 	all a: Aluno | all d: at.inscritos[a] | one t: Turno | t in at.turnos[d]
 }
 
+// Garantir que um Aluno apenas é alocado em Turnos 
+// de Disciplinas em que está matriculado
 pred Alocado_Apenas_Em_Turnos_De_Disciplinas_Matriculado [at: ATUM] {
 	all a: Aluno | all t: at.alocados[a] | one d: at.inscritos[a] | t in at.turnos[d]
 }
 
-pred Apenas_Alocado_Se_Tem_Preferencia [at: ATUM] {
-	all a: Aluno | at.alocados[a] in at.preferencias[a]
-}
-
+// Garantir que um Aluno apenas tem preferencia por 
+// Disciplinas a que se encontra inscrito 
 pred Apenas_Tem_Preferencia_Se_Inscrito [at: ATUM] {
 	all a: Aluno | at.preferencias[a] in at.inscritos[a].(at.turnos) 
 }
 
-
-assert TestaPrefsInsc {
-
-	all at : ATUM |  Todos_Predicados[at] => no at.preferencias[Aluno] - (at.inscritos[Aluno]).(at.turnos)
+// Garantir que um Aluno apenas é alocado se tiver preferencia por um turno
+pred Apenas_Alocado_Se_Tem_Preferencia [at: ATUM] {
+	all a: Aluno | at.alocados[a] in at.preferencias[a]
 }
 
 
-check TestaPrefsInsc for 3 but exactly 1 ATUM
+/*assert TestaPrefsInsc {
+
+	all at : ATUM |  Todos_Predicados[at] => no at.preferencias[Aluno] - (at.inscritos[Aluno]).(at.turnos)
+}*/
+
+
+--check TestaPrefsInsc for 3 but exactly 1 ATUM
 
 /*
 pred Candidatura_Todos_Turno_Uma_Disciplina [at: ATUM] {
@@ -78,21 +91,53 @@ pred Todos_Predicados [at: ATUM] {
 --	Alocado_Em_Disciplina_Candidatou [at]
 }
 
-
-
 //===============================
-// ----- Operações- ----------------------------
+// ----- Invariantes -----------------------------
 //===============================
 
-//
-// Comandos
-//
+pred Invariante_0 [at: ATUM] {
+	Turno_Pertence_Uma_Disciplina [at]
+	Apenas_Tem_Preferencia_Se_Inscrito [at]
+}
+
+pred Invariante_1 [at: ATUM] {
+	Turno_Pertence_Uma_Disciplina [at]
+	Apenas_Tem_Preferencia_Se_Inscrito [at]
+
+	Alocado_Num_Turno_Por_Disciplina [at]
+	Apenas_Alocado_Se_Tem_Preferencia [at]
+}
+
+//===============================
+// ----- Operações -----------------------------
+//===============================
+
+pred Alocacao [at, at' : ATUM, a: Aluno] {
+	at'.inscritos = at.inscritos
+	at'.turnos = at.turnos
+	at'.preferencias = at.preferencias - (a -> at.preferencias[a])
+	at'.alocados = at.alocados + (a -> at.preferencias[a])
+}
+
+assert Alocacao_Ok {
+	all at, at': ATUM | all a: Aluno | Invariante_0[at] && Alocacao[at,at',a] => Invariante_1[at']
+}
+
+check Alocacao_Ok for 3 but exactly 1 Aluno, exactly 2 ATUM
+
+//===============================
+// ----- Comandos -----------------------------
+//===============================
 
 // Facto para ajudar com os testes. Apagar no fina!
 
 run {}
 
 run Todos_Predicados for 3 but exactly 1 ATUM
+
+run Invariante_0 for 3 but exactly 1 ATUM
+
+
 
 //check Fazer_Uma_Candidatura_Ok
 
