@@ -38,7 +38,7 @@ pred Turno_Pertence_Uma_Disciplina [at: ATUM] {
 
 // Garantir que um Aluno apenas é alocado num turno por Disciplina
 pred Alocado_Num_Turno_Por_Disciplina [at: ATUM] {
-	all a: Aluno | all d: at.inscritos[a] | one t: Turno | t in at.turnos[d]
+	all a: Aluno | all d: at.inscritos[a] | lone t: at.turnos[d] | t in at.alocados[a]
 }
 
 // Garantir que um Aluno apenas é alocado em Turnos 
@@ -129,7 +129,14 @@ assert Alocacao_Ok {
 	all at, at': ATUM | all a: Aluno | Inv_PreAloc[at] && Alocacao[at,at',a] => Inv_PosAloc[at']
 }
 
-check Alocacao_Ok for 3 but exactly 1 Aluno, exactly 2 ATUM
+check Alocacao_Ok for 3 but exactly 1 Aluno, exactly 2 Disciplina, exactly 2 ATUM
+
+pred Alocacao_Teste [at, at' : ATUM, a : Aluno] {
+	Inv_AllPreds[at]
+	Alocacao[at,at',a]
+}
+
+run Alocacao_Teste for 3 but 2 ATUM, exactly 1 Aluno, exactly 2 Disciplina
 
 /*
 pred Alocacao_Test [at, at' : ATUM, a: Aluno] {
