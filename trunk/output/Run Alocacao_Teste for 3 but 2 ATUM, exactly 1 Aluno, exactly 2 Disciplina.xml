@@ -1,0 +1,80 @@
+<alloy builddate="2009/01/22 10:01">
+
+<instance bitwidth="4" maxseq="3" command="Run Alocacao_Teste for 3 but 2 ATUM, exactly 1 Aluno, exactly 2 Disciplina" filename="/Users/fork/Documents/workspace/ATUMv1/trunk/ATUM V0-After Alcino.als">
+
+<sig label="seq/Int" ID="0" parentID="1" builtin="yes">
+</sig>
+
+<sig label="Int" ID="1" parentID="2" builtin="yes">
+</sig>
+
+<sig label="String" ID="3" parentID="2" builtin="yes">
+</sig>
+
+<sig label="this/ATUM" ID="4" parentID="2">
+   <atom label="ATUM$0"/>
+   <atom label="ATUM$1"/>
+</sig>
+
+<field label="inscritos" ID="5" parentID="4">
+   <tuple> <atom label="ATUM$0"/> <atom label="Aluno$0"/> <atom label="Disciplina$1"/> </tuple>
+   <tuple> <atom label="ATUM$1"/> <atom label="Aluno$0"/> <atom label="Disciplina$1"/> </tuple>
+   <types> <type ID="4"/> <type ID="6"/> <type ID="7"/> </types>
+</field>
+
+<field label="turnos" ID="8" parentID="4">
+   <tuple> <atom label="ATUM$0"/> <atom label="Disciplina$1"/> <atom label="Turno$0"/> </tuple>
+   <tuple> <atom label="ATUM$1"/> <atom label="Disciplina$1"/> <atom label="Turno$0"/> </tuple>
+   <types> <type ID="4"/> <type ID="7"/> <type ID="9"/> </types>
+</field>
+
+<field label="preferencias" ID="10" parentID="4">
+   <tuple> <atom label="ATUM$0"/> <atom label="Aluno$0"/> <atom label="Turno$0"/> </tuple>
+   <tuple> <atom label="ATUM$1"/> <atom label="Aluno$0"/> <atom label="Turno$0"/> </tuple>
+   <types> <type ID="4"/> <type ID="6"/> <type ID="9"/> </types>
+</field>
+
+<field label="alocados" ID="11" parentID="4">
+   <tuple> <atom label="ATUM$0"/> <atom label="Aluno$0"/> <atom label="Turno$0"/> </tuple>
+   <types> <type ID="4"/> <type ID="6"/> <type ID="9"/> </types>
+</field>
+
+<field label="colocados" ID="12" parentID="4">
+   <tuple> <atom label="ATUM$0"/> <atom label="Aluno$0"/> </tuple>
+   <types> <type ID="4"/> <type ID="6"/> </types>
+</field>
+
+<sig label="this/Aluno" ID="6" parentID="2">
+   <atom label="Aluno$0"/>
+</sig>
+
+<sig label="this/Disciplina" ID="7" parentID="2">
+   <atom label="Disciplina$0"/>
+   <atom label="Disciplina$1"/>
+</sig>
+
+<sig label="this/Turno" ID="9" parentID="2">
+   <atom label="Turno$0"/>
+</sig>
+
+<sig label="univ" ID="2" builtin="yes">
+</sig>
+
+<skolem label="$Alocacao_Teste_at" ID="13">
+   <tuple> <atom label="ATUM$1"/> </tuple>
+   <types> <type ID="4"/> </types>
+</skolem>
+
+<skolem label="$Alocacao_Teste_at&apos;" ID="14">
+   <tuple> <atom label="ATUM$0"/> </tuple>
+   <types> <type ID="4"/> </types>
+</skolem>
+
+<skolem label="$Alocacao_Teste_a" ID="15">
+   <tuple> <atom label="Aluno$0"/> </tuple>
+   <types> <type ID="6"/> </types>
+</skolem>
+
+</instance>
+
+</alloy>
