@@ -11,7 +11,9 @@ sig ATUM {
 
 	preferencias: Aluno -> set Turno,
 
-	alocados: Aluno -> set Turno
+	alocados: Aluno -> set Turno,
+
+	colocados: set Aluno
 }
 
 sig Aluno {}
@@ -30,7 +32,7 @@ sig Turno {}
 
 // Garantir que um Turno pretence apenas a uma Disciplina
 pred Turno_Pertence_Uma_Disciplina [at: ATUM] {
-	all t: Turno | one d: Disciplina | d = (at.turnos).t 
+	all t: Turno | lone (at.turnos).t 
 }
 
 //===============================
@@ -38,7 +40,8 @@ pred Turno_Pertence_Uma_Disciplina [at: ATUM] {
 
 // Garantir que um Aluno apenas é alocado num turno por Disciplina
 pred Alocado_Num_Turno_Por_Disciplina [at: ATUM] {
-	all a: Aluno | all d: at.inscritos[a] | lone t: at.turnos[d] | t in at.alocados[a]
+	all a: at.colocados, d: at.inscritos[a] | some (at.preferencias[a] & at.turnos[d]) => one (at.alocados[a] & at.turnos[d])
+	all a: Aluno - at.colocados | no at.alocados[a] 
 }
 
 // Garantir que um Aluno apenas é alocado em Turnos 
@@ -91,7 +94,7 @@ pred Inv_PosAloc [at: ATUM] {
 
 	Alocado_Apenas_Em_Turnos_De_Disciplinas_Matriculado [at]
 	Alocado_Num_Turno_Por_Disciplina [at]
-//	Apenas_Alocado_Se_Tem_Preferencia [at]
+	Apenas_Alocado_Se_Tem_Preferencia [at]
 }
 
 
@@ -105,58 +108,35 @@ pred Alocacao [at, at' : ATUM, a: Aluno] {
 
 	at'.inscritos = at.inscritos
 	at'.turnos = at.turnos
-	at'.preferencias = at.preferencias
-	all d: at.inscritos[a] | one al: (at.turnos[d]) & (at.preferencias[a]) | at'.alocados = at.alocados + (a->al)
+	at'.preferencias = at.preferencias	
 
---	one al : Turno |  at'.alocados[a] |
-
-	--	no 
-	--	at'.alocados = at.alocados +(a->al)
-		
+	at'.colocados = at.colocados + a
+	at'.alocados = at.alocados + (a -> at.preferencias[a])
+	all d: at.inscritos[a] | some (at.preferencias[a] & at.turnos[d]) => one (at'.alocados[a] & at.turnos[d])
 }
 
-/*
-pred Alocacao [at, at' : ATUM, a: Aluno] {
-	no at.alocados[a]
-	some at.preferencias[a]
-
-	at'.inscritos = at.inscritos
-	at'.turnos = at.turnos
-	one al : at.alocados[a] | 	at'.alocados = at.alocados +(a->al)
-}
-*/
+// Nova alocação é igual a alocação velha mais 
+//umas novas alocações quaisquer tais que “regras de alocação” (aloc in prefs… )
 assert Alocacao_Ok {
-	all at, at': ATUM | all a: Aluno | Inv_PreAloc[at] && Alocacao[at,at',a] => Inv_PosAloc[at']
+	all at, at': ATUM | all a: Aluno | Inv_AllPreds[at] && Alocacao[at,at',a] => Inv_AllPreds[at']
 }
-
-check Alocacao_Ok for 3 but exactly 1 Aluno, exactly 2 Disciplina, exactly 2 ATUM
 
 pred Alocacao_Teste [at, at' : ATUM, a : Aluno] {
 	Inv_AllPreds[at]
 	Alocacao[at,at',a]
 }
 
-run Alocacao_Teste for 3 but 2 ATUM, exactly 1 Aluno, exactly 2 Disciplina
-
-/*
-pred Alocacao_Test [at, at' : ATUM, a: Aluno] {
-	Inv[fs]
-	mkdir[fs,fs',d]
-}
-
-run mkdir_TEST for 3 but 2 FS
-*/
 //===============================
 // ----- Comandos -----------------------------
 //===============================
-
-// Facto para ajudar com os testes. Apagar no fina!
 
 run {}
 
 run Todos_Predicados for 3 but exactly 1 ATUM
 
+run Alocacao_Teste for 3 but 2 ATUM, exactly 1 Aluno, exactly 2 Disciplina
 
+check Alocacao_Ok for 3 but exactly 1 Aluno, exactly 2 Disciplina, exactly 2 ATUM
 
 //===============================
 // ----- Tralha Velha Pra Apagar-----------
