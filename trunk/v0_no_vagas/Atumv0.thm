@@ -14,12 +14,8 @@
    <type name="Int"/>
    <type name="String"/>
    <type name="univ"/>
-   <type name="ordering/Ord"/>
    <type name="seq/Int"/>
-   <set name="$Aloca_Com_Troca_Teste_a" type="Aluno"/>
-   <set name="$Aloca_Com_Troca_Teste_at" type="ATUM"/>
-   <set name="$Aloca_Com_Troca_Teste_at&apos;" type="ATUM"/>
-   <set name="processados" type="Aluno"/>
+   <set name="$Todos_Predicados_at" type="ATUM"/>
 </node>
 
 <node shape="Box" color="Blue">
@@ -33,14 +29,6 @@
 <node shape="Parallelogram" color="Green">
    <type name="Disciplina"/>
 </node>
-
-<node visible="no">
-   <type name="Capacidade"/>
-</node>
-
-<edge visible="no" attribute="yes">
-   <relation name="vagas"> <type name="Turno"/> <type name="Capacidade"/> </relation>
-</edge>
 
 </view>
 
