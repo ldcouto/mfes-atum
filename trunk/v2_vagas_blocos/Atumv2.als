@@ -10,10 +10,10 @@ open util/ordering[Capacidade]
 //===============================
 
 sig ATUM {
-	inscritos: Aluno -> set Disciplina,
+	inscritos: Aluno -> some Disciplina,
 
 	turnos: Disciplina -> set Turno,
-	preferencias: Aluno -> set Turno,
+--	preferencias: Aluno -> set Turno,
 	alocados: Aluno -> set Turno,
 	vagas: Turno -> one Capacidade,
 
@@ -42,35 +42,45 @@ pred Turno_Pertence_Uma_Disciplina [at: ATUM] {
 }
 
 // Disciplina tem Vagas
-pred Ha_Vagas [at: ATUM, a: Aluno, d: Disciplina] {
-	 some t: (at.preferencias[a] & at.turnos[d]) | at.vagas[t] !=first
-}
+--pred Ha_Vagas [at: ATUM, a: Aluno, d: Disciplina] {
+--	 some t: (at.preferencias[a] & at.turnos[d]) | at.vagas[t] !=first
+--}
 
 // Alunos foram bem alocados
-pred Bem_Alocados[at:ATUM]{
-	all a: at.processados| all d : at.turnos.Turno | (some t :  (at.turnos[d] & at.preferencias[a]) | t in at.alocados[a])
-                                                                       or (all t :  (at.turnos[d] & at.preferencias[a]) | at.vagas[t] = first)
-}
+--pred Bem_Alocados[at:ATUM]{
+--	all a: at.processados| all d : at.turnos.Turno | (some t :  (at.turnos[d] & at.preferencias[a]) | t in at.alocados[a])
+--                                                                       or (all t :  (at.turnos[d] & at.preferencias[a]) | at.vagas[t] = first)
+--}
 
 //===============================
 // ----- Predicados sobre Blocos -----------------
 
 pred Um_Turno_Por_Disciplina [at: ATUM] {
-	all b: at.blocos.Turno | all t1,t2: at.blocos[b] | at.turnos.t1 = at.turnos.t2 => t1 = t2
+	all a: Aluno | all b: at.prefereBloco[a] | all disj t1,t2: at.blocos[b] | at.turnos.t1 != at.turnos.t2
 }
 
 pred Apenas_Disciplinas_A_Que_Inscrito [at: ATUM] {
-	all a: Aluno | all b: at.blocos.Turno | at.prefereBloco[a] = b => at.blocos[b] in at.turnos[at.inscritos[a]]
+	all a: Aluno, b: at.prefereBloco[a], d: at.inscritos[a] | at.blocos[b] in at.turnos[d]
+}
+
+pred Bloco_Tem_Vagas [at: ATUM, b: Bloco] {
+	all t: at.blocos[b] | at.vagas[t] != first
+}
+
+pred Bem_Alocado_Bloco [at: ATUM] {
+	all a: at.processados | lone b: at.prefereBloco[a] | (at.alocados[a] = at.blocos[b])
+																		or (one t: at.blocos[b] | at.vagas[t] = first)
 }
 
 //===============================
 // ----- Predicados sobre Alunos -----------------
 
 // Garantir que um Aluno apenas é alocado num turno por Disciplina
-pred Alocado_Num_Turno_Por_Disciplina [at: ATUM] {
-	all a: at.processados, d: at.inscritos[a] | some (at.preferencias[a] & at.turnos[d]) => lone (at.alocados[a] & at.turnos[d])
-	all a: Aluno - at.processados | no at.alocados[a] 
-}
+--pred Alocado_Num_Turno_Por_Disciplina [at: ATUM] {
+--	all a: at.processados, d: at.inscritos[a] | some ( at.blocos[at.prefereBloco[a]] & at.turnos[d] ) =>lone (at.alocados[a] & at.turnos[d])
+--	all a: Aluno - at.processados | no at.alocados[a]
+--}
+
 
 ------ Não é preciso
 // Garantir que um Aluno apenas é alocado em Turnos 
@@ -82,28 +92,31 @@ pred Alocado_Num_Turno_Por_Disciplina [at: ATUM] {
 
 check {
 all at :ATUM | Inv_AllPreds[at]  => Inv_AllPreds[at] and all a: Aluno | all t: at.alocados[a] | one d: at.inscritos[a] | t in at.turnos[d]
-} for 6
+} for 2 but exactly 1 ATUM
 
 // Garantir que um Aluno apenas tem preferencia por 
 // Disciplinas a que se encontra inscrito 
-pred Apenas_Tem_Preferencia_Se_Inscrito [at: ATUM] {
-	all a: Aluno | at.preferencias[a] in at.inscritos[a].(at.turnos) 
-}
+--pred Apenas_Tem_Preferencia_Se_Inscrito [at: ATUM] {
+--	all a: Aluno | at.preferencias[a] in at.inscritos[a].(at.turnos) 
+--}
 
 // Garantir que um Aluno apenas é alocado se tiver preferencia por um turno
+--pred Apenas_Alocado_Se_Tem_Preferencia [at: ATUM] {
+--	all a: Aluno | at.alocados[a] in at.preferencias[a]
+--}
+
 pred Apenas_Alocado_Se_Tem_Preferencia [at: ATUM] {
-	all a: Aluno | at.alocados[a] in at.preferencias[a]
+	all a: Aluno | at.alocados[a] in at.blocos[(at.prefereBloco[a])]
 }
 
 pred Inv_AllPreds[at:ATUM] {
 	Turno_Pertence_Uma_Disciplina [at]
-	Alocado_Num_Turno_Por_Disciplina [at]
-	--Alocado_Apenas_Em_Turnos_De_Disciplinas_Matriculado [at]
-	Apenas_Alocado_Se_Tem_Preferencia [at]
-	Apenas_Tem_Preferencia_Se_Inscrito [at]
-	Bem_Alocados[at]
+
 	Um_Turno_Por_Disciplina[at]
 	Apenas_Disciplinas_A_Que_Inscrito[at]
+	Apenas_Alocado_Se_Tem_Preferencia[at]
+
+	Bem_Alocado_Bloco[at]
 }
 
 //===============================
@@ -113,7 +126,7 @@ pred Inv_AllPreds[at:ATUM] {
 // INSERIR ALUNO
 pred Inserir_Aluno[at, at' : ATUM, a:Aluno]{
 	a not in at.inscritos.Disciplina
-	a not in at.preferencias.Turno
+	--a not in at.preferencias.Turno
 	a not in at.alocados.Turno
 	a not in at.processados
 	a not in at.prefereBloco.Bloco
@@ -123,7 +136,7 @@ pred Inserir_Aluno[at, at' : ATUM, a:Aluno]{
 	a in at'.inscritos.Disciplina	
 
 	at'.turnos=at.turnos
-	at'.preferencias=at.preferencias
+	--at'.preferencias=at.preferencias
 	at'.alocados=at.alocados
 	at'.processados=at.processados
 	at'.vagas=at.vagas
@@ -149,7 +162,7 @@ pred Inserir_Disciplina[at, at' : ATUM, d:Disciplina]{
 	some t : Turno-at.turnos[Disciplina]| at'.turnos = at.turnos + d->t
 
 	at'.inscritos=at.inscritos
-	at'.preferencias=at.preferencias
+	--at'.preferencias=at.preferencias
 	at'.alocados=at.alocados
 	at'.processados=at.processados
 	at'.vagas=at.vagas
@@ -176,7 +189,7 @@ pred Inserir_Turno[at, at' : ATUM, d:Disciplina, t:Turno, c:Capacidade]{
 	at'.turnos=at.turnos+(d->t)
 
 	at'.inscritos=at.inscritos
-	at'.preferencias=at.preferencias
+--	at'.preferencias=at.preferencias
 	at'.alocados=at.alocados
 	at'.processados=at.processados
 
@@ -193,6 +206,7 @@ pred Inserir_Turno_Teste[at,at': ATUM, d: Disciplina, t:Turno, c:Capacidade]{
 	Inserir_Turno[at,at',d,t,c]
 }
 
+/*
 // ALOCAR ALUNO
 pred Alocacao [at, at' : ATUM, a: Aluno] {
 	no at.alocados[a]
@@ -203,8 +217,11 @@ pred Alocacao [at, at' : ATUM, a: Aluno] {
 	at'.turnos = at.turnos
 	at'.preferencias = at.preferencias	
 	at'.processados = at.processados + a
+
+---------Para Apagar----------
 	at'.blocos =at.blocos
 	at'.prefereBloco = at.prefereBloco
+---------Para Apagar----------
 
 	at'.alocados[a] in at.preferencias[a]
 	all x : Aluno - a | at'.alocados[x] = at.alocados[x]
@@ -219,9 +236,33 @@ assert Alocacao_Ok {
 
 pred Alocacao_Teste [at, at' : ATUM, a : Aluno] {
 	Inv_AllPreds[at]
---	at != at'
-
 	Alocacao[at,at',a]
+}
+*/
+
+pred Aloca_Bloco [at,at': ATUM, a: Aluno] {
+	no at.alocados[a]
+	some at.prefereBloco[a]
+
+	lone b: at.prefereBloco[a] | Bloco_Tem_Vagas[at,b] => at'.alocados[a] = at.blocos[b]
+	all t: at'.alocados[a] | at'.vagas[t] = at.vagas[t].prev
+
+	at'.inscritos = at.inscritos
+	at'.turnos = at.turnos
+	all x: Aluno - a | at'.alocados[x] = at.alocados[x]
+	all t: at.vagas.Capacidade - at'.alocados[a] | at'.vagas[t] = at.vagas[t]
+	at'.processados = at.processados + a
+	at'.blocos = at.blocos
+	at'.prefereBloco = at.prefereBloco
+}
+
+assert Aloca_Bloco_OK {
+	all at,at': ATUM | all a: Aluno | Inv_AllPreds[at] && Aloca_Bloco[at,at',a] => Inv_AllPreds[at']
+}
+
+pred Aloca_Bloco_Teste[at,at': ATUM, a: Aluno] {
+	Inv_AllPreds[at]
+	Aloca_Bloco[at,at',a]
 }
 
 //===============================
@@ -237,7 +278,7 @@ run Inserir_Disciplina_Teste for 3 but exactly 2 ATUM
 check Inserir_Turno_Ok for 3 but exactly 2 ATUM
 run Inserir_Turno_Teste for 3 but exactly 2 ATUM
 
-check Alocacao_Ok for 3 but exactly 2 ATUM
-run Alocacao_Teste for 3 but exactly 2 ATUM
+check Aloca_Bloco_OK for 3 but exactly 2 ATUM, 1 Aluno
+run Aloca_Bloco_Teste for 3 but exactly 2 ATUM
 
 run Inv_AllPreds for 3 but 1 ATUM

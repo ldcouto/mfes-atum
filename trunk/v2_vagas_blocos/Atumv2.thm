@@ -14,32 +14,49 @@
    <type name="Int"/>
    <type name="String"/>
    <type name="univ"/>
-   <type name="ordering/Ord"/>
    <type name="seq/Int"/>
-   <set name="$Aloca_Com_Troca_Teste_a" type="Aluno"/>
-   <set name="$Aloca_Com_Troca_Teste_at" type="ATUM"/>
-   <set name="$Aloca_Com_Troca_Teste_at&apos;" type="ATUM"/>
-   <set name="processados" type="Aluno"/>
-</node>
-
-<node shape="Box" color="Blue">
-   <type name="Turno"/>
+   <set name="$Aloca_Bloco_OK_at" type="ATUM"/>
+   <set name="$Aloca_Bloco_OK_at&apos;" type="ATUM"/>
 </node>
 
 <node shape="Ellipse" color="Yellow">
    <type name="Aluno"/>
 </node>
 
-<node shape="Parallelogram" color="Green">
+<node shape="Inv Triangle" color="Red">
    <type name="Disciplina"/>
 </node>
 
+<node shape="Lined Diamond" color="Gray">
+   <type name="Turno"/>
+</node>
+
+<node shape="Parallelogram" color="Green">
+   <type name="Bloco"/>
+</node>
+
+<node style="Bold">
+   <set name="processados" type="Aluno"/>
+</node>
+
+<node style="Bold" label="a">
+   <set name="$Aloca_Bloco_OK_a" type="Aluno"/>
+</node>
+
 <node visible="no">
+   <type name="ordering/Ord"/>
+</node>
+
+<node visible="no" shape="Box" color="Blue">
    <type name="Capacidade"/>
 </node>
 
-<edge visible="no" attribute="yes">
+<edge attribute="yes">
    <relation name="vagas"> <type name="Turno"/> <type name="Capacidade"/> </relation>
+</edge>
+
+<edge color="Gray" constraint="no">
+   <relation name="Next"> <type name="ordering/Ord"/> <type name="Capacidade"/> <type name="Capacidade"/> </relation>
 </edge>
 
 </view>
