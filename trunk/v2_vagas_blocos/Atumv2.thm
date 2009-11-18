@@ -15,32 +15,27 @@
    <type name="String"/>
    <type name="univ"/>
    <type name="seq/Int"/>
-   <set name="$Aloca_Bloco_OK_at" type="ATUM"/>
-   <set name="$Aloca_Bloco_OK_at&apos;" type="ATUM"/>
+   <set name="$Inv_AllPreds_at" type="ATUM"/>
+</node>
+
+<node shape="Ellipse" color="Gray">
+   <type name="Turno"/>
 </node>
 
 <node shape="Ellipse" color="Yellow">
    <type name="Aluno"/>
 </node>
 
-<node shape="Inv Triangle" color="Red">
-   <type name="Disciplina"/>
-</node>
-
-<node shape="Lined Diamond" color="Gray">
-   <type name="Turno"/>
-</node>
-
 <node shape="Parallelogram" color="Green">
    <type name="Bloco"/>
 </node>
 
-<node style="Bold">
-   <set name="processados" type="Aluno"/>
+<node shape="Parallelogram" color="Red">
+   <type name="Disciplina"/>
 </node>
 
-<node style="Bold" label="a">
-   <set name="$Aloca_Bloco_OK_a" type="Aluno"/>
+<node style="Bold">
+   <set name="processados" type="Aluno"/>
 </node>
 
 <node visible="no">
