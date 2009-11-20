@@ -102,6 +102,11 @@ pred Bloco_Tem_Vagas [at: ATUM, b: Bloco] {
 	all t: at.blocos[b] | at.vagas[t] != first
 }
 
+pred Turno_Disponivel[at:ATUM, a:Aluno, t:Turno]{
+	at.vagas[t] !=first
+	t in at.inscritos[a].(at.turnos)
+}
+
 
 //===============================
 // ----- Operações -----------------------------
@@ -193,14 +198,21 @@ pred Inserir_Turno_Teste[at,at': ATUM, d: Disciplina, t:Turno, c:Capacidade]{
 --------------------------
 // ALOCAR ALUNO
 
-pred Aloca_Aluno[at,at': ATUM, a: Aluno] {
+pred Aloca_Aluno_PBloco[at,at': ATUM, a: Aluno] {
 	no at.alocados[a]
 	a not in at.processados
-	some at.prefereBloco[a]
-	
-	no at'.alocados[a] => all b:at.prefereBloco[a] | not Bloco_Tem_Vagas[at,b]
-	one b:at.prefereBloco[a] | at.blocos[b]=at'.alocados[a] or no at'.alocados[a]
 
+--	ALOCAR BLOCO	
+-- ele ter preferencias implica tudo o resto!
+--	no at'.alocados[a] => all b:at.prefereBloco[a] | not Bloco_Tem_Vagas[at,b]
+--	one b:at.prefereBloco[a] | at.blocos[b]=at'.alocados[a] or no at'.alocados[a] <- mudar isto para ins e assim
+
+
+--	ALOCAR SINGLES
+--	all d : at.inscritos[a] - (at.turnos).(at'.alocados[a]) | lone t : at.turnos[d] | Turno_Disponivel[at,a,t] and t in at'.alocados[a]
+
+
+--	RESTO
 	all t: at'.alocados[a] | at'.vagas[t] = at.vagas[t].prev
 
 	at'.inscritos = at.inscritos
@@ -213,13 +225,14 @@ pred Aloca_Aluno[at,at': ATUM, a: Aluno] {
 	at'.processados = at.processados + a
 }
 
-assert Aloca_Aluno_Ok{
-	all at,at': ATUM | all a: Aluno | Inv_AllPreds[at] && Aloca_Aluno[at,at',a] => Inv_AllPreds[at']
+
+assert Aloca_Aluno_PBloco_Ok{
+	all at,at': ATUM | all a: Aluno | Inv_AllPreds[at] && Aloca_Aluno_PBloco[at,at',a] => Inv_AllPreds[at']
 }
 
-pred Aloca_Aluno_Teste[at,at': ATUM, a: Aluno] {
+pred Aloca_Aluno_PBloco_Teste[at,at': ATUM, a: Aluno] {
 	Inv_AllPreds[at]
-	Aloca_Aluno[at,at',a]
+	Aloca_Aluno_PBloco[at,at',a]
 }
 
 //===============================
@@ -235,7 +248,7 @@ run Inserir_Disciplina_Teste for 3 but exactly 2 ATUM
 check Inserir_Turno_Ok for 3 but exactly 2 ATUM
 run Inserir_Turno_Teste for 3 but exactly 2 ATUM
 
-check Aloca_Aluno_Ok for 3 but exactly 2 ATUM, 1 Aluno
-run Aloca_Aluno_Teste for 3 but exactly 2 ATUM, 1 Aluno
+check Aloca_Aluno_PBloco_Ok for 3 but exactly 2 ATUM, 1 Aluno
+run Aloca_Aluno_PBloco_Teste for 3 but exactly 2 ATUM, 1 Aluno, 0 Bloco
 
 run Inv_AllPreds for 6 but 1 ATUM, exactly 3 Bloco
