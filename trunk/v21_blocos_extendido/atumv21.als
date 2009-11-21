@@ -107,6 +107,18 @@ pred Turno_Disponivel[at:ATUM, a:Aluno, t:Turno]{
 	t in at.inscritos[a].(at.turnos)
 }
 
+pred Ha_Bloco_Disponivel[at:ATUM, a:Aluno]{
+	some b: at.prefereBloco[a] | Bloco_Tem_Vagas[at,b]
+}
+
+pred Aluno_N_Quer_Turno[at:ATUM, a:Aluno, t:Turno]{
+	t not in at.prefereBloco[a].(at.blocos)
+}
+
+pred Aluno_Tem_Vaga_Disc[at:ATUM, a:Aluno, d:Disciplina]{
+	some t : at.turnos[d] | Turno_Disponivel[at,a,t]
+}
+
 
 //===============================
 // ----- Operações -----------------------------
@@ -198,19 +210,36 @@ pred Inserir_Turno_Teste[at,at': ATUM, d: Disciplina, t:Turno, c:Capacidade]{
 --------------------------
 // ALOCAR ALUNO
 
+
 pred Aloca_Aluno_PBloco[at,at': ATUM, a: Aluno] {
 	no at.alocados[a]
 	a not in at.processados
-
+--	some at.prefereBloco[a]
+/*
+-- se existe bloco com vagas entao fazer o predicado de alocação com o some senão não se faz nada
+ senão faz só as alocações disciplina a disciplina
+*/
 --	ALOCAR BLOCO	
 -- ele ter preferencias implica tudo o resto!
 --	no at'.alocados[a] => all b:at.prefereBloco[a] | not Bloco_Tem_Vagas[at,b]
---	one b:at.prefereBloco[a] | at.blocos[b]=at'.alocados[a] or no at'.alocados[a] <- mudar isto para ins e assim
-
+--	one b:at.prefereBloco[a] | at.blocos[b]=at'.alocados[a] or no at'.alocados[a]-- <- mudar isto para ins e assim
+	
+	Ha_Bloco_Disponivel[at,a] => (one b:at.prefereBloco[a] | at.blocos[b] in at'.alocados[a] )-- else no at'.alocados[a]
+	
+	
 
 --	ALOCAR SINGLES
---	all d : at.inscritos[a] - (at.turnos).(at'.alocados[a]) | lone t : at.turnos[d] | Turno_Disponivel[at,a,t] and t in at'.alocados[a]
+	--all d : at.inscritos[a] - (at.turnos).(at'.alocados[a]) | lone t : at.turnos[d] | Turno_Disponivel[at,a,t] and t in at'.alocados[a]
 
+--	all d : at.inscritos[a] | Aluno_Tem_Vaga_Disc[at,a,d] => one t : Disciplina.(at.turnos) | t in at'.alocados[a]
+
+	all d: at.inscritos[a] - at.turnos.(at.alocados[a]) | lone t: at.turnos[d] | Turno_Disponivel[at,a,t] => t in at'.alocados[a]
+
+	all t : Turno | t in at'.alocados[a] => (t in at.blocos[at.prefereBloco[a]]) or t in at.turnos[at.inscritos[a]]
+
+	
+
+	--no Turnos alocados contidos nos turnos possíveis.
 
 --	RESTO
 	all t: at'.alocados[a] | at'.vagas[t] = at.vagas[t].prev
