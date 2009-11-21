@@ -88,9 +88,9 @@ pred Inv_AllPreds[at:ATUM] {
 	So_Turnos_Legitimos[at]
 	Um_Turno_Por_Disciplina[at]
 	So_Quer_Blocos_Inscrito[at]
-	Aluno_Ta_Num_Bloco[at]
+--	Aluno_Ta_Num_Bloco[at]
 	Aluno_Nao_Foi_Alocado[at]
-	Apenas_Alocado_Se_Tem_Preferencia[at]
+--	Apenas_Alocado_Se_Tem_Preferencia[at]
 	Bem_Alocados[at]
 }
 
@@ -214,6 +214,12 @@ pred Inserir_Turno_Teste[at,at': ATUM, d: Disciplina, t:Turno, c:Capacidade]{
 pred Aloca_Aluno_PBloco[at,at': ATUM, a: Aluno] {
 	no at.alocados[a]
 	a not in at.processados
+
+
+	at'.alocados[a] in at.inscritos[a].(at.turnos)
+	all d : at.inscritos[a] | Aluno_Tem_Vaga_Disc[at,a,d] => one at'.alocados[a] & at.turnos[d]
+	Ha_Bloco_Disponivel[at,a] => (some b:at.prefereBloco[a] | at.blocos[b] in at'.alocados[a])
+
 --	some at.prefereBloco[a]
 /*
 -- se existe bloco com vagas entao fazer o predicado de alocação com o some senão não se faz nada
@@ -224,7 +230,7 @@ pred Aloca_Aluno_PBloco[at,at': ATUM, a: Aluno] {
 --	no at'.alocados[a] => all b:at.prefereBloco[a] | not Bloco_Tem_Vagas[at,b]
 --	one b:at.prefereBloco[a] | at.blocos[b]=at'.alocados[a] or no at'.alocados[a]-- <- mudar isto para ins e assim
 	
-	Ha_Bloco_Disponivel[at,a] => (one b:at.prefereBloco[a] | at.blocos[b] in at'.alocados[a] )-- else no at'.alocados[a]
+--	Ha_Bloco_Disponivel[at,a] => (one b:at.prefereBloco[a] | at.blocos[b] in at'.alocados[a] )-- else no at'.alocados[a]
 	
 	
 
@@ -233,15 +239,14 @@ pred Aloca_Aluno_PBloco[at,at': ATUM, a: Aluno] {
 
 --	all d : at.inscritos[a] | Aluno_Tem_Vaga_Disc[at,a,d] => one t : Disciplina.(at.turnos) | t in at'.alocados[a]
 
-	all d: at.inscritos[a] - at.turnos.(at.alocados[a]) | lone t: at.turnos[d] | Turno_Disponivel[at,a,t] => t in at'.alocados[a]
+--	all d: at.inscritos[a] - at.turnos.(at.alocados[a]) | lone t: at.turnos[d] | Turno_Disponivel[at,a,t] => t in at'.alocados[a]
 
-	all t : Turno | t in at'.alocados[a] => (t in at.blocos[at.prefereBloco[a]]) or t in at.turnos[at.inscritos[a]]
-
+--	all t : Turno | t in at'.alocados[a] => (t in at.blocos[at.prefereBloco[a]]) or t in at.turnos[at.inscritos[a]]
 	
-
 	--no Turnos alocados contidos nos turnos possíveis.
 
 --	RESTO
+
 	all t: at'.alocados[a] | at'.vagas[t] = at.vagas[t].prev
 
 	at'.inscritos = at.inscritos
@@ -278,6 +283,6 @@ check Inserir_Turno_Ok for 3 but exactly 2 ATUM
 run Inserir_Turno_Teste for 3 but exactly 2 ATUM
 
 check Aloca_Aluno_PBloco_Ok for 3 but exactly 2 ATUM, 1 Aluno
-run Aloca_Aluno_PBloco_Teste for 3 but exactly 2 ATUM, 1 Aluno, 0 Bloco
+run Aloca_Aluno_PBloco_Teste for 3 but exactly 2 ATUM, 1 Aluno
 
 run Inv_AllPreds for 6 but 1 ATUM, exactly 3 Bloco
