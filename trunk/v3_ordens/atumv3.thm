@@ -14,13 +14,17 @@
    <type name="Int"/>
    <type name="String"/>
    <type name="univ"/>
+   <type name="cap/Ord"/>
+   <type name="prefs/Ord"/>
    <type name="seq/Int"/>
-   <set name="$Aloca_Aluno_Ok_a" type="Aluno"/>
-   <set name="$Aloca_Aluno_Ok_at" type="ATUM"/>
-   <set name="$Aloca_Aluno_Ok_at&apos;" type="ATUM"/>
+   <set name="$Inv_AllPreds_at" type="ATUM"/>
 </node>
 
-<node shape="Ellipse" color="Gray">
+<node color="Blue">
+   <type name="Preferencia"/>
+</node>
+
+<node shape="Ellipse" color="Black">
    <type name="Turno"/>
 </node>
 
@@ -40,20 +44,12 @@
    <set name="processados" type="Aluno"/>
 </node>
 
-<node visible="no">
-   <type name="ordering/Ord"/>
-</node>
-
 <node visible="no" shape="Box" color="Blue">
    <type name="Capacidade"/>
 </node>
 
 <edge attribute="yes">
    <relation name="vagas"> <type name="Turno"/> <type name="Capacidade"/> </relation>
-</edge>
-
-<edge color="Gray" constraint="no">
-   <relation name="Next"> <type name="ordering/Ord"/> <type name="Capacidade"/> <type name="Capacidade"/> </relation>
 </edge>
 
 </view>
