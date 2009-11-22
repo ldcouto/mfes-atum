@@ -105,6 +105,11 @@ pred Inv_AllPreds[at:ATUM] {
 //===============================
 // ----- Predicados Auxiliares  -----------------
 
+pred Best_Bloco[at:ATUM, a:Aluno]{ 
+--	some b : getBlocos[at,a] | no b2 : (getBlocos[at,a] - b) | prefs/lt[b2,b1]
+	--Ha_Bloco_Disponivel[at,a] => 
+}
+
 pred Bloco_Tem_Vagas [at: ATUM, b: Bloco] {
 	all t: at.turnosBloco[b] | at.vagas[t] != cap/first
 }
@@ -131,6 +136,10 @@ pred Aluno_Tem_Vaga_Disc[at:ATUM, a:Aluno, d:Disciplina]{
 
 fun getBlocos[at: ATUM, a:Aluno] : set Bloco{
 	at.preferencias[a].(at.prefereBloco)
+}
+
+fun betterBlocos[at:ATUM, a:Aluno, b:Bloco] :set Bloco{
+	let r = getBlocos[at ,a] | (at.prefereBloco).r != prefs/first
 }
 
 //===============================
