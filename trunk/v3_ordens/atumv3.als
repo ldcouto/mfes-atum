@@ -2,6 +2,7 @@ module ATUM
 
 open util/ordering[Capacidade] as cap
 open util/ordering[Preferencia] as prefs
+open util/ordering[Posicao] as rank
 
 -- VAMOS PRECISAR DE PREFERENCIA TOTAL SOBRE OS TURNOS
 -- PACKS DE CADEIRAS - escolher horarios completos
@@ -13,12 +14,14 @@ open util/ordering[Preferencia] as prefs
 sig ATUM {
 	inscritos: Aluno -> set Disciplina,
 	alocados: Aluno -> set Turno,
+	ordem: Aluno -> one Posicao,
 	processados: set Aluno,
 	preferencias: Aluno -> set Preferencia,
 	prefereBloco: Preferencia -> one Bloco,
 	turnosDisciplina: Disciplina -> set Turno,
 	turnosBloco: Bloco ->some Turno,
-	vagas: Turno -> one Capacidade
+	vagasActuais: Turno -> one Capacidade,
+	vagasIniciais: Turno -> one Capacidade
 }
 
 sig Preferencia{}
@@ -27,6 +30,7 @@ sig Aluno {}
 sig Disciplina {}
 sig Turno {}
 sig Capacidade {}
+sig Posicao{}
 
 //===============================
 // ----- Predicados ----------------------------
@@ -50,6 +54,13 @@ pred So_Turnos_Legitimos[at:ATUM]{
 	no at.turnosBloco[Bloco] - at.turnosDisciplina[Disciplina]
 }
 
+// As vagas batem certo
+pred Vagas_Sync[at:ATUM]{
+	all t : at.turnosDisciplina[Disciplina] | cap/lte[at.vagasActuais[t],at.vagasIniciais[t]]
+	all t : at.turnosDisciplina[Disciplina] | #cap/prevs[at.vagasActuais[t]] + #(at.alocados).t
+																	= # cap/prevs[at.vagasIniciais[t]]	
+}
+
 // Dois blocos iguais são o mesmo bloco
 pred Nao_Ha_Blocos_Iguais[at:ATUM]{
 	all disj b1, b2 : at.turnosBloco.Turno | at.turnosBloco[b1] != at.turnosBloco[b2]
@@ -58,6 +69,11 @@ pred Nao_Ha_Blocos_Iguais[at:ATUM]{
 //===============================
 // ----- Predicados sobre Alunos -----------------
 
+// Todas as ordens são diferentes
+pred Ordens_Diferentes[at:ATUM]{
+	all disj p1,p2 : at.ordem[Aluno] | p1 != p2
+}
+
 // Um aluno só quer blocos para os quais está inscrito a todas as disciplinas
 pred So_Quer_Blocos_Inscrito[at:ATUM]{
 	all a : Aluno | at.turnosBloco[(getBlocos[at,a])] in at.turnosDisciplina[(at.inscritos[a])]
@@ -65,24 +81,46 @@ pred So_Quer_Blocos_Inscrito[at:ATUM]{
 
 // Não alocar alunos que ainda não foram processados
 pred Aluno_Nao_Foi_Alocado[at:ATUM]{
-	all a: Aluno - at.processados | no at.alocados[a] 
+	all a: Aluno - at.processados | no at.alocados[a]
+}
+
+// Só se alocam alunos inscritos
+pred Alocar_Apenas_Inscritos[at:ATUM]{
+	(at.alocados).Turno in (at.inscritos).Disciplina
+}
+
+// Não se aloca ninguém a turnos inúteis
+pred Alocar_A_Turnos_Validos[at:ATUM]{
+	at.alocados[Aluno] in at.turnosDisciplina[Disciplina]
 }
 
 // Garantir que a Alocação foi bem feita
 pred Bem_Alocados[at:ATUM]{
-	all a : at.processados | all d : at.inscritos[a] | Aluno_Tem_Vaga_Disc[at,a,d] => one at.alocados[a] & at.turnosDisciplina[d]
+	all ap : at.processados | all anp : (at.inscritos).Disciplina-at.processados | rank/lt[ap,anp]
+
+	all a : at.processados | all d : at.inscritos[a] | one at.alocados[a] & at.turnosDisciplina[d]  
+																				=> not Aluno_Tem_Vaga_Disc[at,a,d]
 	all a : at.processados | Ha_Bloco_Disponivel[at,a] => one b : getBlocos[at,a] | at.turnosBloco[b] in at.alocados[a] 
-																							and No_Better_Blocos[at,a,b]
+																			yyy		and No_Better_Blocos[at,a,b]
+
+--	all a : at.processados | all d : at.inscritos[a] | Aluno_Tem_Vaga_Disc[at,a,d] => one at.alocados[a] & at.turnosDisciplina[d]
+--	all a : at.processados | Ha_Bloco_Disponivel[at,a] => one b : getBlocos[at,a] | at.turnosBloco[b] in at.alocados[a] 
+--																			yyy		and No_Better_Blocos[at,a,b]
 }
 
 //Todos os Invariantes
 pred Inv_AllPreds[at:ATUM] {
-	Nao_Ha_Blocos_Iguais[at]
 	Turno_Pertence_Uma_Disciplina [at]
+	Um_Turno_Por_Disciplina[at]	
 	So_Turnos_Legitimos[at]
-	Um_Turno_Por_Disciplina[at]
+	Vagas_Sync[at]	
+	Nao_Ha_Blocos_Iguais[at]
+
+	Ordens_Diferentes[at]	
 	So_Quer_Blocos_Inscrito[at]
 	Aluno_Nao_Foi_Alocado[at]
+	Alocar_Apenas_Inscritos[at]
+	Alocar_A_Turnos_Validos[at]
 	Bem_Alocados[at]
 
 --	Aluno_Ta_Num_Bloco[at]
@@ -117,11 +155,11 @@ pred No_Better_Blocos[at:ATUM, a:Aluno, b:Bloco]{
 }
 
 pred Bloco_Tem_Vagas [at: ATUM, b: Bloco] {
-	all t: at.turnosBloco[b] | at.vagas[t] != cap/first
+	all t: at.turnosBloco[b] | at.vagasActuais[t] != cap/first
 }
 
 pred Turno_Disponivel[at:ATUM, a:Aluno, t:Turno]{
-	at.vagas[t] !=cap/first
+	at.vagasActuais[t] !=cap/first
 	t in at.inscritos[a].(at.turnosDisciplina)
 }
 
@@ -176,8 +214,8 @@ pred Inserir_Aluno[at, at' : ATUM, a:Aluno]{
 	at'.prefereBloco = at.prefereBloco
 	at'.turnosDisciplina=at.turnosDisciplina
 	at'.turnosBloco=at.turnosBloco
-	at'.vagas=at.vagas
-	
+	at'.vagasActuais=at.vagasActuais
+	at.vagasIniciais = at'.vagasIniciais
 }
 
 assert Inserir_Aluno_Ok {
@@ -202,7 +240,8 @@ pred Inserir_Disciplina[at, at' : ATUM, d:Disciplina]{
 	at'.preferencias=at.preferencias
 	at'.prefereBloco=at.prefereBloco
 	at'.turnosBloco=at.turnosBloco
-	at'.vagas=at.vagas
+	at'.vagasActuais=at.vagasActuais
+	at.vagasIniciais = at'.vagasIniciais
 }
 
 assert Inserir_Disciplina_Ok {
@@ -219,7 +258,8 @@ pred Inserir_Turno[at, at' : ATUM, d:Disciplina, t:Turno, c:Capacidade]{
 	t not in at.turnosDisciplina[Disciplina]
 	t not in at.turnosBloco[Bloco]
 
-	at'.vagas=at.vagas+(t->c)
+	at'.vagasActuais=at.vagasActuais+(t->c)
+	at'.vagasIniciais=at.vagasIniciais+(t->c)
 	at'.turnosDisciplina=at.turnosDisciplina+(d->t)
 
 	at'.inscritos=at.inscritos
@@ -228,6 +268,7 @@ pred Inserir_Turno[at, at' : ATUM, d:Disciplina, t:Turno, c:Capacidade]{
 	at'.preferencias=at.preferencias
 	at'.prefereBloco = at.prefereBloco
 	at'.turnosBloco = at.turnosBloco
+
 }
 
 assert Inserir_Turno_Ok {
@@ -257,9 +298,10 @@ pred Aloca_Aluno_PBloco[at,at': ATUM, a: Aluno] {
 	at'.prefereBloco = at.prefereBloco
 	at'.turnosDisciplina = at.turnosDisciplina
 	at'.turnosBloco = at.turnosBloco
-	all t: at'.alocados[a] | at'.vagas[t] = at.vagas[t].cap/prev
+	all t: at'.alocados[a] | at'.vagasActuais[t] = at.vagasActuais[t].cap/prev
 	all x: Aluno - a | at'.alocados[x] = at.alocados[x]
-	all t: at.vagas.Capacidade - at'.alocados[a] | at'.vagas[t] = at.vagas[t]
+	all t: at.vagasActuais.Capacidade - at'.alocados[a] | at'.vagasActuais[t] = at.vagasActuais[t]
+	at.vagasIniciais = at'.vagasIniciais
 }
 
 

@@ -16,15 +16,16 @@
    <type name="univ"/>
    <type name="cap/Ord"/>
    <type name="prefs/Ord"/>
+   <type name="rank/Ord"/>
    <type name="seq/Int"/>
    <set name="$Inv_AllPreds_at" type="ATUM"/>
 </node>
 
-<node color="Blue">
+<node color="Black">
    <type name="Preferencia"/>
 </node>
 
-<node shape="Ellipse" color="Black">
+<node shape="Ellipse" color="Blue">
    <type name="Turno"/>
 </node>
 
@@ -44,12 +45,20 @@
    <set name="processados" type="Aluno"/>
 </node>
 
+<node visible="no">
+   <type name="Posicao"/>
+</node>
+
 <node visible="no" shape="Box" color="Blue">
    <type name="Capacidade"/>
 </node>
 
 <edge attribute="yes">
-   <relation name="vagas"> <type name="Turno"/> <type name="Capacidade"/> </relation>
+   <relation name="ordem"> <type name="Aluno"/> <type name="Posicao"/> </relation>
+</edge>
+
+<edge visible="no" attribute="yes">
+   <relation name="vagasActuais"> <type name="Turno"/> <type name="Capacidade"/> </relation>
 </edge>
 
 </view>

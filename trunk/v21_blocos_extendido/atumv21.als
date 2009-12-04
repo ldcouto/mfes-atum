@@ -267,4 +267,4 @@ run Inserir_Turno_Teste for 3 but exactly 2 ATUM
 check Aloca_Aluno_PBloco_Ok for 3 but exactly 2 ATUM, 1 Aluno
 run Aloca_Aluno_PBloco_Teste for 3 but exactly 2 ATUM, 1 Aluno
 
-run Inv_AllPreds for 6 but 1 ATUM, exactly 3 Bloco
+run Inv_AllPreds for 3 but 1 ATUM, exactly 3 Bloco
