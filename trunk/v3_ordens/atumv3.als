@@ -72,12 +72,12 @@ pred Nao_Ha_Blocos_Iguais[at:ATUM]{
 
 // Se um aluno está alocado num bloco, então está alocado a todos os turnos dele
 pred Aloca_Bloco_Turno[at: ATUM]{
-	all a : at.processados | one at.alocadosBloco[a] <=> at.turnosBloco[at.alocadosBloco[a]] in at.alocadosTurnos[a]
+	all a : (at.alocadosBloco).Bloco| one at.alocadosBloco[a] <=> at.turnosBloco[at.alocadosBloco[a]] in at.alocadosTurnos[a]
 }
 
 // Um aluno só está alocado a um bloco da sua freferencia
 pred Bloco_Preferencia[at: ATUM] {
-	all a: at.processados | one at.alocadosBloco[a] => at.alocadosBloco[a] in getBlocos[at,a]
+--	all a: at.processados | one at.alocadosBloco[a] => at.alocadosBloco[a] in getBlocos[at,a]
 }
 
 // Um aluno só quer blocos para os quais está inscrito a todas as disciplinas
@@ -160,9 +160,9 @@ pred So_Melhores_Bloco[at:ATUM, a:Aluno]{
 	all b : getBlocos[at,a]  | all a': (at.alocadosBloco).b | rank/lt[a',a]
 }
 
-pred No_Better_Blocos[at:ATUM, a:Aluno, b:Bloco]{	
-	(all bs: getBetterBlocos[at,a,b] | not Bloco_Tem_Vagas[at,bs]) or
-		(all ap: getWorseAlunos[at,a] | all bs: getBetterBlocos[at,a,b] | not (at.alocadosBloco[ap] in bs))
+pred No_Better_Blocos[at:ATUM, a:Aluno, b:Bloco]{
+	(no getBetterBlocos[at,a,b]) or
+	(So_Melhores_Bloco[at, a] and all bs : getBetterBlocos[at,a,b] | not Bloco_Tem_Vagas[at,bs])
 }
 
 pred Bloco_Tem_Vagas [at: ATUM, b: Bloco] {
@@ -206,7 +206,7 @@ fun getBestBloco[at:ATUM, a:Aluno] : some Bloco{
 }
 
 fun getBetterBlocos[at:ATUM, a:Aluno, b:Bloco] : set Bloco{
-	{bs : (at.preferencias[a]).(at.prefereBloco) | prefs/lt[ (at.prefereBloco).bs, (at.prefereBloco).b ] }
+	{bs : getBlocos[at,a] | prefs/lt[ ((at.prefereBloco).bs & at.preferencias[a]), ((at.prefereBloco).b & at.preferencias[a]) ] }
 }
 
 
@@ -309,8 +309,9 @@ pred Aloca_Aluno_PBloco[at,at': ATUM, a: Aluno] {
 	//ALOCAR
 	at'.alocadosTurnos[a] in at.inscritos[a].(at.turnosDisciplina)
 	all d : at.inscritos[a] | Aluno_Tem_Vaga_Disc[at,a,d] => one at'.alocadosTurnos[a] & at.turnosDisciplina[d]
-
-	Ha_Bloco_Disponivel[at,a] => (one b: getBestBloco[at,a] | at'.alocadosBloco[a] = b && at.turnosBloco[b] in at'.alocadosTurnos[a])
+	
+	Ha_Bloco_Disponivel[at,a] => (one b: getBestBloco[at,a] | at'.alocadosBloco[a] = b and at.turnosBloco[b] in at'.alocadosTurnos[a])
+													else no at'.alocadosBloco[a]
 
 	//RESTO
 	at'.inscritos = at.inscritos
@@ -320,9 +321,11 @@ pred Aloca_Aluno_PBloco[at,at': ATUM, a: Aluno] {
 	at'.turnosDisciplina = at.turnosDisciplina
 	at'.turnosBloco = at.turnosBloco
 	all t: at'.alocadosTurnos[a] | at'.vagasActuais[t] = at.vagasActuais[t].cap/prev
-	all x: Aluno - a | at'.alocadosTurnos[x] = at.alocadosTurnos[x] && at'.alocadosBloco[x] = at.alocadosBloco[x]
+	all x: Aluno - a | at'.alocadosTurnos[x] = at.alocadosTurnos[x] 
+	all x: Aluno - a | at'.alocadosBloco[x] = at.alocadosBloco[x]
 	all t: at.vagasActuais.Capacidade - at'.alocadosTurnos[a] | at'.vagasActuais[t] = at.vagasActuais[t]
 	at.vagasIniciais = at'.vagasIniciais
+
 }
 
 
@@ -351,10 +354,10 @@ run Inserir_Turno_Teste for 3 but exactly 2 ATUM
 check Aloca_Aluno_PBloco_Ok for 3 but exactly 2 ATUM, 1 Aluno
 run Aloca_Aluno_PBloco_Teste for 3 but exactly 2 ATUM, 1 Aluno
 
-run Inv_AllPreds for 3 but 1 ATUM, 1 Aluno
+run Inv_AllPreds for 3 but 1 ATUM
 
-fact Pelo_Menos_Uma_Pref{
-	#ATUM.preferencias > 1
-	#Bloco > 2
+fact Kill_Me{
+--	#ATUM.preferencias > 5
+--	#Bloco > 2
 }
 
