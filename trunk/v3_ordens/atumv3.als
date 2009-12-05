@@ -82,6 +82,11 @@ pred Aloca_Bloco_Turno[at: ATUM]{
 	all a : at.processados | one at.alocadosBloco[a] => at.turnosBloco[at.alocadosBloco[a]] in at.alocadosTurnos[a]
 }
 
+// Um aluno só está alocado a um bloco da sua freferencia
+pred Bloco_Preferencia[at: ATUM] {
+	all a: at.processados | one at.alocadosBloco[a] => at.alocadosBloco[a] in getBlocos[at,a]
+}
+
 // Um aluno só quer blocos para os quais está inscrito a todas as disciplinas
 pred So_Quer_Blocos_Inscrito[at:ATUM]{
 	all a : Aluno | at.turnosBloco[(getBlocos[at,a])] in at.turnosDisciplina[(at.inscritos[a])]
@@ -145,6 +150,7 @@ pred Inv_AllPreds[at:ATUM] {
 ---------------------------
 
 	Aloca_Bloco_Turno[at]
+	Bloco_Preferencia[at]
 	Nao_Duplica_Preferencias[at]
 	Alocado_Apenas_Em_Turnos_De_Disciplinas_Matriculado[at]
 	
@@ -369,7 +375,7 @@ run Inserir_Turno_Teste for 3 but exactly 2 ATUM
 check Aloca_Aluno_PBloco_Ok for 3 but exactly 2 ATUM, 1 Aluno
 run Aloca_Aluno_PBloco_Teste for 3 but exactly 2 ATUM, 1 Aluno
 
-run Inv_AllPreds for 3 but 1 ATUM, 2 Aluno
+run Inv_AllPreds for 3 but 1 ATUM, 1 Aluno
 
 fact Pelo_Menos_Uma_Pref{
 	#ATUM.preferencias > 1
