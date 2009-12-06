@@ -2,14 +2,7 @@ module ATUM
 
 open util/ordering[Capacidade] as cap
 open util/ordering[Preferencia] as prefs
---open util/ordering[Posicao] as rank
-
 open util/ordering[Aluno] as rank
-
--- VAMOS PRECISAR DE PREFERENCIA TOTAL SOBRE OS TURNOS
--- PACKS DE CADEIRAS - escolher horarios completos
-
--- Simplificamos um pouco a alocação com sobreposições
 
 //===============================
 // ----- Assinaturas ----------------------------
@@ -26,7 +19,7 @@ sig ATUM {
 	turnosBloco: Bloco ->some Turno,
 	vagasActuais: Turno -> one Capacidade,
 	vagasIniciais: Turno -> one Capacidade,
-	turnoInicio: Turno -> one Inicio
+	turnoSpot: Turno -> one Spot
 }
 
 sig Preferencia{}
@@ -35,7 +28,7 @@ sig Aluno {}
 sig Disciplina {}
 sig Turno {}
 sig Capacidade {}
-sig Inicio {}
+sig Spot {}
 
 //===============================
 // ----- Predicados ----------------------------
@@ -73,7 +66,7 @@ pred Nao_Ha_Blocos_Iguais[at:ATUM]{
 
 // Um bloco não pode conter turnos sobre opostos
 pred Nao_Ha_Turnos_Sobrepostos [at: ATUM]{
-	all b: Bloco | all disj t1,t2: at.turnosBloco[b] | at.turnoInicio[t1] != at.turnoInicio[t2]
+	all b: Bloco | all disj t1,t2: at.turnosBloco[b] | at.turnoSpot[t1] != at.turnoSpot[t2]
 }
 
 //===============================
@@ -121,7 +114,7 @@ pred Nao_Duplica_Preferencias[at: ATUM]{
 
 // Um aluno não pode estar alocado em turnos sobre opostos
 pred Nao_Aloca_Sobrepostos[at: ATUM] {
-	all a: at.alocadosTurno.Turno | all disj t1,t2: at.alocadosTurno[a] | at.turnoInicio[t1] != at.turnoInicio[t2]
+	all a: at.alocadosTurno.Turno | all disj t1,t2: at.alocadosTurno[a] | at.turnoSpot[t1] != at.turnoSpot[t2]
 }
 
 // Garantir que a Alocação foi bem feita
@@ -195,7 +188,7 @@ pred Turno_Disponivel[at:ATUM, a:Aluno, t:Turno]{
 pred Turno_Disp_SemSobrep[at:ATUM, a:Aluno, t:Turno]{
 	at.vagasActuais[t] !=cap/first
 	t in at.inscritos[a].(at.turnosDisciplina)
-	all s : (at.inscritos[a].(at.turnosDisciplina)-t).(at.turnoInicio) | s != at.turnoInicio[t]
+	all s : (at.inscritos[a].(at.turnosDisciplina)-t).(at.turnoSpot) | s != at.turnoSpot[t]
 }
 
 pred Ha_Bloco_Disponivel[at:ATUM, a:Aluno]{
@@ -235,15 +228,15 @@ fun getBestBloco[at:ATUM, a:Aluno] : some Bloco{
 }
 
 fun getBetterBlocos[at:ATUM, a:Aluno, b:Bloco] : set Bloco{
-	{bs : getBlocos[at,a] | prefs/lt[ ((at.prefereBloco).bs & at.preferencias[a]), ((at.prefereBloco).b & at.preferencias[a]) ] }
+	{bs : getBlocos[at,a] | prefs/lt[ ((at.prefereBloco).bs & at.preferencias[a]), (at.prefereBloco).b  ] }
 }
 
-fun getTurnosSobrep [at: ATUM, a: Aluno, i: Inicio] : set Turno {
-	{ ts: at.turnosDisciplina[at.inscritos[a]] | ts in (at.turnoInicio).i }
+fun getTurnosSobrep [at: ATUM, a: Aluno, i: Spot] : set Turno {
+	{ ts: at.turnosDisciplina[at.inscritos[a]] | ts in (at.turnoSpot).i }
 }
 
-fun getTodosInicios[at: ATUM, a: Aluno] : set Inicio {
-	( at.turnoInicio[at.turnosDisciplina[at.inscritos[a]]] )
+fun getTodosSpots[at: ATUM, a: Aluno] : set Spot {
+	( at.turnoSpot[at.turnosDisciplina[at.inscritos[a]]] )
 }
 
 
@@ -271,7 +264,7 @@ pred Inserir_Aluno[at, at' : ATUM, a:Aluno]{
 	at'.turnosBloco = at.turnosBloco
 	at'.vagasActuais = at.vagasActuais
 	at'.vagasIniciais = at.vagasIniciais
-	at'.turnoInicio = at.turnoInicio
+	at'.turnoSpot = at.turnoSpot
 }
 
 assert Inserir_Aluno_Ok {
@@ -299,7 +292,7 @@ pred Inserir_Disciplina[at, at' : ATUM, d:Disciplina]{
 	at'.turnosBloco = at.turnosBloco
 	at'.vagasActuais = at.vagasActuais
 	at'.vagasIniciais = at.vagasIniciais
-	at'.turnoInicio = at.turnoInicio
+	at'.turnoSpot = at.turnoSpot
 }
 
 assert Inserir_Disciplina_Ok {
@@ -327,7 +320,7 @@ pred Inserir_Turno[at, at' : ATUM, d:Disciplina, t:Turno, c:Capacidade]{
 	at'.preferencias = at.preferencias
 	at'.prefereBloco = at.prefereBloco
 	at'.turnosBloco = at.turnosBloco
-	at'.turnoInicio = at.turnoInicio
+	at'.turnoSpot = at.turnoSpot
 }
 
 assert Inserir_Turno_Ok {
@@ -341,7 +334,7 @@ pred Inserir_Turno_Teste[at,at': ATUM, d: Disciplina, t:Turno, c:Capacidade]{
 }
 --------------------------
 // ALOCAR ALUNO
-pred Aloca_Aluno_PBloco[at,at': ATUM, a: Aluno] {
+pred Aloca_Aluno[at,at': ATUM, a: Aluno] {
 	no at.alocadosBloco[a]
 	no at.alocadosTurno[a]
 	rank/prevs[a] = at.processados
@@ -349,8 +342,8 @@ pred Aloca_Aluno_PBloco[at,at': ATUM, a: Aluno] {
 	//ALOCAR
 	at'.alocadosTurno[a] in at.inscritos[a].(at.turnosDisciplina)
 	all d : at.inscritos[a] |Aluno_Tem_Vaga_Nao_Sobreposta[at,a,d] => one at'.alocadosTurno[a] & at.turnosDisciplina[d]
-		else  all i: getTodosInicios[at,a] | one at'.alocadosTurno[a] & getTurnosSobrep[at,a,i]   // so recebe um turno dos sobrepostos 
-	--all i: getTodosInicios[at,a] | one at'.alocadosTurno[a] & getTurnosSobrep[at,a,i]
+		else  all i: getTodosSpots[at,a] | one at'.alocadosTurno[a] & getTurnosSobrep[at,a,i]   // so recebe um turno dos sobrepostos 
+	--all i: getTodosSpots[at,a] | one at'.alocadosTurno[a] & getTurnosSobrep[at,a,i]
 	
 	Ha_Bloco_Disponivel[at,a] => (one b: getBestBloco[at,a] | at'.alocadosBloco[a] = b and at.turnosBloco[b] in at'.alocadosTurno[a])
 													else no at'.alocadosBloco[a]
@@ -367,17 +360,17 @@ pred Aloca_Aluno_PBloco[at,at': ATUM, a: Aluno] {
 	all x: Aluno - a | at'.alocadosBloco[x] = at.alocadosBloco[x]
 	all t: at.vagasActuais.Capacidade - at'.alocadosTurno[a] | at'.vagasActuais[t] = at.vagasActuais[t]
 	at'.vagasIniciais = at.vagasIniciais
-	at'.turnoInicio = at.turnoInicio
+	at'.turnoSpot = at.turnoSpot
 }
 
 
-assert Aloca_Aluno_PBloco_Ok{
-	all at,at': ATUM | all a: Aluno | Inv_AllPreds[at] && Aloca_Aluno_PBloco[at,at',a] => Inv_AllPreds[at']
+assert Aloca_Aluno_Ok{
+	all at,at': ATUM | all a: Aluno | Inv_AllPreds[at] && Aloca_Aluno[at,at',a] => Inv_AllPreds[at']
 }
 
-pred Aloca_Aluno_PBloco_Teste[at,at': ATUM, a: Aluno] {
+pred Aloca_Aluno_Teste[at,at': ATUM, a: Aluno] {
 	Inv_AllPreds[at]
-	Aloca_Aluno_PBloco[at,at',a]
+	Aloca_Aluno[at,at',a]
 }
 
 //===============================
@@ -393,8 +386,8 @@ run Inserir_Disciplina_Teste for 3 but exactly 2 ATUM
 check Inserir_Turno_Ok for 3 but exactly 2 ATUM
 run Inserir_Turno_Teste for 3 but exactly 2 ATUM
 
-check Aloca_Aluno_PBloco_Ok for 3 but exactly 2 ATUM, 1 Aluno
-run Aloca_Aluno_PBloco_Teste for 3 but exactly 2 ATUM, 1 Aluno
+check Aloca_Aluno_Ok for 3 but exactly 2 ATUM, 1 Aluno
+run Aloca_Aluno_Teste for 3 but exactly 2 ATUM, 1 Aluno
 
 run Inv_AllPreds for 3 but 1 ATUM
 

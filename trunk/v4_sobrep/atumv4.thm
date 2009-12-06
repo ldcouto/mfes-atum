@@ -18,9 +18,7 @@
    <type name="prefs/Ord"/>
    <type name="rank/Ord"/>
    <type name="seq/Int"/>
-   <set name="$Aloca_Aluno_PBloco_Ok_a" type="Aluno"/>
-   <set name="$Aloca_Aluno_PBloco_Ok_at" type="ATUM"/>
-   <set name="$Aloca_Aluno_PBloco_Ok_at&apos;" type="ATUM"/>
+   <set name="$Inv_AllPreds_at" type="ATUM"/>
 </node>
 
 <node color="Black">
@@ -48,7 +46,7 @@
 </node>
 
 <node visible="no">
-   <type name="Inicio"/>
+   <type name="Spot"/>
 </node>
 
 <node visible="no" shape="Box" color="Blue">
@@ -56,7 +54,7 @@
 </node>
 
 <edge attribute="yes">
-   <relation name="turnoInicio"> <type name="Turno"/> <type name="Inicio"/> </relation>
+   <relation name="turnoSpot"> <type name="Turno"/> <type name="Spot"/> </relation>
    <relation name="vagasIniciais"> <type name="Turno"/> <type name="Capacidade"/> </relation>
 </edge>
 
