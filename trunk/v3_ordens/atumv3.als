@@ -15,7 +15,7 @@ open util/ordering[Aluno] as rank
 
 sig ATUM {
 	inscritos: Aluno -> set Disciplina,
-	alocadosTurnos: Aluno -> set Turno,
+	alocadosTurno: Aluno -> set Turno,
 	alocadosBloco: Aluno -> lone Bloco,
 	processados: set Aluno,
 	preferencias: Aluno -> set Preferencia,
@@ -58,7 +58,7 @@ pred So_Turnos_Legitimos[at:ATUM]{
 // As vagas batem certo
 pred Vagas_Sync[at:ATUM]{
 	all t : at.turnosDisciplina[Disciplina] | cap/lte[at.vagasActuais[t],at.vagasIniciais[t]]
-	all t : at.turnosDisciplina[Disciplina] | #cap/prevs[at.vagasActuais[t]] + #(at.alocadosTurnos).t 
+	all t : at.turnosDisciplina[Disciplina] | #cap/prevs[at.vagasActuais[t]] + #(at.alocadosTurno).t 
 																			= # cap/prevs[at.vagasIniciais[t]]	
 }
 
@@ -72,7 +72,7 @@ pred Nao_Ha_Blocos_Iguais[at:ATUM]{
 
 // Se um aluno está alocado num bloco, então está alocado a todos os turnos dele
 pred Aloca_Bloco_Turno[at: ATUM]{
-	all a : (at.alocadosBloco).Bloco| one at.alocadosBloco[a] <=> at.turnosBloco[at.alocadosBloco[a]] in at.alocadosTurnos[a]
+	all a : (at.alocadosBloco).Bloco| one at.alocadosBloco[a] <=> at.turnosBloco[at.alocadosBloco[a]] in at.alocadosTurno[a]
 }
 
 // Um aluno só está alocado a um bloco da sua freferencia
@@ -87,22 +87,22 @@ pred So_Quer_Blocos_Inscrito[at:ATUM]{
 
 // Não alocar alunos que ainda não foram processados
 pred Aluno_Nao_Foi_Alocado[at:ATUM]{
-	all a: Aluno - at.processados | no at.alocadosTurnos[a] + at.alocadosBloco[a] 
+	all a: Aluno - at.processados | no at.alocadosTurno[a] + at.alocadosBloco[a] 
 }
 
 // Só se alocam alunos inscritos
 pred Alocar_Apenas_Inscritos[at:ATUM]{
-	(at.alocadosTurnos).Turno in (at.inscritos).Disciplina
+	(at.alocadosTurno).Turno in (at.inscritos).Disciplina
 }
 
 // Garantir que um Aluno apenas é alocado em Turnos de Disciplinas em que está matriculado
 pred Alocado_Apenas_Em_Turnos_De_Disciplinas_Matriculado [at: ATUM] {
-	all a: Aluno | at.alocadosTurnos[a] in at.turnosDisciplina[at.inscritos[a]]
+	all a: Aluno | at.alocadosTurno[a] in at.turnosDisciplina[at.inscritos[a]]
 }
 
 // Não se aloca ninguém a turnos inúteis
 pred Alocar_A_Turnos_Validos[at:ATUM]{
-	at.alocadosTurnos[Aluno] in at.turnosDisciplina[Disciplina]
+	at.alocadosTurno[Aluno] in at.turnosDisciplina[Disciplina]
 }
 
 // Um aluno não pode preferir o mesmo bloco duas vezes
@@ -116,10 +116,10 @@ pred Bem_Alocados[at:ATUM]{
 	all ap: at.processados | all anp: at.inscritos.Disciplina - at.processados | rank/lt[ap,anp]
 		
 	// Para todos os processados há no máximo um turno por disc
-	all a : at.processados | all d : at.inscritos[a] | lone at.alocadosTurnos[a] & at.turnosDisciplina[d] 
+	all a : at.processados | all d : at.inscritos[a] | lone at.alocadosTurno[a] & at.turnosDisciplina[d] 
 
 	// Apenas Melhores estão onde ele não está	
-	all a : at.processados | all d: at.inscritos[a] | no at.alocadosTurnos[a] & at.turnosDisciplina[d]  => So_Melhores_Disc[at,a,d]
+	all a : at.processados | all d: at.inscritos[a] | no at.alocadosTurno[a] & at.turnosDisciplina[d]  => So_Melhores_Disc[at,a,d]
 	all a: at.processados  | no at.alocadosBloco[a] => So_Melhores_Bloco[at,a]
 	
 	// Os Alunos Estão no melhor bloco possível
@@ -153,7 +153,7 @@ pred Inv_AllPreds[at:ATUM] {
 // ----- Predicados Auxiliares  -----------------
 
 pred So_Melhores_Disc[at:ATUM, a:Aluno, d:Disciplina]{
-	all a' : (at.alocadosTurnos).(at.turnosDisciplina[d]) | rank/lt[a',a]
+	all a' : (at.alocadosTurno).(at.turnosDisciplina[d]) | rank/lt[a',a]
 }
 
 pred So_Melhores_Bloco[at:ATUM, a:Aluno]{
@@ -217,7 +217,7 @@ fun getBetterBlocos[at:ATUM, a:Aluno, b:Bloco] : set Bloco{
 // INSERIR ALUNO
 pred Inserir_Aluno[at, at' : ATUM, a:Aluno]{
 	a not in at.inscritos.Disciplina
-	a not in at.alocadosTurnos.Turno
+	a not in at.alocadosTurno.Turno
 	a not in at.processados
 	a not in at.preferencias.Preferencia
 	rank/last = a
@@ -225,7 +225,7 @@ pred Inserir_Aluno[at, at' : ATUM, a:Aluno]{
 	some insc : ( a->some Disciplina) | at'.inscritos = at.inscritos + insc
 	a in at'.inscritos.Disciplina	
 
-	at'.alocadosTurnos = at.alocadosTurnos
+	at'.alocadosTurno = at.alocadosTurno
 	at'.alocadosBloco = at.alocadosBloco
 	at'.processados = at.processados
 	at'.preferencias = at.preferencias
@@ -253,7 +253,7 @@ pred Inserir_Disciplina[at, at' : ATUM, d:Disciplina]{
 	some t : Turno-at.turnosDisciplina[Disciplina] | at.vagasIniciais = at.vagasActuais && at'.turnosDisciplina = at.turnosDisciplina + d->t
 
 	at'.inscritos = at.inscritos
-	at'.alocadosTurnos = at.alocadosTurnos
+	at'.alocadosTurno = at.alocadosTurno
 	at'.alocadosBloco = at.alocadosBloco
 	at'.processados = at.processados
 	at'.preferencias = at.preferencias
@@ -282,7 +282,7 @@ pred Inserir_Turno[at, at' : ATUM, d:Disciplina, t:Turno, c:Capacidade]{
 	at'.turnosDisciplina=at.turnosDisciplina+(d->t)
 
 	at'.inscritos = at.inscritos
-	at'.alocadosTurnos = at.alocadosTurnos
+	at'.alocadosTurno = at.alocadosTurno
 	at'.alocadosBloco = at.alocadosBloco
 	at'.processados = at.processados
 	at'.preferencias = at.preferencias
@@ -303,14 +303,14 @@ pred Inserir_Turno_Teste[at,at': ATUM, d: Disciplina, t:Turno, c:Capacidade]{
 // ALOCAR ALUNO
 pred Aloca_Aluno_PBloco[at,at': ATUM, a: Aluno] {
 	no at.alocadosBloco[a]
-	no at.alocadosTurnos[a]
+	no at.alocadosTurno[a]
 	rank/prevs[a] = at.processados
 	
 	//ALOCAR
-	at'.alocadosTurnos[a] in at.inscritos[a].(at.turnosDisciplina)
-	all d : at.inscritos[a] | Aluno_Tem_Vaga_Disc[at,a,d] => one at'.alocadosTurnos[a] & at.turnosDisciplina[d]
+	at'.alocadosTurno[a] in at.inscritos[a].(at.turnosDisciplina)
+	all d : at.inscritos[a] | Aluno_Tem_Vaga_Disc[at,a,d] => one at'.alocadosTurno[a] & at.turnosDisciplina[d]
 	
-	Ha_Bloco_Disponivel[at,a] => (one b: getBestBloco[at,a] | at'.alocadosBloco[a] = b and at.turnosBloco[b] in at'.alocadosTurnos[a])
+	Ha_Bloco_Disponivel[at,a] => (one b: getBestBloco[at,a] | at'.alocadosBloco[a] = b and at.turnosBloco[b] in at'.alocadosTurno[a])
 													else no at'.alocadosBloco[a]
 
 	//RESTO
@@ -320,10 +320,10 @@ pred Aloca_Aluno_PBloco[at,at': ATUM, a: Aluno] {
 	at'.prefereBloco = at.prefereBloco
 	at'.turnosDisciplina = at.turnosDisciplina
 	at'.turnosBloco = at.turnosBloco
-	all t: at'.alocadosTurnos[a] | at'.vagasActuais[t] = at.vagasActuais[t].cap/prev
-	all x: Aluno - a | at'.alocadosTurnos[x] = at.alocadosTurnos[x] 
+	all t: at'.alocadosTurno[a] | at'.vagasActuais[t] = at.vagasActuais[t].cap/prev
+	all x: Aluno - a | at'.alocadosTurno[x] = at.alocadosTurno[x] 
 	all x: Aluno - a | at'.alocadosBloco[x] = at.alocadosBloco[x]
-	all t: at.vagasActuais.Capacidade - at'.alocadosTurnos[a] | at'.vagasActuais[t] = at.vagasActuais[t]
+	all t: at.vagasActuais.Capacidade - at'.alocadosTurno[a] | at'.vagasActuais[t] = at.vagasActuais[t]
 	at.vagasIniciais = at'.vagasIniciais
 
 }
