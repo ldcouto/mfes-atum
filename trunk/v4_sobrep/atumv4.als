@@ -77,11 +77,6 @@ pred Aloca_Bloco_Turno[at: ATUM]{
 	all a : (at.alocadosBloco).Bloco| one at.alocadosBloco[a] <=> at.turnosBloco[at.alocadosBloco[a]] in at.alocadosTurno[a]
 }
 
-// Um aluno só está alocado a um bloco da sua freferencia
-pred Bloco_Preferencia[at: ATUM] {
---	all a: at.processados | one at.alocadosBloco[a] => at.alocadosBloco[a] in getBlocos[at,a]
-}
-
 // Um aluno só quer blocos para os quais está inscrito a todas as disciplinas
 pred So_Quer_Blocos_Inscrito[at:ATUM]{
 	all a : Aluno | at.turnosBloco[(getBlocos[at,a])] in at.turnosDisciplina[(at.inscritos[a])]
@@ -134,31 +129,24 @@ pred Bem_Alocados[at:ATUM]{
 
 }
 
-//Todos os Invariantes
 pred Inv_AllPreds[at:ATUM] {
 	Turno_Pertence_Uma_Disciplina [at]
 	Um_Turno_Por_Disciplina[at]	
 	So_Turnos_Legitimos[at]
 	Vagas_Sync[at]	
 	Nao_Ha_Blocos_Iguais[at]
+	Nao_Ha_Turnos_Sobrepostos[at]
 
+	Aloca_Bloco_Turno[at]
 	So_Quer_Blocos_Inscrito[at]
 	Aluno_Nao_Foi_Alocado[at]
 	Alocar_Apenas_Inscritos[at]
-	Alocar_A_Turnos_Validos[at]
-	Bem_Alocados[at]
-
-//Recentes (vindas da versão 3)
-	Aloca_Bloco_Turno[at]
-	Bloco_Preferencia[at]
-	Nao_Duplica_Preferencias[at]
 	Alocado_Apenas_Em_Turnos_De_Disciplinas_Matriculado[at]
-
-// Mais recentes
-	Nao_Ha_Turnos_Sobrepostos[at]
+	Alocar_A_Turnos_Validos[at]	
+	Nao_Duplica_Preferencias[at]
 	Nao_Aloca_Sobrepostos[at]
+	Bem_Alocados[at]
 }
-
 
 //===============================
 // ----- Predicados Auxiliares  -----------------
@@ -180,11 +168,6 @@ pred Bloco_Tem_Vagas [at: ATUM, b: Bloco] {
 	all t: at.turnosBloco[b] | at.vagasActuais[t] != cap/first
 }
 
-pred Turno_Disponivel[at:ATUM, a:Aluno, t:Turno]{
-	at.vagasActuais[t] !=cap/first
-	t in at.inscritos[a].(at.turnosDisciplina)
-}
-
 pred Turno_Disp_SemSobrep[at:ATUM, a:Aluno, t:Turno]{
 	at.vagasActuais[t] !=cap/first
 	t in at.inscritos[a].(at.turnosDisciplina)
@@ -195,10 +178,6 @@ pred Ha_Bloco_Disponivel[at:ATUM, a:Aluno]{
 	some b: getBlocos[at,a] | Bloco_Tem_Vagas[at,b]
 }
 
-pred Aluno_Tem_Vaga_Disc[at:ATUM, a:Aluno, d:Disciplina]{
-	some t : at.turnosDisciplina[d] | Turno_Disponivel[at,a,t]
-}
-
 pred Aluno_Tem_Vaga_Nao_Sobreposta[at:ATUM, a:Aluno, d:Disciplina]{
 	some t : at.turnosDisciplina[d] | Turno_Disp_SemSobrep[at,a,t]
 }
@@ -206,14 +185,6 @@ pred Aluno_Tem_Vaga_Nao_Sobreposta[at:ATUM, a:Aluno, d:Disciplina]{
 
 //===============================
 // ----- Funções Auxiliares  -----------------
-
-fun getBetterAlunos[at: ATUM, a:Aluno] : set Aluno{
-	{als : (at.inscritos).Disciplina | rank/lt[als,a] }
-}
-
-fun getWorseAlunos[at:ATUM, a:Aluno] :set Aluno{
-	{als : (at.inscritos).Disciplina | rank/gt[als,a] }	
-}
 
 fun getBlocos[at: ATUM, a:Aluno] : set Bloco{
 	at.preferencias[a].(at.prefereBloco)
@@ -305,7 +276,6 @@ pred Inserir_Disciplina_Teste[at,at': ATUM, d: Disciplina]{
 
 // ADICIONAR TURNO
 pred Inserir_Turno[at, at' : ATUM, d:Disciplina, t:Turno, c:Capacidade]{
-	--no at.inscritos
 	t not in at.turnosDisciplina[Disciplina]
 	t not in at.turnosBloco[Bloco]
 
@@ -332,6 +302,7 @@ pred Inserir_Turno_Teste[at,at': ATUM, d: Disciplina, t:Turno, c:Capacidade]{
 	Inv_AllPreds[at]
 	Inserir_Turno[at,at',d,t,c]
 }
+
 --------------------------
 // ALOCAR ALUNO
 pred Aloca_Aluno[at,at': ATUM, a: Aluno] {
@@ -342,8 +313,7 @@ pred Aloca_Aluno[at,at': ATUM, a: Aluno] {
 	//ALOCAR
 	at'.alocadosTurno[a] in at.inscritos[a].(at.turnosDisciplina)
 	all d : at.inscritos[a] |Aluno_Tem_Vaga_Nao_Sobreposta[at,a,d] => one at'.alocadosTurno[a] & at.turnosDisciplina[d]
-		else  all i: getTodosSpots[at,a] | one at'.alocadosTurno[a] & getTurnosSobrep[at,a,i]   // so recebe um turno dos sobrepostos 
-	--all i: getTodosSpots[at,a] | one at'.alocadosTurno[a] & getTurnosSobrep[at,a,i]
+		else  all i: getTodosSpots[at,a] | one at'.alocadosTurno[a] & getTurnosSobrep[at,a,i] 
 	
 	Ha_Bloco_Disponivel[at,a] => (one b: getBestBloco[at,a] | at'.alocadosBloco[a] = b and at.turnosBloco[b] in at'.alocadosTurno[a])
 													else no at'.alocadosBloco[a]
@@ -391,8 +361,4 @@ run Aloca_Aluno_Teste for 3 but exactly 2 ATUM, 1 Aluno
 
 run Inv_AllPreds for 3 but 1 ATUM
 
-fact Kill_Me{
---	#ATUM.preferencias > 5
---	#Bloco > 2
-}
 
