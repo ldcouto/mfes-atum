@@ -417,16 +417,15 @@ pred Inserir_Bloco_Teste[at,at': ATUM, b: Bloco, t: Turno]{
 
 // REMOVER BLOCO
 pred Remover_Bloco[at,at': ATUM, b: Bloco]{
-	at'.turnosBloco = at.turnosBloco - (b -> at.turnosBloco[b])
-	at'.alocadosBloco = at.alocadosBloco - (at.alocadosBloco.b -> b)
-	at'.prefereBloco = at.prefereBloco - (at.prefereBloco.b -> b)
-	
+	b in at.turnosBloco.Turno + Preferencia.(at.prefereBloco) + Aluno.(at.alocadosBloco)
+	b not in at'.turnosBloco.Turno + Preferencia.(at'.prefereBloco) + Aluno.(at'.alocadosBloco)
+
+
+
 	at'.inscritos = at.inscritos
 	at'.alocadosTurno = at.alocadosTurno
 	at'.processados = at.processados
-	at'.preferencias = at.preferencias
 	at'.turnosDisciplina = at.turnosDisciplina
-	all b': Bloco - b | at'.turnosBloco[b'] = at.turnosBloco[b']
 	at'.vagasActuais = at.vagasActuais
 	at'.vagasIniciais = at.vagasIniciais
 	at'.turnoSpot = at.turnoSpot
