@@ -124,7 +124,6 @@ pred Bem_Alocados[at:ATUM]{
 	
 	// Os Alunos Estão no melhor bloco possível
 	all a: (at.processados & (at.alocadosBloco).Bloco) | No_Better_Blocos[at,a,at.alocadosBloco[a]]
-
 }
 
 //Todos os Invariantes
