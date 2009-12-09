@@ -262,11 +262,10 @@ pred Aloca_Com_Troca_Teste [at,at': ATUM, a: Aluno] {
 }
 
 pred Pos_Alocado[at:ATUM]{
-	--at.inscritos.Disciplina = at.processados
 	Aluno = at.processados
 }
 
-pred ATUMs_Iguais[at,at': ATUM]{
+pred ATUMs_Comp[at,at': ATUM]{
 	at.inscritos = at'.inscritos
 	at.turnos = at'.turnos
 	at.preferencias = at'.preferencias
@@ -276,7 +275,7 @@ pred ATUMs_Iguais[at,at': ATUM]{
 
 assert Melhor_Aloc{
  no at:ATUM | all at':ATUM-at |
-	Inv_AllPreds[at'] and Inv_AllPreds[at] and Pos_Alocado[at] and Pos_Alocado[at'] and ATUMs_Iguais[at,at']
+	Inv_AllPreds[at'] and Inv_AllPreds[at] and Pos_Alocado[at] and Pos_Alocado[at'] and ATUMs_Comp[at,at']
 		and #at.alocados > #at'.alocados
 }
 
@@ -303,6 +302,6 @@ run Aloca_Com_Troca_Teste for 4 but exactly 3 ATUM, exactly 2 Aluno
 check ACT2_OK  for 4 but exactly 3 ATUM, exactly 2 Aluno, 3 Capacidade, 1 Disciplina, 2 Turno
 run ACT2_Teste  for 4 but exactly 3 ATUM, exactly 2 Aluno, 3 Capacidade, 1 Disciplina, 2 Turno
 
-check Melhor_Aloc for 3 but exactly 8 ATUM, exactly 2 Aluno,  exactly 2 Disciplina, exactly 2 Turno, 5 int
+check Melhor_Aloc for 3 but exactly 5 ATUM, exactly 2 Aluno,  exactly 2 Disciplina, exactly 2 Turno, 5 int
 
 run Inv_AllPreds for 3 but exactly 1 ATUM,  exactly 5 Aluno, exactly 3 Capacidade
