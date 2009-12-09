@@ -16,7 +16,7 @@ sig ATUM {
 	preferencias: Aluno -> set Preferencia,
 	prefereBloco: Preferencia -> one Bloco,
 	turnosDisciplina: Disciplina -> set Turno,
-	turnosBloco: Bloco ->some Turno,
+	turnosBloco: Bloco ->set Turno,
 	vagasActuais: Turno -> one Capacidade,
 	vagasIniciais: Turno -> one Capacidade,
 	turnoSpot: Turno -> one Spot
@@ -386,10 +386,12 @@ pred Remover_Turno_Teste[at,at': ATUM, t:Turno]{
 }
 
 // INSERIR BLOCO
-pred Inserir_Bloco[at,at': ATUM, b: Bloco, t:Turno]{
+pred Inserir_Bloco[at,at': ATUM, b: Bloco, t: Turno]{
 	no at.turnosBloco[b]
 	no at.prefereBloco.b
 	no at.alocadosBloco.b
+	t in at.turnosDisciplina[Disciplina]
+	all x: Bloco - b | t not = at.turnosBloco[x]
 
 	at'.turnosBloco = at.turnosBloco + (b -> t)
 	
@@ -417,10 +419,20 @@ pred Inserir_Bloco_Teste[at,at': ATUM, b: Bloco, t: Turno]{
 
 // REMOVER BLOCO
 pred Remover_Bloco[at,at': ATUM, b: Bloco]{
-	b in at.turnosBloco.Turno + Preferencia.(at.prefereBloco) + Aluno.(at.alocadosBloco)
-	b not in at'.turnosBloco.Turno + Preferencia.(at'.prefereBloco) + Aluno.(at'.alocadosBloco)
+	b in at.turnosBloco.Turno
+	no at.processados
+	no at.alocadosBloco
 
+	at'.turnosBloco = at.turnosBloco - (b->Turno)
+	at'.prefereBloco = at.prefereBloco - (Preferencia->b)
+	at'.alocadosBloco = at.alocadosBloco - (Aluno->b)
 
+	all x :(Bloco-b) | at'.turnosBloco[x] = at.turnosBloco[x]
+						and at'.alocadosBloco.x = at.alocadosBloco.x
+						and at'.prefereBloco.x = at.prefereBloco.x 
+
+	all p : at.prefereBloco.b | no at'.preferencias.p
+	all p : Preferencia - at.prefereBloco.b | at'.preferencias.p = at.preferencias.p
 
 	at'.inscritos = at.inscritos
 	at'.alocadosTurno = at.alocadosTurno
@@ -430,6 +442,7 @@ pred Remover_Bloco[at,at': ATUM, b: Bloco]{
 	at'.vagasIniciais = at.vagasIniciais
 	at'.turnoSpot = at.turnoSpot
 }
+
 
 assert Remover_Bloco_Ok{
 	all at,at':ATUM | all b: Bloco | 
