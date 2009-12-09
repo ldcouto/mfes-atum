@@ -79,7 +79,7 @@ pred Aloca_Bloco_Turno[at: ATUM]{
 
 // Um aluno só quer blocos para os quais está inscrito a todas as disciplinas
 pred So_Quer_Blocos_Inscrito[at:ATUM]{
-	all a : Aluno | at.turnosBloco[(getBlocos[at,a])] in at.turnosDisciplina[(at.inscritos[a])]
+	all a : at.inscritos.Disciplina | at.turnosBloco[(getBlocos[at,a])] in at.turnosDisciplina[(at.inscritos[a])]
 }
 
 // Não alocar alunos que ainda não foram processados
@@ -94,7 +94,7 @@ pred Alocar_Apenas_Inscritos[at:ATUM]{
 
 // Garantir que um Aluno apenas é alocado em Turnos de Disciplinas em que está matriculado
 pred Alocado_Apenas_Em_Turnos_De_Disciplinas_Matriculado [at: ATUM] {
-	all a: Aluno | at.alocadosTurno[a] in at.turnosDisciplina[at.inscritos[a]]
+	all a: at.inscritos.Disciplina | at.alocadosTurno[a] in at.turnosDisciplina[at.inscritos[a]]
 }
 
 // Não se aloca ninguém a turnos inúteis
@@ -246,6 +246,34 @@ pred Inserir_Aluno_Teste[at,at': ATUM, a: Aluno]{
 	Inserir_Aluno[at,at',a]
 }
 
+// REMOVER ALUNO
+pred Remover_Aluno[at, at' : ATUM, a:Aluno]{
+	a in at.inscritos.Disciplina
+
+	at'.inscritos = at.inscritos - (a -> at.inscritos[a])
+	at'.alocadosTurno = at.alocadosTurno - (a -> at.alocadosTurno[a])
+
+	all t: at.alocadosTurno[a] | at'.vagasActuais[t] = at'.vagasActuais[t].cap/next
+	all t': at.vagasActuais.Capacidade - at.alocadosTurno[a] | at'.vagasActuais[t'] = at.vagasActuais[t']
+
+	at'.alocadosBloco = at.alocadosBloco - (a -> at.alocadosBloco[a])
+	at'.processados = at.processados - a
+	at'.preferencias = at.preferencias - (a -> at.preferencias[a])
+	at'.prefereBloco = at.prefereBloco
+	at'.turnosDisciplina = at.turnosDisciplina
+	at'.turnosBloco = at.turnosBloco
+	at'.vagasIniciais = at.vagasIniciais
+	at'.turnoSpot = at.turnoSpot
+}
+
+assert Remover_Aluno_Ok {
+	all at,at': ATUM | all a: Aluno | Inv_AllPreds[at] && Remover_Aluno[at,at',a] => Inv_AllPreds[at']
+}
+pred Remover_Aluno_Teste[at,at': ATUM, a: Aluno]{
+	Inv_AllPreds[at]
+	Remover_Aluno[at,at',a]
+}
+
 // INSERIR DISCIPLINA
 pred Inserir_Disciplina[at, at' : ATUM, d:Disciplina]{
 	no at.inscritos.d
@@ -272,6 +300,31 @@ assert Inserir_Disciplina_Ok {
 pred Inserir_Disciplina_Teste[at,at': ATUM, d: Disciplina]{
 	Inv_AllPreds[at]
 	Inserir_Disciplina[at,at',d]
+}
+
+// REMOVER DISCIPLINA
+pred Remover_Disciplina[at, at' : ATUM, d:Disciplina]{
+	no at.turnosDisciplina[d]
+
+	at'.inscritos = at.inscritos - (at.inscritos.d -> d)
+	at'.turnosDisciplina = at.turnosDisciplina - (d -> at.turnosDisciplina[d])
+	at'.alocadosTurno = at.alocadosTurno - (Aluno -> at.turnosDisciplina[d])
+	at'.alocadosBloco = at.alocadosBloco
+	at'.processados = at.processados
+	at'.preferencias = at.preferencias
+	at'.prefereBloco = at.prefereBloco
+	at'.turnosBloco = at.turnosBloco - (Bloco -> at.turnosDisciplina[d])
+	at'.vagasActuais = at.vagasActuais
+	at'.vagasIniciais = at.vagasIniciais
+	at'.turnoSpot = at.turnoSpot
+}
+
+assert Remover_Disciplina_Ok {
+	all at,at': ATUM | all d: Disciplina | Inv_AllPreds[at] && Remover_Disciplina[at,at',d] => Inv_AllPreds[at']
+}
+pred Remover_Disciplina_Teste[at,at': ATUM, d: Disciplina]{
+	Inv_AllPreds[at]
+	Remover_Disciplina[at,at',d]
 }
 
 // ADICIONAR TURNO
@@ -301,6 +354,92 @@ assert Inserir_Turno_Ok {
 pred Inserir_Turno_Teste[at,at': ATUM, d: Disciplina, t:Turno, c:Capacidade]{
 	Inv_AllPreds[at]
 	Inserir_Turno[at,at',d,t,c]
+}
+
+// REMOVER TURNO
+pred Remover_Turno[at, at' : ATUM, t:Turno]{
+	no at.alocadosTurno.t
+	no at.turnosBloco.t
+	
+	at'.alocadosTurno = at.alocadosTurno - (at.alocadosTurno.t -> t)
+	at'.turnosDisciplina = at.turnosDisciplina - (at.turnosDisciplina.t -> t)
+	at'.turnosBloco = at.turnosBloco - (at.turnosBloco.t -> t)
+
+	at'.inscritos = at.inscritos
+	at'.alocadosBloco = at.alocadosBloco
+	at'.processados = at.processados
+	at'.preferencias = at.preferencias
+	at'.prefereBloco = at.prefereBloco
+	at'.vagasActuais = at.vagasActuais
+	at'.vagasIniciais = at.vagasIniciais
+	at'.turnoSpot = at.turnoSpot
+}
+
+assert Remover_Turno_Ok {
+	all at,at': ATUM | all t:Turno  |
+		Inv_AllPreds[at] && Remover_Turno[at,at',t] => Inv_AllPreds[at']
+}
+
+pred Remover_Turno_Teste[at,at': ATUM, t:Turno]{
+	Inv_AllPreds[at]
+	Remover_Turno[at,at',t]
+}
+
+// INSERIR BLOCO
+pred Inserir_Bloco[at,at': ATUM, b: Bloco, t:Turno]{
+	no at.turnosBloco[b]
+	no at.prefereBloco.b
+	no at.alocadosBloco.b
+
+	at'.turnosBloco = at.turnosBloco + (b -> t)
+	
+	at'.inscritos = at.inscritos
+	at'.alocadosTurno = at.alocadosTurno
+	at'.alocadosBloco = at.alocadosBloco
+	at'.processados = at.processados
+	at'.preferencias = at.preferencias
+	at'.prefereBloco = at.prefereBloco
+	at'.turnosDisciplina = at.turnosDisciplina
+	at'.vagasActuais = at.vagasActuais
+	at'.vagasIniciais = at.vagasIniciais
+	at'.turnoSpot = at.turnoSpot
+}
+
+assert Inserir_Bloco_Ok{
+	all at,at':ATUM | all b: Bloco | all t: Turno | 
+		Inv_AllPreds[at] && Inserir_Bloco[at,at',b,t] => Inv_AllPreds[at']
+}
+
+pred Inserir_Bloco_Teste[at,at': ATUM, b: Bloco, t: Turno]{
+	Inv_AllPreds[at]
+	Inserir_Bloco[at,at',b,t]
+}
+
+// REMOVER BLOCO
+pred Remover_Bloco[at,at': ATUM, b: Bloco]{
+	at'.turnosBloco = at.turnosBloco - (b -> at.turnosBloco[b])
+	at'.alocadosBloco = at.alocadosBloco - (at.alocadosBloco.b -> b)
+	at'.prefereBloco = at.prefereBloco - (at.prefereBloco.b -> b)
+	
+	at'.inscritos = at.inscritos
+	at'.alocadosTurno = at.alocadosTurno
+	at'.processados = at.processados
+	at'.preferencias = at.preferencias
+	at'.turnosDisciplina = at.turnosDisciplina
+	all b': Bloco - b | at'.turnosBloco[b'] = at.turnosBloco[b']
+	at'.vagasActuais = at.vagasActuais
+	at'.vagasIniciais = at.vagasIniciais
+	at'.turnoSpot = at.turnoSpot
+}
+
+assert Remover_Bloco_Ok{
+	all at,at':ATUM | all b: Bloco | 
+		Inv_AllPreds[at] && Remover_Bloco[at,at',b] => Inv_AllPreds[at']
+}
+
+pred Remover_Bloco_Teste[at,at': ATUM, b: Bloco]{
+	Inv_AllPreds[at]
+	Remover_Bloco[at,at',b]
 }
 
 --------------------------
@@ -333,7 +472,6 @@ pred Aloca_Aluno[at,at': ATUM, a: Aluno] {
 	at'.turnoSpot = at.turnoSpot
 }
 
-
 assert Aloca_Aluno_Ok{
 	all at,at': ATUM | all a: Aluno | Inv_AllPreds[at] && Aloca_Aluno[at,at',a] => Inv_AllPreds[at']
 }
@@ -350,11 +488,26 @@ pred Aloca_Aluno_Teste[at,at': ATUM, a: Aluno] {
 check Inserir_Aluno_Ok for 3 but exactly 2 ATUM
 run Inserir_Aluno_Teste for 3 but exactly 2 ATUM
 
+check Remover_Aluno_Ok for 3 but exactly 2 ATUM
+run Remover_Aluno_Teste for 3 but exactly 2 ATUM
+
 check Inserir_Disciplina_Ok for 3 but exactly 2 ATUM
 run Inserir_Disciplina_Teste for 3 but exactly 2 ATUM
 
+check Remover_Disciplina_Ok for 3 but exactly 2 ATUM
+run Remover_Disciplina_Teste for 3 but exactly 2 ATUM
+
 check Inserir_Turno_Ok for 3 but exactly 2 ATUM
 run Inserir_Turno_Teste for 3 but exactly 2 ATUM
+
+check Remover_Turno_Ok for 3 but exactly 2 ATUM
+run Remover_Turno_Teste for 3 but exactly 2 ATUM
+
+check Inserir_Bloco_Ok for 3 but exactly 2 ATUM
+run Inserir_Bloco_Teste for 3 but exactly 2 ATUM
+
+check Remover_Bloco_Ok for 3 but exactly 2 ATUM
+run Remover_Bloco_Teste for 3 but exactly 2 ATUM
 
 check Aloca_Aluno_Ok for 3 but exactly 2 ATUM, 1 Aluno
 run Aloca_Aluno_Teste for 3 but exactly 2 ATUM, 1 Aluno
