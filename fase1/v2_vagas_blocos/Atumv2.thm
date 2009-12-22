@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<alloy>
+
+<view nodetheme="Martha">
+
+<projection> <type name="ATUM"/> </projection>
+
+<defaultnode/>
+
+<defaultedge/>
+
+<node>
+   <type name="ATUM"/>
+   <type name="Int"/>
+   <type name="String"/>
+   <type name="univ"/>
+   <type name="seq/Int"/>
+   <set name="$Inv_AllPreds_at" type="ATUM"/>
+</node>
+
+<node shape="Ellipse" color="Gray">
+   <type name="Turno"/>
+</node>
+
+<node shape="Ellipse" color="Yellow">
+   <type name="Aluno"/>
+</node>
+
+<node shape="Parallelogram" color="Green">
+   <type name="Bloco"/>
+</node>
+
+<node shape="Parallelogram" color="Red">
+   <type name="Disciplina"/>
+</node>
+
+<node style="Bold">
+   <set name="processados" type="Aluno"/>
+</node>
+
+<node visible="no">
+   <type name="ordering/Ord"/>
+</node>
+
+<node visible="no" shape="Box" color="Blue">
+   <type name="Capacidade"/>
+</node>
+
+<edge attribute="yes">
+   <relation name="vagas"> <type name="Turno"/> <type name="Capacidade"/> </relation>
+</edge>
+
+<edge color="Gray" constraint="no">
+   <relation name="Next"> <type name="ordering/Ord"/> <type name="Capacidade"/> <type name="Capacidade"/> </relation>
+</edge>
+
+</view>
+
+</alloy>

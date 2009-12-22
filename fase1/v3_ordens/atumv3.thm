@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<alloy>
+
+<view nodetheme="Martha">
+
+<projection> <type name="ATUM"/> </projection>
+
+<defaultnode/>
+
+<defaultedge/>
+
+<node>
+   <type name="ATUM"/>
+   <type name="Int"/>
+   <type name="String"/>
+   <type name="univ"/>
+   <type name="cap/Ord"/>
+   <type name="prefs/Ord"/>
+   <type name="rank/Ord"/>
+   <type name="seq/Int"/>
+   <set name="$Aloca_Aluno_PBloco_Ok_a" type="Aluno"/>
+   <set name="$Aloca_Aluno_PBloco_Ok_at" type="ATUM"/>
+   <set name="$Aloca_Aluno_PBloco_Ok_at&apos;" type="ATUM"/>
+</node>
+
+<node color="Black">
+   <type name="Preferencia"/>
+</node>
+
+<node shape="Ellipse" color="Blue">
+   <type name="Turno"/>
+</node>
+
+<node shape="Ellipse" color="Yellow">
+   <type name="Aluno"/>
+</node>
+
+<node shape="Parallelogram" color="Green">
+   <type name="Bloco"/>
+</node>
+
+<node shape="Parallelogram" color="Red">
+   <type name="Disciplina"/>
+</node>
+
+<node style="Bold">
+   <set name="processados" type="Aluno"/>
+</node>
+
+<node visible="no" shape="Box" color="Blue">
+   <type name="Capacidade"/>
+</node>
+
+<edge attribute="yes">
+   <relation name="vagasIniciais"> <type name="Turno"/> <type name="Capacidade"/> </relation>
+</edge>
+
+<edge visible="no" attribute="yes">
+   <relation name="alocadosBloco"> <type name="Aluno"/> <type name="Bloco"/> </relation>
+   <relation name="vagasActuais"> <type name="Turno"/> <type name="Capacidade"/> </relation>
+</edge>
+
+<edge visible="yes">
+   <relation name="preferencias"> <type name="Aluno"/> <type name="Preferencia"/> </relation>
+</edge>
+
+</view>
+
+</alloy>
