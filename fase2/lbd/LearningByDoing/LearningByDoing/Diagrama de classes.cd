@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="LearningByDoing.Bloco" Collapsed="true">
+    <Position X="3.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAEAAAAAABCAAAAAAAAAAAAAAAAQAAAAAA=</HashCode>
+      <FileName>Bloco.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="TurnosBloco" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="LearningByDoing.Turno">
+    <Position X="6.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAUAAAAAAAAgAQAAAAAA=</HashCode>
+      <FileName>Turno.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LearningByDoing.Disciplina" Collapsed="true">
+    <Position X="10" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAACAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAA=</HashCode>
+      <FileName>Disciplina.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="TurnosDisciplina" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="LearningByDoing.Aluno" Collapsed="true">
+    <Position X="6.75" Y="0.5" Width="1.5" />
+    <AssociationLine Name="PreferenciasBlocos" Type="LearningByDoing.Bloco">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-1.325" Y="0.141" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAYAAAAAAAgAIABIAAAAAAAAAEBAAAAAAQAAAAAA=</HashCode>
+      <FileName>Aluno.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="AlocadoBloco" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="AlocadoTurno" />
+      <Property Name="Inscrito" />
+      <Property Name="PreferenciasBlocos" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Font Name="Tahoma" Size="8.25" />
+</ClassDiagram>
