@@ -4,11 +4,14 @@ using System.Diagnostics.Contracts;
 
 namespace LearningByDoing
 {
+
+    // NÂO MEXER MAIS NESTA CLASSE! Foi passada para o projecto principal 
+
     /// <summary>   
     /// Classe Bloco, conjunto de turnos aos quais os alunos têm um certo grau de preferência. 
     /// </summary>
     public class Bloco : IEquatable<Bloco>
-    {
+    
         #region Propriedades
         /// <summary>
         /// O Identificador de um bloco, o nome do bloco.
