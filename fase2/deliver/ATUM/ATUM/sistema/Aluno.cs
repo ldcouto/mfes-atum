@@ -4,15 +4,11 @@ using System.Diagnostics.Contracts;
 
 namespace ATUM.sistema
 {
-
-    // NÂO MEXER MAIS NESTA CLASSE! Foi passada para o projecto principal 
-
-
     /// <summary>
     /// Classe para representar de forma simples um Aluno, individuo que quer ser alocado.
     /// </summary>
     public class Aluno
-    
+    {
         #region Propriedades
 
         /// <summary>
@@ -28,7 +24,7 @@ namespace ATUM.sistema
         /// <summary>
         /// Lista de Turnos a que o Aluno está alocado.
         /// </summary>
-        public IList<Turno> AlocadoTurno { get; private set; }
+        public IList<Turno> AlocadoTurno { get; set; }
 
         /// <summary>
         /// Bloco ao qual o aluno foi alocado (caso haja um).
