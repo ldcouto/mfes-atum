@@ -4,11 +4,13 @@ using System.Diagnostics.Contracts;
 
 namespace LearningByDoing
 {
+    // NÂO MEXER MAIS NESTA CLASSE! Foi passada para o projecto principal 
+
     /// <summary>
     /// Classe Turno, as aulas que compõem uma Disciplina.
     /// </summary>
     public class Turno : IEquatable<Turno>
-    {
+    
         #region Propriedades
         /// <summary>
         /// O identificador do turno, o nome ou o número do turno.
