@@ -4,11 +4,13 @@ using System.Diagnostics.Contracts;
 
 namespace LearningByDoing
 {
+    // NÂO MEXER MAIS NESTA CLASSE! Foi passada para o projecto principal 
+
     /// <summary>
     /// Classe Disciplina, onde os alunos se encontram inscritos.
     /// </summary>
     public class Disciplina : IEquatable<Disciplina>
-    {
+    
         #region Propriedades
         /// <summary>
         /// Nome da Disciplina.
