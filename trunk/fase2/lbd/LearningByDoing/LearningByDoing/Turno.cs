@@ -1,5 +1,6 @@
 ﻿using System;
 using LearningByDoing;
+using System.Diagnostics.Contracts;
 
 namespace LearningByDoing
 {
@@ -39,7 +40,7 @@ namespace LearningByDoing
         /// <param name="spot">Posição no horário</param>
         public Turno(String id, uint vagas, int spot)
         {
-            if (string.IsNullOrEmpty(id)) throw new ArgumentNullException("id");
+            Contract.Requires(id != null);
             Identifier = id;
 
             VagasInicias = vagas;
@@ -65,11 +66,8 @@ namespace LearningByDoing
         /// <returns>true se os dois turnos ocuparem o mesmo espaço no horário.</returns>
         public bool Sobreposto(Turno outro)
         {
-            // <pex>
-            if (outro == (Turno)null)
-                throw new ArgumentNullException("outro");
-            // </pex>
-  return outro.Spot == Spot;
+            Contract.Requires(outro != null);
+            return outro.Spot == Spot;
         }
         #endregion
 

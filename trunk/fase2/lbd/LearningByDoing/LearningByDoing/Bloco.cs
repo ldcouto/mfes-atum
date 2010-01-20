@@ -9,25 +9,38 @@ namespace LearningByDoing
     public class Bloco : IEquatable<Bloco>
     {
         #region Propriedades
+        /// <summary>
+        /// O Identificador de um bloco, o nome do bloco.
+        /// </summary>
         public String Identifier { get; set; }
+
+        /// <summary>
+        /// A lista de turnos que pertencem ao bloco.
+        /// </summary>
         public IList<Turno> TurnosBloco { get; private set; }
         #endregion
 
         #region Constructores
+        /// <summary>
+        /// Constructor base de um bloco.
+        /// </summary>
+        /// <param name="id">Nome do Bloco.</param>
         public Bloco(String id)
         {
-            if (id == null) throw new ArgumentNullException("id");
             Identifier = id;
 
             TurnosBloco = new List<Turno>();
         }
 
+        /// <summary>
+        /// Constructor de um bloco, que recebe a lista de turnos pertencentes ao bloco.
+        /// </summary>
+        /// <param name="id">Nome do bloco.s</param>
+        /// <param name="turnos">Lista de turnos do bloco.</param>
         public Bloco(String id, IList<Turno> turnos)
         {
-            if (id == null) throw new ArgumentNullException("id");
             Identifier = id;
 
-            if (turnos == null) throw new ArgumentNullException("turnos");
             TurnosBloco = turnos;
         }
         #endregion

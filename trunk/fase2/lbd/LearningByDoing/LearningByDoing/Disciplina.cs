@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 
 namespace LearningByDoing
 {
@@ -28,9 +29,9 @@ namespace LearningByDoing
         /// <param name="id">Nome da disciplina.</param>
         public Disciplina(String id)
         {
-            if (string.IsNullOrEmpty(id)) throw new ArgumentNullException("id");
-            Identifier = id;
+            Contract.Requires(id != null);
 
+            Identifier = id;
             TurnosDisciplina = new List<Turno>();
         }
 
@@ -41,10 +42,10 @@ namespace LearningByDoing
         /// <param name="turnos">Lista de turnos da Disciplina.</param>
         public Disciplina(String id, IList<Turno> turnos)
         {
-            if (string.IsNullOrEmpty(id)) throw new ArgumentNullException("id");
-            Identifier = id;
+            Contract.Requires(id != null);
+            Contract.Requires(turnos != null);
 
-            if (turnos == null) throw new ArgumentNullException("turnos");
+            Identifier = id;
             TurnosDisciplina = turnos;
         }
 
@@ -57,7 +58,10 @@ namespace LearningByDoing
         /// <param name="t">Turno a ser adicionado.</param>
         public void AddTurno(Turno t)
         {
-            if (TurnosDisciplina != null && !TurnosDisciplina.Contains(t)) TurnosDisciplina.Add(t);
+            Contract.Requires(!TurnosDisciplina.Contains(t));
+            Contract.Ensures(TurnosDisciplina.Contains(t));
+
+            TurnosDisciplina.Add(t);
         }
 
         /// <summary>
@@ -67,7 +71,10 @@ namespace LearningByDoing
         /// <returns></returns>
         public bool RemoveTurno(Turno t)
         {
-            return (TurnosDisciplina != null && TurnosDisciplina.Remove(t));
+            Contract.Requires(TurnosDisciplina.Contains(t));
+            Contract.Ensures(!TurnosDisciplina.Contains(t));
+
+            return (TurnosDisciplina.Remove(t));
         }
 
         /// <summary>
@@ -76,9 +83,8 @@ namespace LearningByDoing
         /// <returns>Verdadeiro se ainda existem vagas num Turno da Disciplina, falso caso contrário.</returns>
         public bool TemVagas()
         {
-            if (TurnosDisciplina != null)
-                foreach (Turno turno in TurnosDisciplina)
-                    if (turno != null && turno.TemVagas()) return true;
+            foreach (Turno turno in TurnosDisciplina)
+                if (turno.TemVagas()) return true;
 
             return false;
         }

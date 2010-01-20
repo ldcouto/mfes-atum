@@ -1,0 +1,18 @@
+C:\Documents and Settings\Tiago Veloso\My Documents\Visual Studio 2008\Projects\LearningByDoing\LearningByDoing.Tests\bin\Debug\LearningByDoing.Tests.dll
+C:\Documents and Settings\Tiago Veloso\My Documents\Visual Studio 2008\Projects\LearningByDoing\LearningByDoing.Tests\bin\Debug\LearningByDoing.Tests.pdb
+C:\Documents and Settings\Tiago Veloso\My Documents\Visual Studio 2008\Projects\LearningByDoing\LearningByDoing.Tests\bin\Debug\LearningByDoing.dll
+C:\Documents and Settings\Tiago Veloso\My Documents\Visual Studio 2008\Projects\LearningByDoing\LearningByDoing.Tests\bin\Debug\nunit.framework.dll
+C:\Documents and Settings\Tiago Veloso\My Documents\Visual Studio 2008\Projects\LearningByDoing\LearningByDoing.Tests\bin\Debug\LearningByDoing.pdb
+C:\Documents and Settings\Tiago Veloso\My Documents\Visual Studio 2008\Projects\LearningByDoing\LearningByDoing.Tests\bin\Debug\nunit.framework.xml
+C:\Documents and Settings\Tiago Veloso\My Documents\Visual Studio 2008\Projects\LearningByDoing\LearningByDoing.Tests\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\Tiago Veloso\My Documents\Visual Studio 2008\Projects\LearningByDoing\LearningByDoing.Tests\obj\Debug\LearningByDoing.Tests.dll
+C:\Documents and Settings\Tiago Veloso\My Documents\Visual Studio 2008\Projects\LearningByDoing\LearningByDoing.Tests\obj\Debug\LearningByDoing.Tests.pdb
+C:\Users\Fork\Documents\Visual Studio 2010\Projects\LearningByDoing\LearningByDoing.Tests\bin\Debug\LearningByDoing.Tests.dll
+C:\Users\Fork\Documents\Visual Studio 2010\Projects\LearningByDoing\LearningByDoing.Tests\bin\Debug\LearningByDoing.Tests.pdb
+C:\Users\Fork\Documents\Visual Studio 2010\Projects\LearningByDoing\LearningByDoing.Tests\bin\Debug\LearningByDoing.dll
+C:\Users\Fork\Documents\Visual Studio 2010\Projects\LearningByDoing\LearningByDoing.Tests\bin\Debug\nunit.framework.dll
+C:\Users\Fork\Documents\Visual Studio 2010\Projects\LearningByDoing\LearningByDoing.Tests\bin\Debug\LearningByDoing.pdb
+C:\Users\Fork\Documents\Visual Studio 2010\Projects\LearningByDoing\LearningByDoing.Tests\bin\Debug\nunit.framework.xml
+C:\Users\Fork\Documents\Visual Studio 2010\Projects\LearningByDoing\LearningByDoing.Tests\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Fork\Documents\Visual Studio 2010\Projects\LearningByDoing\LearningByDoing.Tests\obj\Debug\LearningByDoing.Tests.dll
+C:\Users\Fork\Documents\Visual Studio 2010\Projects\LearningByDoing\LearningByDoing.Tests\obj\Debug\LearningByDoing.Tests.pdb
