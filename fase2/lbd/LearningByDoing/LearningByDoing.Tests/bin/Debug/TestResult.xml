@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!--This file represents the results of running a test suite-->
+<test-results name="C:\Documents and Settings\Tiago Veloso\My Documents\Visual Studio 2008\Projects\LearningByDoing\LearningByDoing.Tests\bin\Debug\LearningByDoing.Tests.dll" total="10" errors="0" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2010-01-09" time="17:00:53">
+  <environment nunit-version="2.5.3.9345" clr-version="2.0.50727.3603" os-version="Microsoft Windows NT 5.1.2600 Service Pack 3" platform="Win32NT" cwd="c:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE" machine-name="TIAGO-5B488DDB9" user="Tiago Veloso" user-domain="TIAGO-5B488DDB9" />
+  <culture-info current-culture="pt-PT" current-uiculture="en-US" />
+  <test-suite name="C:\Documents and Settings\Tiago Veloso\My Documents\Visual Studio 2008\Projects\LearningByDoing\LearningByDoing.Tests\bin\Debug\LearningByDoing.Tests.dll" executed="True" success="True" time="0.344" asserts="0">
+    <results>
+      <test-suite name="LearningByDoing" executed="True" success="True" time="0.297" asserts="0">
+        <results>
+          <test-suite name="Tests" executed="True" success="True" time="0.297" asserts="0">
+            <results>
+              <test-suite name="DisciplinaTests" executed="True" success="True" time="0.250" asserts="0">
+                <results>
+                  <test-case name="LearningByDoing.Tests.DisciplinaTests.AddTurno_TurnoDuplicado_ApenasUmTurnoAdicionado" executed="True" success="True" time="0.188" asserts="1" />
+                  <test-case name="LearningByDoing.Tests.DisciplinaTests.AddTurno_TurnosDiferentes_DoisTurnosAdicionados" executed="True" success="True" time="0.000" asserts="1" />
+                  <test-case name="LearningByDoing.Tests.DisciplinaTests.AddTurno_TurnoValido_TurnoAdicionado" executed="True" success="True" time="0.000" asserts="1" />
+                  <test-case name="LearningByDoing.Tests.DisciplinaTests.RemoveTurno_TurnoExistente_TurnoRemovido" executed="True" success="True" time="0.000" asserts="2" />
+                  <test-case name="LearningByDoing.Tests.DisciplinaTests.RemoveTurno_TurnoInexistente_TurnoNaoRemovido" executed="True" success="True" time="0.000" asserts="2" />
+                  <test-case name="LearningByDoing.Tests.DisciplinaTests.TemVagas_ExistemVagas_ReturnTrue" executed="True" success="True" time="0.000" asserts="1" />
+                  <test-case name="LearningByDoing.Tests.DisciplinaTests.TemVagas_NaoExistemVagas_ReturnFalse" executed="True" success="True" time="0.000" asserts="1" />
+                </results>
+              </test-suite>
+              <test-suite name="TurnoTests" executed="True" success="True" time="0.031" asserts="0">
+                <results>
+                  <test-case name="LearningByDoing.Tests.TurnoTests.TemVagas_ExistemVagas_ReturnTrue" executed="True" success="True" time="0.000" asserts="1" />
+                  <test-case name="LearningByDoing.Tests.TurnoTests.TemVagas_NaoExistemVagas_ReturnFalse" executed="True" success="True" time="0.000" asserts="1" />
+                  <test-case name="LearningByDoing.Tests.TurnoTests.TemVagas_VagasNegativas_ReturnFalse" executed="True" success="True" time="0.031" asserts="1" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+    </results>
+  </test-suite>
+</test-results>
