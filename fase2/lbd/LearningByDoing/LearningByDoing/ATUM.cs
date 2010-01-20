@@ -5,11 +5,14 @@ using System.Linq;
 
 namespace LearningByDoing
 {
+    // NÂO MEXER MAIS NESTA CLASSE! Foi passada para o projecto principal 
+
+
     /// <summary>
     /// Classe ATUM, representa o sistema.
     /// </summary>
     public class ATUM
-    {
+    
         /// <summary>
         /// Fila de Alunos, a ordem pela qual os alunos vão ser processados.
         /// </summary>
