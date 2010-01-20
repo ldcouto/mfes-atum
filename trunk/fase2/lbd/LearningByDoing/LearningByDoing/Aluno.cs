@@ -5,11 +5,13 @@ using System.Linq;
 
 namespace LearningByDoing
 {
+    // NÂO MEXER MAIS NESTA CLASSE! Foi passada para o projecto principal 
+
     /// <summary>
     /// Classe Aluno, individuos que querem ser alocados.
     /// </summary>
     public class Aluno
-    {
+
         /// <summary>
         /// Identificador do Aluno, o nome ou o numero do aluno.
         /// </summary>
