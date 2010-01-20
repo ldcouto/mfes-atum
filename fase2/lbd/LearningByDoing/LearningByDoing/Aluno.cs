@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
+using System.Linq;
 
 namespace LearningByDoing
 {
@@ -17,12 +19,12 @@ namespace LearningByDoing
         /// Lista de disciplinas a que o aluno está inscrito.
         /// </summary>
         public IList<Disciplina> Inscrito { get; private set; }
-        
+
         /// <summary>
         /// Lista de turnos a que no aluno já se encontra alocado.
         /// </summary>
         public IList<Turno> AlocadoTurno { get; private set; }
-        
+
         /// <summary>
         /// Blovo ao qual o aluno foi alocado, caso tenha sido alocado.
         /// </summary>
@@ -108,21 +110,13 @@ namespace LearningByDoing
                 PreferenciasBlocos.Enqueue(b);
         }
 
-        // Alocar - Tentativa
-        public bool AlocaBloco()
+        public void AddAlocacaoTurno(Turno t)
         {
-            foreach (Bloco bloco in PreferenciasBlocos)
-            {
-                if (bloco.TemVagas())
-                {
-                    AlocadoTurno = bloco.TurnosBloco;
-                    bloco.DecrementarVagas();
-                    return true;
-                }
-            }
-            return false;
+            Contract.Requires(!AlocadoTurno.Contains(t));
+            Contract.Requires(AlocadoTurno != null);
+            Contract.Ensures(AlocadoTurno.Contains(t));
+
+            AlocadoTurno.Add(t);
         }
-
-
     }
 }
