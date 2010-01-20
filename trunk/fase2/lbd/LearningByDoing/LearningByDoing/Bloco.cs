@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 
 namespace LearningByDoing
 {
@@ -27,8 +28,9 @@ namespace LearningByDoing
         /// <param name="id">Nome do Bloco.</param>
         public Bloco(String id)
         {
-            Identifier = id;
+            Contract.Requires(!String.IsNullOrEmpty(id));
 
+            Identifier = id;
             TurnosBloco = new List<Turno>();
         }
 
@@ -39,8 +41,10 @@ namespace LearningByDoing
         /// <param name="turnos">Lista de turnos do bloco.</param>
         public Bloco(String id, IList<Turno> turnos)
         {
-            Identifier = id;
+            Contract.Requires(!String.IsNullOrEmpty(id));
+            Contract.Requires(turnos != null);
 
+            Identifier = id;
             TurnosBloco = turnos;
         }
         #endregion
@@ -52,10 +56,12 @@ namespace LearningByDoing
         /// <param name="turno">O turno a ser adicionado.</param>
         public void AddTurno(Turno turno)
         {
-            if (turno == null) throw new ArgumentNullException("turno");
+            Contract.Requires(turno != null);
+            Contract.Requires(TurnosBloco != null);
+            Contract.Requires(!TurnosBloco.Contains(turno));
+            Contract.Requires(!TurnosSobrepostos(turno));
 
-            if (TurnosBloco != null && !TurnosBloco.Contains(turno) && !TurnosSobrepostos(turno))
-                TurnosBloco.Add(turno);
+            TurnosBloco.Add(turno);
         }
         
         /// <summary>

@@ -93,9 +93,9 @@ namespace LearningByDoing
         }
 
         /// <summary>
-        /// 
+        /// Remove uma Disciplina às inscrições do Aluno.
         /// </summary>
-        /// <param name="d"></param>
+        /// <param name="d">Disciplina a ser removida.</param>
         /// <returns></returns>
         public bool RemoveInscricao(Disciplina d)
         {
@@ -122,5 +122,7 @@ namespace LearningByDoing
             }
             return false;
         }
+
+
     }
 }

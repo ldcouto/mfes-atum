@@ -41,8 +41,8 @@ namespace LearningByDoing
         public Turno(String id, uint vagas, int spot)
         {
             Contract.Requires(id != null);
-            Identifier = id;
 
+            Identifier = id;
             VagasInicias = vagas;
             VagasActuais = vagas;
             Spot = spot;
