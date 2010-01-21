@@ -34,11 +34,12 @@ namespace ATUM.sistema
         /// <summary>
         /// Constructor completo de Turno.
         /// </summary>
-        /// <param name="id">Nome do turno</param>
-        /// <param name="vagas">Número de vagas</param>
-        /// <param name="spot">Posição no horário</param>
+        /// <param name="id">Nome do turno.</param>
+        /// <param name="vagas">Número de vagas.</param>
+        /// <param name="spot">Posição no horário.</param>
+        /// <requires>Nome não nulo nem cazio.</requires>
         public Turno(String id, uint vagas, int spot) {
-            Contract.Requires(id != null);
+            Contract.Requires(!String.IsNullOrEmpty(id));
 
             Identifier = id;
             VagasInicias = vagas;

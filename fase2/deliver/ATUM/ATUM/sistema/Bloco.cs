@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Linq;
 
 namespace ATUM.sistema
 {
@@ -67,7 +68,8 @@ namespace ATUM.sistema
         /// <param name="turno">O turno a ser removido.</param>
         /// <returns></returns>
         public bool RemoveTurno(Turno turno) {
-            if (turno == null) throw new ArgumentNullException("turno");
+            Contract.Requires(turno != null);
+            //if (turno == null) throw new ArgumentNullException("turno");
 
             return TurnosBloco != null && TurnosBloco.Remove(turno);
         }
@@ -77,9 +79,10 @@ namespace ATUM.sistema
         /// </summary>
         /// <returns>True se ainda existirem vagas. False, caso contrário.</returns>
         public bool TemVagas() {
-            if (TurnosBloco != null)
+            Contract.Requires(TurnosBloco != null);
+
                 foreach (Turno turno in TurnosBloco) {
-                    if (turno != null && turno.TemVagas()) continue;
+                    if (turno.TemVagas()) continue;
                     return false;
                 }
             return true;
@@ -89,8 +92,9 @@ namespace ATUM.sistema
         /// Decrementa o número de vagas disponiveis em todos os turnos do bloco.
         /// </summary>
         public void DecrementarVagas() {
+            Contract.Requires(TurnosBloco != null);
+
             foreach (Turno turno in TurnosBloco)
-                if (turno != null)
                     turno.VagasActuais--;
         }
         #endregion
