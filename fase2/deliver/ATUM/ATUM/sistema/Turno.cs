@@ -64,8 +64,10 @@ namespace ATUM.sistema
         /// <returns>True se os dois turnos estiverem sobrepostos. Falso, caso contrário.</returns>
         public bool Sobreposto(Turno outro) {
             Contract.Requires(outro != null);
-            return outro.Spot == Spot;
-        }
+            Contract.Requires(outro != this);
+
+            return Spot == outro.Spot;
+        }   
         #endregion
 
         #region Membros da Igualdade
