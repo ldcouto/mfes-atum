@@ -103,6 +103,20 @@ namespace ATUM.sistema
             foreach (Turno turno in TurnosBloco)
                 turno.VagasActuais--;
         }
+        /// <summary>
+        /// Calcula as Disciplinas associadas ao Bloco.
+        /// </summary>
+        /// <returns>Lista de Disciplinas que têm turnos no Bloco.</returns>
+        public IList<Disciplina> GetDiscsDoBloco()
+        {
+            var r = new List<Disciplina>();
+            foreach (var turno in TurnosBloco)
+            {
+                r.Add(turno.Disciplina);
+            }
+            return r;
+        }
+
         #endregion
 
         #region Métodos Internos
