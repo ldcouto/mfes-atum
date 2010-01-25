@@ -54,9 +54,10 @@ namespace ATUM.Tests.Manual {
             Turno turno2 = new Turno("TP01", 10, 1);
 
             _disciplina.AddTurno(turno1);
-            _disciplina.AddTurno(turno2);
-
-            Assert.IsFalse(_disciplina.TurnosDisciplina.Count > 1, "Adicionou dois turnos iguais.");
+            //_disciplina.AddTurno(turno2);
+            
+            //Assert.IsFalse(_disciplina.TurnosDisciplina.Count > 1, "Adicionou dois turnos iguais.");
+            Assert.Throws<ArgumentException>(() => _disciplina.AddTurno(turno2), "Adicionou dois turnos iguais.");
         }
 
         [Test]
@@ -72,6 +73,12 @@ namespace ATUM.Tests.Manual {
             int after = _disciplina.TurnosDisciplina.Count;
 
             Assert.IsTrue(after == before + 2, "Um ou mais turnos não foram adicionados.");
+        }
+
+        [Test]
+        public void AddTurno_NullArguments_Exception()
+        {
+            Assert.Throws<ArgumentNullException>(() => _disciplina.AddTurno(null), "Foi adicionado um turno nulo.");
         }
 
         [Test]
@@ -91,10 +98,17 @@ namespace ATUM.Tests.Manual {
         public void RemoveTurno_TurnoInexistente_TurnoNaoRemovido() {
             Turno turno = new Turno("TP01", 10, 1);
 
-            bool resultado = _disciplina.RemoveTurno(turno);
+            //bool resultado = _disciplina.RemoveTurno(turno);
 
-            Assert.IsFalse(resultado, "O turno não existente foi removido.");
-            CollectionAssert.DoesNotContain(_disciplina.TurnosDisciplina, turno, "O turno existe na lista.");
+            //Assert.IsFalse(resultado, "O turno não existente foi removido.");
+            //CollectionAssert.DoesNotContain(_disciplina.TurnosDisciplina, turno, "O turno existe na lista.");
+            Assert.Throws<ArgumentNullException>(() => _disciplina.RemoveTurno(turno));
+        }
+
+        [Test]
+        public void RemoveTurno_NullArguments_Exception()
+        {
+            Assert.Throws<ArgumentNullException>(() => _disciplina.RemoveTurno(null), "Foi removido um turno nulo.");
         }
 
         [Test]
@@ -120,7 +134,7 @@ namespace ATUM.Tests.Manual {
 
             bool resultado = _disciplina.TemVagas();
 
-            Assert.IsFalse(resultado, "Existem vagas, que não são encontradas");
+            Assert.IsFalse(resultado, "Existem vagas, que não são encontradas.");
         }
 
         [Test]

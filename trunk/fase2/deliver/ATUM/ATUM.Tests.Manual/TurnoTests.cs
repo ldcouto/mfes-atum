@@ -106,9 +106,10 @@ namespace ATUM.Tests.Manual
         [Test]
         public void Sobreposto_TurnoIgual_Exception()
         {
-            bool resultado = turno.Sobreposto(turno);
+            //bool resultado = turno.Sobreposto(turno);
 
-            Assert.IsFalse(resultado, "Um turno sobrepõe-se a si mesmo.");
+            //Assert.IsFalse(resultado, "Um turno sobrepõe-se a si mesmo.");
+            Assert.Throws<ArgumentNullException>(() => turno.Sobreposto(turno));
         }
 
         [Test]
