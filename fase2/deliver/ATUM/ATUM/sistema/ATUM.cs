@@ -85,9 +85,6 @@ namespace ATUM.sistema {
         /// <param name="disciplina">A Disciplina em que iremos testar.</param>
         /// <returns>True caso todos os Alunos alocados a Turnos da Disciplina sejam melhores. False caso contrário.</returns>
         public bool NinguemPior(Aluno aluno, Disciplina disciplina) {
-
-            bool r = true;
-            bool passeiAluno = false;
             var aux = new List<Turno>();
             foreach (Bloco b in aluno.PreferenciasBlocos)
                 aux.AddRange(b.TurnosBloco);
@@ -98,7 +95,7 @@ namespace ATUM.sistema {
                 if (x.AlocadoTurno.Intersect(aux).Count() > 0)
                     return false;
             }
-            return r;
+            return true;
         }
 
         /// <summary>
