@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics.Contracts;
+using ATUM.sistema;
 
-namespace ATUM.sistema
-{
+namespace ATUM.sistema {
     /// <summary>
     /// Classe ATUM. Agrega alunos, disciplinas, blocos e Turnos.
     /// </summary>
@@ -22,16 +23,23 @@ namespace ATUM.sistema
         public List<Aluno> Processados { get; private set; }
         #endregion
 
+        #region Construtores
+
+        public Atum() {
+            this.Alunos = new Queue<Aluno>();
+            this.Processados = new List<Aluno>();
+        }
+
+        #endregion
+
         #region Métodos da Classe
         /// <summary>
         /// Método para processar e alocar os Alunos.
         /// </summary>
-        public void ProcessaAlocacoes()
-        {
+        public void ProcessaAlocacoes() {
             Aluno aluno = Alunos.Dequeue();
 
-            while (aluno != null)
-            {
+            while (Alunos.Count > 0) {
                 AlocaAluno(aluno);
                 Processados.Add(aluno);
                 aluno = Alunos.Dequeue();
@@ -44,8 +52,65 @@ namespace ATUM.sistema
         /// </summary>
         /// <param name="a">O Aluno a alocar.</param>
         public void AlocaAluno(Aluno a) {
+            Contract.Requires(a != null);
+            Contract.Requires(Contract.ForAll(this.Processados, (Aluno x) => ComparaAlunos(a, x) > 0));
+            Contract.Ensures(Processados.Contains(a));
+            Contract.Ensures(a.Processado);
+            Contract.Ensures(a.AlocadoBloco != null || Contract.ForAll(a.PreferenciasBlocos, (Bloco x) => !x.TemVagas()));
+            Contract.Ensures(Contract.ForAll(a.Inscrito, (Disciplina d)
+                                => NinguemPior(a, d) || AlunoTaNaDisc(a, d)));
+
             AlocaBloco(a);
             AlocaDisciplina(a);
+        }
+
+        /// <summary>
+        /// Método para comprar dois Alunos pela sua ordem na fila do sistema.
+        /// </summary>
+        /// <param name="a1">O primeiro Aluno a ser comparado.</param>
+        /// <param name="a2">O segundo Aluno a ser comparado.</param>
+        /// <returns>-1: a1 vem antes na ordem. 1: a2 vem antes na ordem. 0: nenhum aluno está na fila.</returns>
+        private int ComparaAlunos(Aluno a1, Aluno a2) {
+            foreach (var x in this.Alunos) {
+                if (x == a1) return -1;
+                if (x == a2) return 0;
+            }
+            return 0;
+        }
+
+        /// <summary>
+        /// Método auxiliar para garantir que nenhum Aluno pior está alocado a um Turno da Disciplina.
+        /// </summary>
+        /// <param name="aluno">O Aluno contra o qual iremos testar.</param>
+        /// <param name="disciplina">A Disciplina em que iremos testar.</param>
+        /// <returns>True caso todos os Alunos alocados a Turnos da Disciplina sejam melhores. False caso contrário.</returns>
+        public bool NinguemPior(Aluno aluno, Disciplina disciplina) {
+
+            bool r = true;
+            bool passeiAluno = false;
+            var aux = new List<Turno>();
+            foreach (Bloco b in aluno.PreferenciasBlocos)
+                aux.AddRange(b.TurnosBloco);
+
+            foreach (Aluno x in Alunos) {
+                if (x.Equals(aluno))
+                    return true;
+                if (x.AlocadoTurno.Intersect(aux).Count() > 0)
+                    return false;
+            }
+            return r;
+        }
+
+        /// <summary>
+        /// Método auxiliar para garantir que um Aluno está alocado a algum Turno da Disciplina.
+        /// </summary>
+        /// <param name="a">O Aluno a testar.</param>
+        /// <param name="d">A Disciplina a testar.</param>
+        /// <returns>True caso o Aluno esta alocado a algum Turno da Disciplina. False caso contrário.</returns>
+        public bool AlunoTaNaDisc(Aluno a, Disciplina d) {
+            var turnosEmComum = a.AlocadoTurno.Intersect(d.TurnosDisciplina);
+            int r = turnosEmComum.Count();
+            return r == 1;
         }
 
         /// <summary>
