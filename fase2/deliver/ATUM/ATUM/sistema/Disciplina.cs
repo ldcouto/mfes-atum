@@ -76,7 +76,7 @@ namespace ATUM.sistema
             Contract.Requires<ArgumentException>(TurnosDisciplina.Contains(turno), "O turno a remover deve estar na lista de turnos.");
             Contract.Ensures(!TurnosDisciplina.Contains(turno), "O turno a remover não deve estar na lista depois de removido.");
 
-            return (TurnosDisciplina.Remove(turno));
+            return TurnosDisciplina.Remove(turno);
         }
 
         /// <summary>
