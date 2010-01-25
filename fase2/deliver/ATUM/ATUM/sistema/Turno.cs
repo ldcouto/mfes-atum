@@ -1,13 +1,13 @@
 using System;
 using System.Diagnostics.Contracts;
 
-namespace ATUM.sistema
-{
+namespace ATUM.sistema {
+
     /// <summary>
     /// Classe para representar um Turno.
     /// </summary>
-    public class Turno
-    {
+   
+    public class Turno {
         #region Propriedades
         /// <summary>
         /// Identificação do Turno.
@@ -30,6 +30,11 @@ namespace ATUM.sistema
         public int Spot { get; set; }
         #endregion
 
+        /// <summary>
+        /// A Disciplina a que o Turno pertence. Utilizado para integridade de dados.
+        /// </summary>
+        public Disciplina Disciplina { get; set; }
+
         #region Construtores
         /// <summary>
         /// Constructor completo de Turno.
@@ -37,16 +42,26 @@ namespace ATUM.sistema
         /// <param name="id">Nome do turno.</param>
         /// <param name="vagas">Número de vagas.</param>
         /// <param name="spot">Posição no horário.</param>
-        /// <requires>Nome não nulo nem cazio.</requires>
-        public Turno(String id, uint vagas, int spot)
-        {
+        /// <param name="d">Disciplina a que o Turno pertence.</param>
+        /// <requires>Nome não nulo nem vazio.</requires>
+        public Turno(String id, uint vagas, int spot, Disciplina d) {
             Contract.Requires<ArgumentNullException>(!String.IsNullOrEmpty(id), "O nome do turno não pode ser vazio nem nulo.");
 
             Identifier = id;
             VagasInicias = vagas;
             VagasActuais = vagas;
             Spot = spot;
+            this.Disciplina = d;
         }
+
+        public Turno() {
+            this.Identifier = "";
+            VagasInicias = 0;
+            VagasActuas = 0;
+            Spot = 0;
+            this.Disciplina = null;
+        }
+
         #endregion
 
         #region Métodos da Classe
@@ -55,8 +70,7 @@ namespace ATUM.sistema
         /// </summary>
         /// <returns>True se ainda houver vagas. Falso, caso contrário.</returns>
         [Pure]
-        public bool TemVagas()
-        {
+        public bool TemVagas() {
             return VagasActuais != 0;
         }
 
@@ -66,8 +80,7 @@ namespace ATUM.sistema
         /// <param name="outro">O turno com que se irá testar.</param>
         /// <returns>True se os dois turnos estiverem sobrepostos. Falso, caso contrário.</returns>
         [Pure]
-        public bool Sobreposto(Turno outro)
-        {
+        public bool Sobreposto(Turno outro) {
             Contract.Requires<ArgumentNullException>(outro != null, "O turno contra o qual se quer testar não pode ser nulo.");
             Contract.Requires<ArgumentException>(outro != this, "O turno contra o qual se quer testar não pode ser o mesmo turno.");
 
@@ -76,26 +89,22 @@ namespace ATUM.sistema
         #endregion
 
         #region Membros da Igualdade
-        public bool Equals(Turno other)
-        {
+        public bool Equals(Turno other) {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
             return Equals(other.Identifier, Identifier) && other.VagasInicias == VagasInicias && other.Spot == Spot && other.VagasActuais == VagasActuais;
         }
 
-        public static bool operator ==(Turno left, Turno right)
-        {
+        public static bool operator ==(Turno left, Turno right) {
             return Equals(left, right);
         }
 
-        public static bool operator !=(Turno left, Turno right)
-        {
+        public static bool operator !=(Turno left, Turno right) {
             return !Equals(left, right);
         }
 
         // override object.Equals
-        public override bool Equals(object obj)
-        {
+        public override bool Equals(object obj) {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != typeof(Turno)) return false;
@@ -103,10 +112,8 @@ namespace ATUM.sistema
         }
 
         // override object.GetHashCode
-        public override int GetHashCode()
-        {
-            unchecked
-            {
+        public override int GetHashCode() {
+            unchecked {
                 int result = (Identifier != null ? Identifier.GetHashCode() : 0);
                 result = (result * 397) ^ VagasInicias.GetHashCode();
                 result = (result * 397) ^ Spot;
