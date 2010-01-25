@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using ATUM.sistema;
@@ -42,11 +43,9 @@ namespace ATUM.Tests.Manual
         }
 
         [Test]
-        public void Constructor_NullArgument_NoException()
+        public void Constructor_NullArgument_Exception()
         {
-            //Assert.Throws<ArgumentNullException>(() => new Turno(null, 0, 0));
-            //Assert.DoesNotThrow(() => new Turno(null, 0, 0));
-            Assert.Pass("Viola o contracto.");
+            Assert.Throws<ArgumentNullException>(() => new Turno(null, 0, 0));
         }
 
         [Test]
@@ -105,21 +104,17 @@ namespace ATUM.Tests.Manual
         }
 
         [Test]
-        public void Sobreposto_TurnoIgual_ReturnFalse()
+        public void Sobreposto_TurnoIgual_Exception()
         {
-            //bool resultado = turno.Sobreposto(turno);
+            bool resultado = turno.Sobreposto(turno);
 
-            //Assert.IsFalse(resultado, "Um turno sobrepõe-se a si mesmo.");
-            Assert.Pass("Viola o contracto.");
+            Assert.IsFalse(resultado, "Um turno sobrepõe-se a si mesmo.");
         }
 
         [Test]
-        public void Sobreposto_NullArgument_NoException()
+        public void Sobreposto_NullArgument_Exception()
         {
-            //Assert.Throws<ArgumentNullException>(() => turno.Sobreposto(null));
-            //Assert.DoesNotThrow(() => turno.Sobreposto(null));
-            //Assert.Fail("Teste com turno nulo passa.");
-            Assert.Pass("Viola o contracto.");
+            Assert.Throws<ArgumentNullException>(() => turno.Sobreposto(null));
         }
 
         [Test]
