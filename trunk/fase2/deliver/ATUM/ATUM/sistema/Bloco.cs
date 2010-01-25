@@ -171,5 +171,14 @@ namespace ATUM.sistema
             return !Equals(left, right);
         }
         #endregion
+
+        #region Invariantes
+        [ContractInvariantMethod]
+        protected void ObjectInvariant() {
+            // Garantir que um bloco não tem turnos sem disciplina
+            Contract.Invariant(Contract.ForAll(TurnosBloco, (Turno t) => t.Disciplina != null));
+        }
+        #endregion
+
     }
 }
