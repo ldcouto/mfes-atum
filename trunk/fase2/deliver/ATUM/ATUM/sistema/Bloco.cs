@@ -27,8 +27,9 @@ namespace ATUM.sistema
         /// Constructor base de um bloco.
         /// </summary>
         /// <param name="id">Identificação do Bloco.</param>
-        public Bloco(String id) {
-            Contract.Requires(!String.IsNullOrEmpty(id));
+        public Bloco(String id)
+        {
+            Contract.Requires<ArgumentNullException>(!String.IsNullOrEmpty(id), "O nome do bloco não pode ser vazio nem nulo.");
 
             Identifier = id;
             TurnosBloco = new List<Turno>();
@@ -39,9 +40,10 @@ namespace ATUM.sistema
         /// </summary>
         /// <param name="id">Identificação do Bloco</param>
         /// <param name="turnos">Lista de turnos que pertencem ao Bloco.</param>
-        public Bloco(String id, IList<Turno> turnos) {
-            Contract.Requires(!String.IsNullOrEmpty(id));
-            Contract.Requires(turnos != null);
+        public Bloco(String id, IList<Turno> turnos)
+        {
+            Contract.Requires<ArgumentNullException>(!String.IsNullOrEmpty(id), "O nome do bloco não pode ser vazio nem nulo.");
+            Contract.Requires<ArgumentNullException>(turnos != null, "A lista de turnos do bloco não pode ser nula.");
 
             Identifier = id;
             TurnosBloco = turnos;
@@ -53,11 +55,12 @@ namespace ATUM.sistema
         /// Adicionar um turno ao Bloco.
         /// </summary>
         /// <param name="turno">O turno a ser adicionado.</param>
-        public void AddTurno(Turno turno) {
-            Contract.Requires(turno != null);
-            Contract.Requires(TurnosBloco != null);
-            Contract.Requires(!TurnosBloco.Contains(turno));
-            Contract.Requires(!TurnosSobrepostos(turno));
+        public void AddTurno(Turno turno)
+        {
+            Contract.Requires<ArgumentNullException>(turno != null, "O turno a ser inserido não pode ser nulo.");
+            Contract.Requires<ArgumentException>(!TurnosBloco.Contains(turno), "O turno a ser adicionado ainda não pode pertencer á lista de turnos do bloco.");
+            Contract.Requires<ArgumentException>(!TurnosSobrepostos(turno), "O turno a ser adicionado não pode estar sobreposto com outros turnos do bloco.");
+            Contract.Ensures(TurnosBloco.Contains(turno));
 
             TurnosBloco.Add(turno);
         }
@@ -67,35 +70,38 @@ namespace ATUM.sistema
         /// </summary>
         /// <param name="turno">O turno a ser removido.</param>
         /// <returns></returns>
-        public bool RemoveTurno(Turno turno) {
-            Contract.Requires(turno != null);
-            //if (turno == null) throw new ArgumentNullException("turno");
+        public bool RemoveTurno(Turno turno)
+        {
+            Contract.Requires<ArgumentNullException>(turno != null, "O turno a ser removido não pode ser nulo.");
+            Contract.Requires<ArgumentException>(TurnosBloco.Contains(turno), "O turno a ser removido ainda tem de pertencer á lista de turnos do bloco.");
+            Contract.Ensures(TurnosBloco.Contains(turno));
 
-            return TurnosBloco != null && TurnosBloco.Remove(turno);
+            return TurnosBloco.Remove(turno);
         }
 
         /// <summary>
         /// Averigua se um Bloco ainda tem vagas disponíveis.
         /// </summary>
         /// <returns>True se ainda existirem vagas. False, caso contrário.</returns>
-        public bool TemVagas() {
-            Contract.Requires(TurnosBloco != null);
+        public bool TemVagas()
+        {
+            Contract.Ensures(Contract.ForAll(TurnosBloco, t => t.TemVagas()));
 
-                foreach (Turno turno in TurnosBloco) {
-                    if (turno.TemVagas()) continue;
-                    return false;
-                }
+            foreach (Turno turno in TurnosBloco)
+            {
+                if (turno.TemVagas()) continue;
+                return false;
+            }
             return true;
         }
 
         /// <summary>
         /// Decrementa o número de vagas disponiveis em todos os turnos do bloco.
         /// </summary>
-        public void DecrementarVagas() {
-            Contract.Requires(TurnosBloco != null);
-
+        public void DecrementarVagas()
+        {
             foreach (Turno turno in TurnosBloco)
-                    turno.VagasActuais--;
+                turno.VagasActuais--;
         }
         #endregion
 
@@ -105,10 +111,12 @@ namespace ATUM.sistema
         /// </summary>
         /// <param name="turno">O Turno a ser comparado com os Turnos do Bloco.</param>
         /// <returns>True se o Turno se sobrepõe com algum outro Turno do Bloco.</returns>
-        private bool TurnosSobrepostos(Turno turno) {
+        private bool TurnosSobrepostos(Turno turno)
+        {
             if (turno == null) throw new ArgumentNullException("turno");
 
-            foreach (Turno t in TurnosBloco) {
+            foreach (Turno t in TurnosBloco)
+            {
                 if (t != null && turno.Sobreposto(t)) return true;
             }
             return false;
@@ -116,30 +124,36 @@ namespace ATUM.sistema
         #endregion
 
         #region Membros da Igualdade
-        public bool Equals(Bloco other) {
+        public bool Equals(Bloco other)
+        {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
             return Equals(other.Identifier, Identifier) && Equals(other.TurnosBloco, TurnosBloco);
         }
 
-        public override bool Equals(object obj) {
+        public override bool Equals(object obj)
+        {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != typeof(Bloco)) return false;
             return Equals((Bloco)obj);
         }
 
-        public override int GetHashCode() {
-            unchecked {
+        public override int GetHashCode()
+        {
+            unchecked
+            {
                 return ((Identifier != null ? Identifier.GetHashCode() : 0) * 397) ^ (TurnosBloco != null ? TurnosBloco.GetHashCode() : 0);
             }
         }
 
-        public static bool operator ==(Bloco left, Bloco right) {
+        public static bool operator ==(Bloco left, Bloco right)
+        {
             return Equals(left, right);
         }
 
-        public static bool operator !=(Bloco left, Bloco right) {
+        public static bool operator !=(Bloco left, Bloco right)
+        {
             return !Equals(left, right);
         }
         #endregion
