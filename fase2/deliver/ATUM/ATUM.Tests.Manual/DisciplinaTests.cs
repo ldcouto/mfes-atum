@@ -5,10 +5,12 @@ using System.Text;
 using ATUM.sistema;
 using NUnit.Framework;
 
-namespace ATUM.Tests.Manual {
+namespace ATUM.Tests.Manual
+{
 
     [TestFixture]
-    class DisciplinaTests {
+    class DisciplinaTests
+    {
 
         private Disciplina _disciplina;
 
@@ -35,13 +37,15 @@ namespace ATUM.Tests.Manual {
         #endregion
 
         [SetUp]
-        public void Disciplina_Initialize() {
+        public void Disciplina_Initialize()
+        {
             _disciplina = new Disciplina("Disciplina 1");
         }
 
         [Test]
-        public void AddTurno_TurnoValido_TurnoAdicionado() {
-            Turno turno = new Turno("TP01", 10, 1);
+        public void AddTurno_TurnoValido_TurnoAdicionado()
+        {
+            Turno turno = new Turno("TP01", 10, 1, _disciplina);
 
             _disciplina.AddTurno(turno);
 
@@ -49,21 +53,23 @@ namespace ATUM.Tests.Manual {
         }
 
         [Test]
-        public void AddTurno_TurnoDuplicado_ApenasUmTurnoAdicionado() {
-            Turno turno1 = new Turno("TP01", 10, 1);
-            Turno turno2 = new Turno("TP01", 10, 1);
+        public void AddTurno_TurnoDuplicado_ApenasUmTurnoAdicionado()
+        {
+            Turno turno1 = new Turno("TP01", 10, 1, _disciplina);
+            Turno turno2 = new Turno("TP01", 10, 1, _disciplina);
 
             _disciplina.AddTurno(turno1);
             //_disciplina.AddTurno(turno2);
-            
+
             //Assert.IsFalse(_disciplina.TurnosDisciplina.Count > 1, "Adicionou dois turnos iguais.");
             Assert.Throws<ArgumentException>(() => _disciplina.AddTurno(turno2), "Adicionou dois turnos iguais.");
         }
 
         [Test]
-        public void AddTurno_TurnosDiferentes_DoisTurnosAdicionados() {
-            Turno turno1 = new Turno("TP01", 10, 1);
-            Turno turno2 = new Turno("TP02", 10, 1);
+        public void AddTurno_TurnosDiferentes_DoisTurnosAdicionados()
+        {
+            Turno turno1 = new Turno("TP01", 10, 1, _disciplina);
+            Turno turno2 = new Turno("TP02", 10, 1, _disciplina);
 
             int before = _disciplina.TurnosDisciplina.Count;
 
@@ -82,9 +88,10 @@ namespace ATUM.Tests.Manual {
         }
 
         [Test]
-        public void RemoveTurno_TurnoExistente_TurnoRemovido() {
+        public void RemoveTurno_TurnoExistente_TurnoRemovido()
+        {
 
-            Turno turno = new Turno("TP01", 10, 1);
+            Turno turno = new Turno("TP01", 10, 1, _disciplina);
 
             _disciplina.AddTurno(turno);
 
@@ -95,8 +102,9 @@ namespace ATUM.Tests.Manual {
         }
 
         [Test]
-        public void RemoveTurno_TurnoInexistente_TurnoNaoRemovido() {
-            Turno turno = new Turno("TP01", 10, 1);
+        public void RemoveTurno_TurnoInexistente_TurnoNaoRemovido()
+        {
+            Turno turno = new Turno("TP01", 10, 1, _disciplina);
 
             //bool resultado = _disciplina.RemoveTurno(turno);
 
@@ -112,9 +120,10 @@ namespace ATUM.Tests.Manual {
         }
 
         [Test]
-        public void TemVagas_ExistemVagas_ReturnTrue() {
-            Turno turno1 = new Turno("TP01", 10, 1);
-            Turno turno2 = new Turno("TP02", 0, 2);
+        public void TemVagas_ExistemVagas_ReturnTrue()
+        {
+            Turno turno1 = new Turno("TP01", 10, 1, _disciplina);
+            Turno turno2 = new Turno("TP02", 0, 2, _disciplina);
 
             _disciplina.AddTurno(turno1);
             _disciplina.AddTurno(turno2);
@@ -125,9 +134,10 @@ namespace ATUM.Tests.Manual {
         }
 
         [Test]
-        public void TemVagas_NaoExistemVagas_ReturnFalse() {
-            Turno turno1 = new Turno("TP01", 0, 1);
-            Turno turno2 = new Turno("TP02", 0, 2);
+        public void TemVagas_NaoExistemVagas_ReturnFalse()
+        {
+            Turno turno1 = new Turno("TP01", 0, 1, _disciplina);
+            Turno turno2 = new Turno("TP02", 0, 2, _disciplina);
 
             _disciplina.AddTurno(turno1);
             _disciplina.AddTurno(turno2);
@@ -138,63 +148,74 @@ namespace ATUM.Tests.Manual {
         }
 
         [Test]
-        public void Equals_Self_ReturnTrue() {
+        public void Equals_Self_ReturnTrue()
+        {
             Assert.IsTrue(_disciplina.Equals(_disciplina), "Comparação consigo mesmo dá falso.");
         }
 
         [Test]
-        public void Equals_NullArgument_ReturnFalse() {
+        public void Equals_NullArgument_ReturnFalse()
+        {
             Assert.IsFalse(_disciplina.Equals(null), "Comparação com nulo dá verdadeiro.");
         }
 
         [Test]
-        public void Equals_SomeObject_ReturnFalse() {
+        public void Equals_SomeObject_ReturnFalse()
+        {
             Object obj = new object();
             Assert.IsFalse(_disciplina.Equals(obj), "Comparação com um objecto qualquer dá verdadeiro.");
         }
 
         [Test]
-        public void Equals_NullObject_ReturnFalse() {
+        public void Equals_NullObject_ReturnFalse()
+        {
             const object obj = null;
             Assert.IsFalse(_disciplina.Equals(obj), "Comparação com um objecto nulo dá verdadeiro");
         }
 
         [Test]
-        public void Equals_DisciplinaObject_ReturnFalse() {
+        public void Equals_DisciplinaObject_ReturnFalse()
+        {
             Object obj = new Disciplina("D01");
             Assert.IsFalse(_disciplina.Equals(obj), "Comparação com uma disciplina que não a mesma dá verdadeiro.");
         }
 
         [Test]
-        public void Equals_SameObject_ReturnTrue() {
+        public void Equals_SameObject_ReturnTrue()
+        {
             Object obj = _disciplina;
             Assert.IsTrue(_disciplina.Equals(obj), "Comparação com uma a mesma disciplina dá falso.");
         }
 
         [Test]
-        public void EqualityOperator_DisciplinasIguais_ReturnTrue() {
+        public void EqualityOperator_DisciplinasIguais_ReturnTrue()
+        {
             Assert.IsTrue(_disciplina == _disciplina, "Operador de igualdade falha com disciplinas iguais.");
         }
 
         [Test]
-        public void EqualityOperator_DisciplinasDiferentes_ReturnFalse() {
+        public void EqualityOperator_DisciplinasDiferentes_ReturnFalse()
+        {
             Disciplina d = new Disciplina("Disciplina 2");
             Assert.IsFalse(_disciplina == d, "Operador de igualdade falha com disciplinas diferentes.");
         }
 
         [Test]
-        public void InequalityOperator_DisciplinasIguais_ReturnFalse() {
+        public void InequalityOperator_DisciplinasIguais_ReturnFalse()
+        {
             Assert.IsFalse(_disciplina != _disciplina, "Operador de desigualdade falha com disciplinas iguals.");
         }
 
         [Test]
-        public void InequalityOperator_DisciplinasDiferentes_ReturnTrue() {
+        public void InequalityOperator_DisciplinasDiferentes_ReturnTrue()
+        {
             Disciplina d = new Disciplina("Disciplina 2");
             Assert.IsTrue(_disciplina != d, "Operador de desigualdade falha com disciplinas diferentes.");
         }
 
         [Test]
-        public void Constructor_NullArguments_Exception() {
+        public void Constructor_NullArguments_Exception()
+        {
             Assert.Throws<ArgumentNullException>(() => new Disciplina(null));
             Assert.Throws<ArgumentNullException>(() => new Disciplina(null, null));
             Assert.Throws<ArgumentNullException>(() => new Disciplina("", null));
@@ -202,7 +223,8 @@ namespace ATUM.Tests.Manual {
         }
 
         [Test]
-        public void Constructor_ValidArguments_NoException() {
+        public void Constructor_ValidArguments_NoException()
+        {
             Assert.DoesNotThrow(() => new Disciplina("ID"));
             Assert.DoesNotThrow(() => new Disciplina("ID", new List<Turno>()));
         }
