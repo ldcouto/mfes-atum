@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using ATUM.sistema;
@@ -39,6 +40,11 @@ namespace ATUM.Tests.Manual
         [SetUp]
         public void Disciplina_Initialize()
         {
+            Contract.ContractFailed += (sender, e) => {
+                e.SetHandled();
+                e.SetUnwind(); //cause code to abort after event
+                Assert.Fail(e.FailureKind.ToString() + ":" + e.Message);
+            };
             _disciplina = new Disciplina("Disciplina 1");
         }
 
@@ -49,7 +55,8 @@ namespace ATUM.Tests.Manual
 
             _disciplina.AddTurno(turno);
 
-            CollectionAssert.Contains(_disciplina.TurnosDisciplina, turno, "O turno não foi adicionado.");
+            //Assert.Throws<>(() => _disciplina.AddTurno(turno), "Nao sei o que ando  a fazer");
+            CollectionAssert.Contains(_disciplina.TurnosDisciplina, turno, "O sapo não foi adicionado.");
         }
 
         [Test]
