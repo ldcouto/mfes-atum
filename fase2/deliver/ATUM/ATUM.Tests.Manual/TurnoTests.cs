@@ -40,6 +40,11 @@ namespace ATUM.Tests.Manual
         [SetUp]
         public void Turno_Initialize()
         {
+            Contract.ContractFailed += (sender, e) => {
+                e.SetHandled();
+                e.SetUnwind(); //cause code to abort after event
+                Assert.Fail(e.FailureKind.ToString()+"?"+e.Message);
+            };
             _disciplina = new Disciplina("DC01");
             _turno = new Turno("TP01", 10, 1, _disciplina);
             _disciplina.AddTurno(_turno);
