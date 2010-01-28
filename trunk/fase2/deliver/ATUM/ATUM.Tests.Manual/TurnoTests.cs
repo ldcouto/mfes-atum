@@ -12,7 +12,8 @@ namespace ATUM.Tests.Manual
     class TurnoTests
     {
 
-        private Turno turno;
+        private Turno _turno;
+        private Disciplina _disciplina;
 
         #region Additional test attributes
         //
@@ -39,26 +40,30 @@ namespace ATUM.Tests.Manual
         [SetUp]
         public void Turno_Initialize()
         {
-            turno = new Turno("TP01", 10, 1);
+            _disciplina = new Disciplina("DC01");
+            _turno = new Turno("TP01", 10, 1, _disciplina);
+            _disciplina.AddTurno(_turno);
         }
 
         [Test]
         public void Constructor_NullArgument_Exception()
         {
-            Assert.Throws<ArgumentNullException>(() => new Turno(null, 0, 0));
+            Assert.Throws<ArgumentNullException>(() => new Turno(null, 0, 0, _disciplina));
+            Assert.Throws<ArgumentNullException>(() => new Turno("", 0, 0, _disciplina));
+            Assert.Throws<ArgumentNullException>(() => new Turno("id", 0, 0, null));
         }
 
         [Test]
-        public void Constructor_ValidArgument_Exception()
+        public void Constructor_ValidArgument_NoException()
         {
-            Assert.DoesNotThrow(() => new Turno("TP01", 10, 1));
+            Assert.DoesNotThrow(() => new Turno("TP01", 10, 1, _disciplina));
         }
 
         [Test]
         public void TemVagas_ExistemVagas_ReturnTrue()
         {
-            turno.VagasActuais = 10;
-            bool resultado = turno.TemVagas();
+            _turno.VagasActuais = 10;
+            bool resultado = _turno.TemVagas();
 
             Assert.IsTrue(resultado, "Não existem vagas no Turno.");
         }
@@ -66,8 +71,8 @@ namespace ATUM.Tests.Manual
         [Test]
         public void TemVagas_NaoExistemVagas_ReturnFalse()
         {
-            turno.VagasActuais = 0;
-            bool resultado = turno.TemVagas();
+            _turno.VagasActuais = 0;
+            bool resultado = _turno.TemVagas();
 
             Assert.IsFalse(resultado, "Turno tem vagas.");
         }
@@ -75,8 +80,8 @@ namespace ATUM.Tests.Manual
         [Test]
         public void TemVagas_VagasNegativas_ReturnFalse()
         {
-            turno.VagasActuais = 0;
-            turno.VagasActuais--;
+            _turno.VagasActuais = 0;
+            _turno.VagasActuais--;
 
             Assert.AreNotEqual(-1, 0, "Um turno pode ter vagas negativas.");
         }
@@ -84,8 +89,8 @@ namespace ATUM.Tests.Manual
         [Test]
         public void Sobreposto_TurnoSubreposto_ReturnTrue()
         {
-            Turno turno1 = new Turno("TP01", 10, 1);
-            Turno turno2 = new Turno("TP02", 10, 1);
+            Turno turno1 = new Turno("TP01", 10, 1, _disciplina);
+            Turno turno2 = new Turno("TP02", 10, 1, _disciplina);
 
             bool resultado = turno1.Sobreposto(turno2);
 
@@ -95,13 +100,15 @@ namespace ATUM.Tests.Manual
         [Test]
         public void Sobreposto_TurnoNaoSobreposto_ReturnFalse()
         {
-            Turno turno1 = new Turno("TP01", 10, 1);
-            Turno turno2 = new Turno("TP02", 11, 2);
+            Turno turno1 = new Turno("TP01", 10, 1, _disciplina);
+            Turno turno2 = new Turno("TP02", 11, 2, _disciplina);
 
             bool resultado = turno1.Sobreposto(turno2);
 
             Assert.IsFalse(resultado, "Os turnos não sobrepostos, sobrepõem-se.");
         }
+
+        //TODO: Testes mais extensivos do método Sobreposto.
 
         [Test]
         public void Sobreposto_TurnoIgual_Exception()
@@ -109,33 +116,33 @@ namespace ATUM.Tests.Manual
             //bool resultado = turno.Sobreposto(turno);
 
             //Assert.IsFalse(resultado, "Um turno sobrepõe-se a si mesmo.");
-            Assert.Throws<ArgumentNullException>(() => turno.Sobreposto(turno));
+            Assert.Throws<ArgumentNullException>(() => _turno.Sobreposto(_turno));
         }
 
         [Test]
         public void Sobreposto_NullArgument_Exception()
         {
-            Assert.Throws<ArgumentNullException>(() => turno.Sobreposto(null));
+            Assert.Throws<ArgumentNullException>(() => _turno.Sobreposto(null));
         }
 
         [Test]
         public void Equals_Self_ReturnTrue()
         {
-            Assert.IsTrue(turno.Equals(turno), "Comparação consigo mesmo dá falso.");
+            Assert.IsTrue(_turno.Equals(_turno), "Comparação consigo mesmo dá falso.");
         }
 
         [Test]
         public void Equals_NullArgument_ReturnFalse()
         {
-            Assert.IsFalse(turno.Equals(null), "Comparação com nulo dá verdadeiro.");
+            Assert.IsFalse(_turno.Equals(null), "Comparação com nulo dá verdadeiro.");
         }
 
         [Test]
         public void Equals_SomeObject_ReturnFalse()
         {
-            Object obj = new object();
+            var obj = new object();
 
-            Assert.IsFalse(turno.Equals(obj), "Comparação com um objecto qualquer dá cerdadeiro.");
+            Assert.IsFalse(_turno.Equals(obj), "Comparação com um objecto qualquer dá cerdadeiro.");
         }
 
         [Test]
@@ -143,22 +150,22 @@ namespace ATUM.Tests.Manual
         {
             const object obj = null;
 
-            Assert.IsFalse(turno.Equals(obj), "Comparação com um objecto nulo dá verdadeiro.");
+            Assert.IsFalse(_turno.Equals(obj), "Comparação com um objecto nulo dá verdadeiro.");
         }
 
         [Test]
         public void Equals_TurnoObject_ReturnFalse()
         {
-            Object obj = new Turno("TP01", 5, 10);
+            Object obj = new Turno("TP01", 5, 10, _disciplina);
 
-            Assert.IsFalse(turno.Equals(obj), "Comparação com um turno qualquer diferente dá verdadeiro.");
+            Assert.IsFalse(_turno.Equals(obj), "Comparação com um turno qualquer diferente dá verdadeiro.");
         }
 
         [Test]
         public void GetHashCode_MesmoTurno_ReturnEquals()
         {
-            Turno turno1 = new Turno("TP01", 10, 10);
-            Turno turno2 = new Turno("TP01", 10, 10);
+            Turno turno1 = new Turno("TP01", 10, 10, _disciplina);
+            Turno turno2 = new Turno("TP01", 10, 10, _disciplina);
 
             Assert.AreEqual(turno1.GetHashCode(), turno2.GetHashCode(), "Turno iguais dão códigos de hash diferentes.");
         }
@@ -166,10 +173,10 @@ namespace ATUM.Tests.Manual
         [Test]
         public void GetHashCode_TurnosDiferentes_ReturnNotEquals()
         {
-            Turno turno1 = new Turno("TP01", 10, 10);
-            Turno turno2 = new Turno("TP01", 20, 20);
+            Turno turno1 = new Turno("TP01", 10, 10, _disciplina);
+            Turno turno2 = new Turno("TP01", 20, 20, _disciplina);
 
-            Assert.AreNotEqual(turno1.GetHashCode(), turno2.GetHashCode(), "Turno iguais dão códigos de hash diferentes.");
+            Assert.AreNotEqual(turno1.GetHashCode(), turno2.GetHashCode(), "Turno diferentes dão códigos de hash iguais.");
         }
     }
 }
