@@ -94,6 +94,7 @@ namespace ATUM.sistema
         #endregion
 
         #region Membros da Igualdade
+        [Pure]
         public bool Equals(Disciplina other)
         {
             if (ReferenceEquals(null, other)) return false;
@@ -101,6 +102,7 @@ namespace ATUM.sistema
             return Equals(other.Identifier, Identifier) && Equals(other.TurnosDisciplina, TurnosDisciplina);
         }
 
+        [Pure]
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
@@ -109,6 +111,7 @@ namespace ATUM.sistema
             return Equals((Disciplina)obj);
         }
 
+        [Pure]
         public override int GetHashCode()
         {
             unchecked
@@ -117,11 +120,13 @@ namespace ATUM.sistema
             }
         }
 
+        [Pure]
         public static bool operator ==(Disciplina left, Disciplina right)
         {
             return Equals(left, right);
         }
 
+        [Pure]
         public static bool operator !=(Disciplina left, Disciplina right)
         {
             return !Equals(left, right);
