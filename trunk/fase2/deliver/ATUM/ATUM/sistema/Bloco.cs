@@ -74,7 +74,7 @@ namespace ATUM.sistema
         {
             Contract.Requires<ArgumentNullException>(turno != null, "O turno a ser removido não pode ser nulo.");
             Contract.Requires<ArgumentException>(TurnosBloco.Contains(turno), "O turno a ser removido ainda tem de pertencer á lista de turnos do bloco.");
-            Contract.Ensures(TurnosBloco.Contains(turno));
+            Contract.Ensures(!TurnosBloco.Contains(turno));
 
             return TurnosBloco.Remove(turno);
         }
@@ -83,6 +83,7 @@ namespace ATUM.sistema
         /// Averigua se um Bloco ainda tem vagas disponíveis.
         /// </summary>
         /// <returns>True se ainda existirem vagas. False, caso contrário.</returns>
+        [Pure]
         public bool TemVagas()
         {
             Contract.Ensures(Contract.ForAll(TurnosBloco, t => t.TemVagas()));
@@ -103,10 +104,12 @@ namespace ATUM.sistema
             foreach (Turno turno in TurnosBloco)
                 turno.VagasActuais--;
         }
+
         /// <summary>
         /// Calcula as Disciplinas associadas ao Bloco.
         /// </summary>
         /// <returns>Lista de Disciplinas que têm turnos no Bloco.</returns>
+        [Pure]
         public IList<Disciplina> GetDiscsDoBloco()
         {
             var r = new List<Disciplina>();
@@ -125,13 +128,14 @@ namespace ATUM.sistema
         /// </summary>
         /// <param name="turno">O Turno a ser comparado com os Turnos do Bloco.</param>
         /// <returns>True se o Turno se sobrepõe com algum outro Turno do Bloco.</returns>
+        [Pure]
         private bool TurnosSobrepostos(Turno turno)
         {
-            if (turno == null) throw new ArgumentNullException("turno");
+            Contract.Requires<ArgumentNullException>(turno == null);
 
             foreach (Turno t in TurnosBloco)
             {
-                if (t != null && turno.Sobreposto(t)) return true;
+                if (turno.Sobreposto(t)) return true;
             }
             return false;
         }
