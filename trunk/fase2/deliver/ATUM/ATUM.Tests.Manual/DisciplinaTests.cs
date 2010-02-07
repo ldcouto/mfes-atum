@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
 using ATUM.sistema;
 using NUnit.Framework;
 
@@ -40,15 +38,35 @@ namespace ATUM.Tests.Manual
         [SetUp]
         public void Disciplina_Initialize()
         {
-            Contract.ContractFailed += (sender, e) => {
+            Contract.ContractFailed += (sender, e) =>
+            {
                 e.SetHandled();
                 e.SetUnwind(); //cause code to abort after event
                 Assert.Fail(e.FailureKind.ToString() + ":" + e.Message);
             };
+
             _disciplina = new Disciplina("Disciplina 1");
         }
 
         [Test]
+        [ExpectedException("System.Diagnostics.Contracts.ContractException")]
+        public void Constructor_NullArguments_Exception()
+        {
+            new Disciplina(null);
+            new Disciplina(null, null);
+            new Disciplina("", null);
+            new Disciplina("*", null);
+        }
+
+        [Test]
+        public void Constructor_ValidArguments_NoException()
+        {
+            Assert.DoesNotThrow(() => new Disciplina("ID"));
+            Assert.DoesNotThrow(() => new Disciplina("ID", new List<Turno>()));
+        }
+
+        [Test]
+
         public void AddTurno_TurnoValido_TurnoAdicionado()
         {
             Turno turno = new Turno("TP01", 10, 1, _disciplina);
@@ -60,16 +78,17 @@ namespace ATUM.Tests.Manual
         }
 
         [Test]
+        [ExpectedException("System.Diagnostics.Contracts.ContractException")]
         public void AddTurno_TurnoDuplicado_ApenasUmTurnoAdicionado()
         {
             Turno turno1 = new Turno("TP01", 10, 1, _disciplina);
             Turno turno2 = new Turno("TP01", 10, 1, _disciplina);
 
             _disciplina.AddTurno(turno1);
-            //_disciplina.AddTurno(turno2);
+            _disciplina.AddTurno(turno2);
 
             //Assert.IsFalse(_disciplina.TurnosDisciplina.Count > 1, "Adicionou dois turnos iguais.");
-            Assert.Throws<ArgumentException>(() => _disciplina.AddTurno(turno2), "Adicionou dois turnos iguais.");
+            //Assert.Throws<ArgumentException>(() => _disciplina.AddTurno(turno2), "Adicionou dois turnos iguais.");
         }
 
         [Test]
@@ -89,15 +108,16 @@ namespace ATUM.Tests.Manual
         }
 
         [Test]
+        [ExpectedException("System.Diagnostics.Contracts.ContractException")]
         public void AddTurno_NullArguments_Exception()
         {
-            Assert.Throws<ArgumentNullException>(() => _disciplina.AddTurno(null), "Foi adicionado um turno nulo.");
+            _disciplina.AddTurno(null);
+            //Assert.Throws<ArgumentNullException>(() => _disciplina.AddTurno(null), "Foi adicionado um turno nulo.");
         }
 
         [Test]
         public void RemoveTurno_TurnoExistente_TurnoRemovido()
         {
-
             Turno turno = new Turno("TP01", 10, 1, _disciplina);
 
             _disciplina.AddTurno(turno);
@@ -109,21 +129,21 @@ namespace ATUM.Tests.Manual
         }
 
         [Test]
+        [ExpectedException("System.Diagnostics.Contracts.ContractException")]
         public void RemoveTurno_TurnoInexistente_TurnoNaoRemovido()
         {
             Turno turno = new Turno("TP01", 10, 1, _disciplina);
 
-            //bool resultado = _disciplina.RemoveTurno(turno);
-
-            //Assert.IsFalse(resultado, "O turno não existente foi removido.");
-            //CollectionAssert.DoesNotContain(_disciplina.TurnosDisciplina, turno, "O turno existe na lista.");
-            Assert.Throws<ArgumentNullException>(() => _disciplina.RemoveTurno(turno));
+            _disciplina.RemoveTurno(turno);
+            //Assert.Throws<ArgumentNullException>(() => _disciplina.RemoveTurno(turno));
         }
 
         [Test]
+        [ExpectedException("System.Diagnostics.Contracts.ContractException")]
         public void RemoveTurno_NullArguments_Exception()
         {
-            Assert.Throws<ArgumentNullException>(() => _disciplina.RemoveTurno(null), "Foi removido um turno nulo.");
+            _disciplina.RemoveTurno(null);
+            //Assert.Throws<ArgumentNullException>(() => _disciplina.RemoveTurno(null), "Foi removido um turno nulo.");
         }
 
         [Test]
@@ -220,21 +240,7 @@ namespace ATUM.Tests.Manual
             Assert.IsTrue(_disciplina != d, "Operador de desigualdade falha com disciplinas diferentes.");
         }
 
-        [Test]
-        public void Constructor_NullArguments_Exception()
-        {
-            Assert.Throws<ArgumentNullException>(() => new Disciplina(null));
-            Assert.Throws<ArgumentNullException>(() => new Disciplina(null, null));
-            Assert.Throws<ArgumentNullException>(() => new Disciplina("", null));
-            Assert.Throws<ArgumentNullException>(() => new Disciplina("*", null));
-        }
 
-        [Test]
-        public void Constructor_ValidArguments_NoException()
-        {
-            Assert.DoesNotThrow(() => new Disciplina("ID"));
-            Assert.DoesNotThrow(() => new Disciplina("ID", new List<Turno>()));
-        }
 
     }
 }

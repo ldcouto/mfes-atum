@@ -40,22 +40,26 @@ namespace ATUM.Tests.Manual
         [SetUp]
         public void Turno_Initialize()
         {
-            Contract.ContractFailed += (sender, e) => {
+            Contract.ContractFailed += (sender, e) =>
+            {
                 e.SetHandled();
                 e.SetUnwind(); //cause code to abort after event
-                Assert.Fail(e.FailureKind.ToString()+"?"+e.Message);
+                Assert.Fail(e.FailureKind.ToString() + ":" + e.Message);
             };
+
             _disciplina = new Disciplina("DC01");
             _turno = new Turno("TP01", 10, 1, _disciplina);
             _disciplina.AddTurno(_turno);
         }
 
         [Test]
+        //[ExpectedException ("System.ArgumentNullException")]
+        [ExpectedException("System.Diagnostics.Contracts.ContractException")]
         public void Constructor_NullArgument_Exception()
         {
-            Assert.Throws<ArgumentNullException>(() => new Turno(null, 0, 0, _disciplina));
-            Assert.Throws<ArgumentNullException>(() => new Turno("", 0, 0, _disciplina));
-            Assert.Throws<ArgumentNullException>(() => new Turno("id", 0, 0, null));
+            new Turno(null, 0, 0, _disciplina);
+            new Turno("", 0, 0, _disciplina);
+            new Turno("id", 0, 0, null);
         }
 
         [Test]
@@ -116,18 +120,21 @@ namespace ATUM.Tests.Manual
         //TODO: Testes mais extensivos do método Sobreposto.
 
         [Test]
+        [ExpectedException("System.Diagnostics.Contracts.ContractException")]
         public void Sobreposto_TurnoIgual_Exception()
         {
+            _turno.Sobreposto(_turno);
             //bool resultado = turno.Sobreposto(turno);
-
             //Assert.IsFalse(resultado, "Um turno sobrepõe-se a si mesmo.");
-            Assert.Throws<ArgumentNullException>(() => _turno.Sobreposto(_turno));
+            //Assert.Throws<ArgumentException>(() => _turno.Sobreposto(_turno));
         }
 
         [Test]
+        [ExpectedException("System.Diagnostics.Contracts.ContractException")]
         public void Sobreposto_NullArgument_Exception()
         {
-            Assert.Throws<ArgumentNullException>(() => _turno.Sobreposto(null));
+            _turno.Sobreposto(null);
+            //Assert.Throws<ArgumentNullException>(() => _turno.Sobreposto(null));
         }
 
         [Test]
