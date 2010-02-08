@@ -21,13 +21,32 @@ namespace ATUM.sistema {
         /// Lista de Alunos que já foram processados.
         /// </summary>
         public List<Aluno> Processados { get; private set; }
-        #endregion
 
+        /// <summary>
+        /// Lista de Disciplinas disponíveis no sistema.
+        /// </summary>
+        public List<Disciplina> Disciplinas { get; set; }
+
+        /// <summary>
+        /// Lista de Turnos disponíveis no sistema.
+        /// </summary>
+        public List<Turno> Turnos { get; set; }
+
+        /// <summary>
+        /// Lista de Blocos disponíveis no sistema.
+        /// </summary>
+        public List<Bloco> Blocos { get; set; }
+
+        #endregion
+        
         #region Construtores
 
         public Atum() {
             this.Alunos = new Queue<Aluno>();
             this.Processados = new List<Aluno>();
+            this.Disciplinas = new List<Disciplina>();
+            this.Turnos = new List<Turno>();
+            this.Blocos = new List<Bloco>();
         }
 
         #endregion
@@ -62,52 +81,6 @@ namespace ATUM.sistema {
 
             AlocaBloco(a);
             AlocaDisciplina(a);
-        }
-
-        /// <summary>
-        /// Método para comprar dois Alunos pela sua ordem na fila do sistema.
-        /// </summary>
-        /// <param name="a1">O primeiro Aluno a ser comparado.</param>
-        /// <param name="a2">O segundo Aluno a ser comparado.</param>
-        /// <returns>-1: a1 vem antes na ordem. 1: a2 vem antes na ordem. 0: nenhum aluno está na fila.</returns>
-        private int ComparaAlunos(Aluno a1, Aluno a2) {
-            foreach (var x in this.Alunos) {
-                if (x == a1) return -1;
-                if (x == a2) return 0;
-            }
-            return 0;
-        }
-
-        /// <summary>
-        /// Método auxiliar para garantir que nenhum Aluno pior está alocado a um Turno da Disciplina.
-        /// </summary>
-        /// <param name="aluno">O Aluno contra o qual iremos testar.</param>
-        /// <param name="disciplina">A Disciplina em que iremos testar.</param>
-        /// <returns>True caso todos os Alunos alocados a Turnos da Disciplina sejam melhores. False caso contrário.</returns>
-        public bool NinguemPior(Aluno aluno, Disciplina disciplina) {
-            var aux = new List<Turno>();
-            foreach (Bloco b in aluno.PreferenciasBlocos)
-                aux.AddRange(b.TurnosBloco);
-
-            foreach (Aluno x in Alunos) {
-                if (x.Equals(aluno))
-                    return true;
-                if (x.AlocadoTurno.Intersect(aux).Count() > 0)
-                    return false;
-            }
-            return true;
-        }
-
-        /// <summary>
-        /// Método auxiliar para garantir que um Aluno está alocado a algum Turno da Disciplina.
-        /// </summary>
-        /// <param name="a">O Aluno a testar.</param>
-        /// <param name="d">A Disciplina a testar.</param>
-        /// <returns>True caso o Aluno esta alocado a algum Turno da Disciplina. False caso contrário.</returns>
-        public bool AlunoTaNaDisc(Aluno a, Disciplina d) {
-            var turnosEmComum = a.AlocadoTurno.Intersect(d.TurnosDisciplina);
-            int r = turnosEmComum.Count();
-            return r == 1;
         }
 
         /// <summary>
@@ -159,6 +132,88 @@ namespace ATUM.sistema {
 
             return dna;
         }
+        #endregion
+
+        #region Invariantes
+        [ContractInvariantMethod]
+        protected void ObjectInvariant() {
+            // Garantir que um Turno pretence apenas a uma Disciplina
+            Contract.Invariant(Contract.ForAll(this.Disciplinas, (Disciplina d)
+                => (Contract.ForAll(d.TurnosDisciplina, (Turno t) => t.Disciplina == d))));
+            // Garantir que um Bloco só tem um turno por disciplina
+            Contract.Invariant(Contract.ForAll(Blocos, (Bloco b)
+                 => b.GetDiscsDoBloco().Distinct() == b.GetDiscsDoBloco()));
+
+        }
+        #endregion
+
+        #region Métodos Auxiliares de Contratos
+
+        // Não tá a ser usado!
+        /// <summary>
+        /// Método para verificar se um Turno apenas pertence a uma Disciplina.
+        /// </summary>
+        /// <param name="t">O Turno a verificar.</param>
+        /// <returns>True se o Turno apenas pertencer a uma Disciplina. Falso caso contrário.</returns>
+        public bool TurnoSoDumaDisc(Turno t)
+        {
+            uint gots = 0;
+            foreach (var d in this.Disciplinas)
+            {
+                if (d.TurnosDisciplina.Contains(t))
+                    gots++;
+                if (gots > 1)
+                    return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Método para comprar dois Alunos pela sua ordem na fila do sistema.
+        /// </summary>
+        /// <param name="a1">O primeiro Aluno a ser comparado.</param>
+        /// <param name="a2">O segundo Aluno a ser comparado.</param>
+        /// <returns>-1: a1 vem antes na ordem. 1: a2 vem antes na ordem. 0: nenhum aluno está na fila.</returns>
+        private int ComparaAlunos(Aluno a1, Aluno a2) {
+            foreach (var x in this.Alunos) {
+                if (x == a1) return -1;
+                if (x == a2) return 0;
+            }
+            return 0;
+        }
+
+        /// <summary>
+        /// Método auxiliar para garantir que nenhum Aluno pior está alocado a um Turno da Disciplina.
+        /// </summary>
+        /// <param name="aluno">O Aluno contra o qual iremos testar.</param>
+        /// <param name="disciplina">A Disciplina em que iremos testar.</param>
+        /// <returns>True caso todos os Alunos alocados a Turnos da Disciplina sejam melhores. False caso contrário.</returns>
+        public bool NinguemPior(Aluno aluno, Disciplina disciplina) {
+            var aux = new List<Turno>();
+            foreach (Bloco b in aluno.PreferenciasBlocos)
+                aux.AddRange(b.TurnosBloco);
+
+            foreach (Aluno x in Alunos) {
+                if (x.Equals(aluno))
+                    return true;
+                if (x.AlocadoTurno.Intersect(aux).Count() > 0)
+                    return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Método auxiliar para garantir que um Aluno está alocado a algum Turno da Disciplina.
+        /// </summary>
+        /// <param name="a">O Aluno a testar.</param>
+        /// <param name="d">A Disciplina a testar.</param>
+        /// <returns>True caso o Aluno esta alocado a algum Turno da Disciplina. False caso contrário.</returns>
+        public bool AlunoTaNaDisc(Aluno a, Disciplina d) {
+            var turnosEmComum = a.AlocadoTurno.Intersect(d.TurnosDisciplina);
+            int r = turnosEmComum.Count();
+            return r == 1;
+        }
+
         #endregion
 
     }
