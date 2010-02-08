@@ -16,7 +16,7 @@ namespace ATUM.sistema {
         /// <summary>
         /// Fila de Alunos. A ordem da fila será a ordem pela qual os alunos vão ser processados.
         /// </summary>
-        public Queue<Aluno> Alunos { get; private set; }
+        public List<Aluno> Alunos { get; private set; }
 
         /// <summary>
         /// Lista de Alunos que já foram processados.
@@ -43,7 +43,7 @@ namespace ATUM.sistema {
         #region Construtores
 
         public Atum() {
-            Alunos = new Queue<Aluno>();
+            Alunos = new List<Aluno>();
             Disciplinas = new List<Disciplina>();
             Turnos = new List<Turno>();
             Blocos = new List<Bloco>();
@@ -57,12 +57,10 @@ namespace ATUM.sistema {
         /// Método para processar e alocar os Alunos.
         /// </summary>
         public void ProcessaAlocacoes() {
-            Aluno aluno = Alunos.Dequeue();
-
-            while (Alunos.Count > 0) {
+            Alunos.Sort(Aluno.CompareAlunosByOrd);
+            foreach (var aluno in Alunos) {
                 AlocaAluno(aluno);
                 Processados.Add(aluno);
-                aluno = Alunos.Dequeue();
             }
         }
 
@@ -150,6 +148,13 @@ namespace ATUM.sistema {
             // Garantir que não há dois blocos com a mesma lista de turnos
             Contract.Invariant(Contract.ForAll(Blocos, (Bloco b1)
                 => (Contract.ForAll(Blocos, (Bloco b2) => b1 == b2 || b1.TurnosBloco != b2.TurnosBloco))));
+            // Garantir que os Alunos estão correctamente ordenados
+            Contract.Invariant(Contract.ForAll(Alunos, (Aluno a) => ) );
+            // ALOCAÇÃO
+            // Garantir que os melhores alunos são processados primeiro
+
+            //	all ap: at.processados | all anp: at.inscritos.Disciplina - at.processados | rank/lt[ap,anp]
+
         }
 
         #endregion
@@ -162,40 +167,39 @@ namespace ATUM.sistema {
         /// <param name="l">Lista a testar.</param>
         /// <returns>True caso não haja duplicados False caso contrário.</returns>
         [Pure]
-        public static bool NaoTemDups(IList l)
-        {
+        public static bool NaoTemDups(IList l) {
             for (int i = 0; i < l.Count; i++)
                 for (int j = 0; j < l.Count; j++)
                     if (i != j && l[i] == l[j])
                         return false;
             return true;
         }
-/*
-        public bool NaoTemDups(List<Disciplina> l) {
-            l.Sort();
-            for (int i = 0; i < l.Count; i++)
-                if (l[i] == l[i + 1])
-                    return false;
-            return true;
-        }
+        /*
+                public bool NaoTemDups(List<Disciplina> l) {
+                    l.Sort();
+                    for (int i = 0; i < l.Count; i++)
+                        if (l[i] == l[i + 1])
+                            return false;
+                    return true;
+                }
 
-        public static bool NaoTemDups(List<Bloco> l) {
-            l.Sort();
-            for (int i = 0; i < l.Count; i++)
-                if (l[i] == l[i + 1])
-                    return false;
-            return true;
-        }
+                public static bool NaoTemDups(List<Bloco> l) {
+                    l.Sort();
+                    for (int i = 0; i < l.Count; i++)
+                        if (l[i] == l[i + 1])
+                            return false;
+                    return true;
+                }
 
-        public static bool NaoTemDups(List<int> l)
-        {
-            l.Sort();
-            for (int i = 0; i < l.Count; i++)
-                if (l[i] == l[i + 1])
-                    return false;
-            return true;
-        }
-        */
+                public static bool NaoTemDups(List<int> l)
+                {
+                    l.Sort();
+                    for (int i = 0; i < l.Count; i++)
+                        if (l[i] == l[i + 1])
+                            return false;
+                    return true;
+                }
+                */
         // Não tá a ser usado!
         /// <summary>
         /// Método para verificar se um Turno apenas pertence a uma Disciplina.
