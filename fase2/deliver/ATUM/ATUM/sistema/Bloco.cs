@@ -29,7 +29,7 @@ namespace ATUM.sistema
         /// <param name="id">Identificação do Bloco.</param>
         public Bloco(String id)
         {
-            Contract.Requires<ArgumentNullException>(!String.IsNullOrEmpty(id), "O nome do bloco não pode ser vazio nem nulo.");
+            Contract.Requires<ArgumentNullException>(id != null, "id");
 
             Identifier = id;
             TurnosBloco = new List<Turno>();
