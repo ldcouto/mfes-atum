@@ -38,7 +38,7 @@ namespace ATUM.sistema {
         public List<Bloco> Blocos { get; set; }
 
         #endregion
-        
+
         #region Construtores
 
         public Atum() {
@@ -143,8 +143,14 @@ namespace ATUM.sistema {
             // Garantir que um Bloco só tem um turno por disciplina
             Contract.Invariant(Contract.ForAll(Blocos, (Bloco b)
                  => b.GetDiscsDoBloco().Distinct() == b.GetDiscsDoBloco()));
-
+            // Garantir que as vagas batem certo
+            Contract.Invariant(Contract.ForAll(Turnos, (Turno t) => t.VagasActuais <= t.VagasInicias));
+            Contract.Invariant(Contract.ForAll(Turnos, (Turno t) => t.VagasInicias == t.VagasActuais + getAlunosTurno(t).Count()));
+            // Garantir que não há dois blocos com a mesma lista de turnos
+            Contract.Invariant(Contract.ForAll(Blocos, (Bloco b1)
+                => (Contract.ForAll(Blocos, (Bloco b2) => b1 == b2 || b1.TurnosBloco != b2.TurnosBloco)))) ;
         }
+
         #endregion
 
         #region Métodos Auxiliares de Contratos
@@ -155,11 +161,9 @@ namespace ATUM.sistema {
         /// </summary>
         /// <param name="t">O Turno a verificar.</param>
         /// <returns>True se o Turno apenas pertencer a uma Disciplina. Falso caso contrário.</returns>
-        public bool TurnoSoDumaDisc(Turno t)
-        {
+        public bool TurnoSoDumaDisc(Turno t) {
             uint gots = 0;
-            foreach (var d in this.Disciplinas)
-            {
+            foreach (var d in this.Disciplinas) {
                 if (d.TurnosDisciplina.Contains(t))
                     gots++;
                 if (gots > 1)
@@ -212,6 +216,19 @@ namespace ATUM.sistema {
             var turnosEmComum = a.AlocadoTurno.Intersect(d.TurnosDisciplina);
             int r = turnosEmComum.Count();
             return r == 1;
+        }
+
+        /// <summary>
+        /// Método auxiliar para obter a lista de Alunos alocados a um Turno.
+        /// </summary>
+        /// <param name="t">O Turno cuja lista de pretende.</param>
+        /// <returns>A lista de Alunos que estão alocados ao Turno.</returns>
+        public IList<Aluno> getAlunosTurno(Turno t) {
+            var r = new List<Aluno>();
+            foreach (var aluno in Alunos)
+                if (aluno.AlocadoTurno.Contains(t))
+                    r.Add(aluno);
+            return r;
         }
 
         #endregion
