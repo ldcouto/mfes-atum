@@ -42,6 +42,10 @@ namespace ATUM.sistema
         /// </summary>
         public bool Processado { get; set; }
 
+        /// <summary>
+        /// Indica a posição do Aluno na ordem do sistema.
+        /// </summary>
+        public uint NumOrdem { get; set; }
         
         #endregion
 
@@ -58,6 +62,7 @@ namespace ATUM.sistema
 
             PreferenciasBlocos = new List<Bloco>();
             Processado = false;
+            NumOrdem = 0;
         }
 
         /// <summary>
@@ -72,6 +77,7 @@ namespace ATUM.sistema
             AlocadoTurno = new List<Turno>();
 
             PreferenciasBlocos = new List<Bloco>();
+            NumOrdem = 0;
             Processado = false;
         }
 
@@ -85,6 +91,8 @@ namespace ATUM.sistema
             Identifier = identifier;
             Inscrito = inscrito;
             PreferenciasBlocos = preferenciasBlocos;
+            NumOrdem = 0;
+            Processado = false;
         }
         #endregion
 
@@ -98,6 +106,16 @@ namespace ATUM.sistema
                 Inscrito.Add(d);
         }
 
+        public static int CompareAlunosByOrd(Aluno x, Aluno y)
+        {
+            if (x == null)
+                if (y == null)
+                    return 0;
+                else return -1;
+            if (y == null)
+                return 1;
+            return x.NumOrdem.CompareTo(y.NumOrdem);
+        }
 
         /// <summary>
         /// Remove uma Disciplina das inscrições do Aluno.
