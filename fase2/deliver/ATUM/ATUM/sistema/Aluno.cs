@@ -132,7 +132,7 @@ namespace ATUM.sistema
 
         #region Invariantes
         [ContractInvariantMethod]
-        protected void ObjectInvariant() {
+        private void ObjectInvariant() {
             // Garantir que se um aluno está alocado num bloco, então está alocado a todos os turnos dele
             Contract.Invariant(!(AlocadoBloco != null) ||
                                Enumerable.Intersect(AlocadoBloco.TurnosBloco, AlocadoTurno) == AlocadoBloco.TurnosBloco);
@@ -146,12 +146,12 @@ namespace ATUM.sistema
             // (Estes dois eram mais um workaround ao Alloy)
             // Garantir que um Aluno apenas é alocado em Turnos de Disciplinas em que está matriculado
             Contract.Invariant(Contract.ForAll(AlocadoTurno, (Turno t) => Inscrito.Contains(t.Disciplina) && t.Disciplina != null));
-            // Um aluno não pode preferir o mesmo bloco duas vezes
-            Contract.Invariant(PreferenciasBlocos.Distinct()==PreferenciasBlocos);
+            // Um aluno não pode preferir o mesmo bloco duas vezes  
+            Contract.Invariant(Atum.NaoTemDups((List<Bloco>)PreferenciasBlocos));
             // Um aluno não pode estar alocado em turnos sobre opostos
    //         Contract.Invariant(Contract.ForAll(AlocadoTurno, (Turno t1)
      //           => Contract.ForAll(AlocadoTurno, (Turno t2) => t1 == t2 || !t1.Sobreposto(t2))));
-            Contract.Invariant(AlocadoTurno.Select(x => x.Spot).Distinct() == AlocadoTurno.Select(x => x.Spot));
+            Contract.Invariant(Atum.NaoTemDups(AlocadoTurno.Select(x => x.Spot).ToList()));
         }
         #endregion
     }

@@ -129,7 +129,7 @@ namespace ATUM.sistema
         /// <param name="turno">O Turno a ser comparado com os Turnos do Bloco.</param>
         /// <returns>True se o Turno se sobrepõe com algum outro Turno do Bloco.</returns>
         [Pure]
-        private bool TurnosSobrepostos(Turno turno)
+        public bool TurnosSobrepostos(Turno turno)
         {
             Contract.Requires<ArgumentNullException>(turno != null);
 
@@ -178,7 +178,7 @@ namespace ATUM.sistema
 
         #region Invariantes
         [ContractInvariantMethod]
-        protected void ObjectInvariant() {
+        private void ObjectInvariant() {
             // Garantir que um bloco não tem turnos sem disciplina
             Contract.Invariant( (TurnosBloco == null) || Contract.ForAll(TurnosBloco, (Turno t) => t.Disciplina != null) );
             Contract.Invariant( (TurnosBloco == null) || Contract.ForAll(TurnosBloco, (Turno t1) 

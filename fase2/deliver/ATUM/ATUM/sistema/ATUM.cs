@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics.Contracts;
@@ -42,11 +43,11 @@ namespace ATUM.sistema {
         #region Construtores
 
         public Atum() {
-            this.Alunos = new Queue<Aluno>();
-            this.Processados = new List<Aluno>();
-            this.Disciplinas = new List<Disciplina>();
-            this.Turnos = new List<Turno>();
-            this.Blocos = new List<Bloco>();
+            Alunos = new Queue<Aluno>();
+            Disciplinas = new List<Disciplina>();
+            Turnos = new List<Turno>();
+            Blocos = new List<Bloco>();
+            Processados = new List<Aluno>();
         }
 
         #endregion
@@ -136,25 +137,65 @@ namespace ATUM.sistema {
 
         #region Invariantes
         [ContractInvariantMethod]
-        protected void ObjectInvariant() {
+        private void ObjectInvariant() {
             // Garantir que um Turno pretence apenas a uma Disciplina
-            Contract.Invariant(Contract.ForAll(this.Disciplinas, (Disciplina d)
+            Contract.Invariant(Contract.ForAll(Disciplinas, (Disciplina d)
                 => (Contract.ForAll(d.TurnosDisciplina, (Turno t) => t.Disciplina == d))));
             // Garantir que um Bloco só tem um turno por disciplina
-            Contract.Invariant(Contract.ForAll(Blocos, (Bloco b)
-                 => b.GetDiscsDoBloco().Distinct() == b.GetDiscsDoBloco()));
+            Contract.Invariant(Contract.ForAll(Blocos, (Bloco b) =>
+                NaoTemDups((List<Disciplina>)b.GetDiscsDoBloco())));
             // Garantir que as vagas batem certo
             Contract.Invariant(Contract.ForAll(Turnos, (Turno t) => t.VagasActuais <= t.VagasInicias));
             Contract.Invariant(Contract.ForAll(Turnos, (Turno t) => t.VagasInicias == t.VagasActuais + getAlunosTurno(t).Count()));
             // Garantir que não há dois blocos com a mesma lista de turnos
             Contract.Invariant(Contract.ForAll(Blocos, (Bloco b1)
-                => (Contract.ForAll(Blocos, (Bloco b2) => b1 == b2 || b1.TurnosBloco != b2.TurnosBloco)))) ;
+                => (Contract.ForAll(Blocos, (Bloco b2) => b1 == b2 || b1.TurnosBloco != b2.TurnosBloco))));
         }
 
         #endregion
 
         #region Métodos Auxiliares de Contratos
 
+        /// <summary>
+        /// Método auxiliar para verificar a existência de duplicados numa lista.
+        /// </summary>
+        /// <param name="l">Lista a testar.</param>
+        /// <returns>True caso não haja duplicados False caso contrário.</returns>
+        [Pure]
+        public static bool NaoTemDups(IList l)
+        {
+            for (int i = 0; i < l.Count; i++)
+                for (int j = 0; j < l.Count; j++)
+                    if (i != j && l[i] == l[j])
+                        return false;
+            return true;
+        }
+/*
+        public bool NaoTemDups(List<Disciplina> l) {
+            l.Sort();
+            for (int i = 0; i < l.Count; i++)
+                if (l[i] == l[i + 1])
+                    return false;
+            return true;
+        }
+
+        public static bool NaoTemDups(List<Bloco> l) {
+            l.Sort();
+            for (int i = 0; i < l.Count; i++)
+                if (l[i] == l[i + 1])
+                    return false;
+            return true;
+        }
+
+        public static bool NaoTemDups(List<int> l)
+        {
+            l.Sort();
+            for (int i = 0; i < l.Count; i++)
+                if (l[i] == l[i + 1])
+                    return false;
+            return true;
+        }
+        */
         // Não tá a ser usado!
         /// <summary>
         /// Método para verificar se um Turno apenas pertence a uma Disciplina.
