@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Linq;
 
 namespace ATUM.sistema
 {
@@ -127,6 +128,31 @@ namespace ATUM.sistema
             AlocadoTurno.Add(t);
         }
 
+        #endregion
+
+        #region Invariantes
+        [ContractInvariantMethod]
+        protected void ObjectInvariant() {
+            // Garantir que se um aluno está alocado num bloco, então está alocado a todos os turnos dele
+            Contract.Invariant(!(AlocadoBloco != null) ||
+                               Enumerable.Intersect(AlocadoBloco.TurnosBloco, AlocadoTurno) == AlocadoBloco.TurnosBloco);
+            // Garantir que um aluno só tem preferências por blocos para os quais está inscrito a todas as disciplinas
+            Contract.Invariant(Contract.ForAll(PreferenciasBlocos, (Bloco b) 
+                => Contract.ForAll(b.TurnosBloco, (Turno t) => Inscrito.Contains(t.Disciplina))) );
+            // Garantir que un aluno não processado não é alocado
+            Contract.Invariant(this.Processado || this.AlocadoTurno.Count==0 && this.AlocadoBloco == null);
+            // Garantir que um aluno só é alocado se estiver inscrito 
+            // Garantir que um aluno não é alocado a Turnos "inúteis"
+            // (Estes dois eram mais um workaround ao Alloy)
+            // Garantir que um Aluno apenas é alocado em Turnos de Disciplinas em que está matriculado
+            Contract.Invariant(Contract.ForAll(AlocadoTurno, (Turno t) => Inscrito.Contains(t.Disciplina) && t.Disciplina != null));
+            // Um aluno não pode preferir o mesmo bloco duas vezes
+            Contract.Invariant(PreferenciasBlocos.Distinct()==PreferenciasBlocos);
+            // Um aluno não pode estar alocado em turnos sobre opostos
+   //         Contract.Invariant(Contract.ForAll(AlocadoTurno, (Turno t1)
+     //           => Contract.ForAll(AlocadoTurno, (Turno t2) => t1 == t2 || !t1.Sobreposto(t2))));
+            Contract.Invariant(AlocadoTurno.Select(x => x.Spot).Distinct() == AlocadoTurno.Select(x => x.Spot));
+        }
         #endregion
     }
 }
