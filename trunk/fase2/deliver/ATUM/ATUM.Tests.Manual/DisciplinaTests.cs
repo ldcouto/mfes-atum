@@ -49,13 +49,12 @@ namespace ATUM.Tests.Manual
         }
 
         [Test]
-        [ExpectedException("System.Diagnostics.Contracts.ContractException")]
         public void Constructor_NullArguments_Exception()
         {
-            new Disciplina(null);
-            new Disciplina(null, null);
-            new Disciplina("", null);
-            new Disciplina("*", null);
+            Assert.Throws<ArgumentNullException>(() => new Disciplina(null));
+            Assert.Throws<ArgumentNullException>(() => new Disciplina(null, null));
+            Assert.Throws<ArgumentNullException>(() => new Disciplina("", null));
+            Assert.Throws<ArgumentNullException>(() => new Disciplina("*", null));
         }
 
         [Test]
@@ -78,7 +77,6 @@ namespace ATUM.Tests.Manual
         }
 
         [Test]
-        [ExpectedException("System.Diagnostics.Contracts.ContractException")]
         public void AddTurno_TurnoDuplicado_ApenasUmTurnoAdicionado()
         {
             Turno turno1 = new Turno("TP01", 10, 1, _disciplina);
@@ -88,7 +86,7 @@ namespace ATUM.Tests.Manual
             _disciplina.AddTurno(turno2);
 
             //Assert.IsFalse(_disciplina.TurnosDisciplina.Count > 1, "Adicionou dois turnos iguais.");
-            //Assert.Throws<ArgumentException>(() => _disciplina.AddTurno(turno2), "Adicionou dois turnos iguais.");
+            Assert.Throws<ArgumentException>(() => _disciplina.AddTurno(turno2), "Adicionou dois turnos iguais.");
         }
 
         [Test]
@@ -108,11 +106,10 @@ namespace ATUM.Tests.Manual
         }
 
         [Test]
-        [ExpectedException("System.Diagnostics.Contracts.ContractException")]
         public void AddTurno_NullArguments_Exception()
         {
             _disciplina.AddTurno(null);
-            //Assert.Throws<ArgumentNullException>(() => _disciplina.AddTurno(null), "Foi adicionado um turno nulo.");
+            Assert.Throws<ArgumentNullException>(() => _disciplina.AddTurno(null), "Foi adicionado um turno nulo.");
         }
 
         [Test]
@@ -129,21 +126,17 @@ namespace ATUM.Tests.Manual
         }
 
         [Test]
-        [ExpectedException("System.Diagnostics.Contracts.ContractException")]
         public void RemoveTurno_TurnoInexistente_TurnoNaoRemovido()
         {
             Turno turno = new Turno("TP01", 10, 1, _disciplina);
 
-            _disciplina.RemoveTurno(turno);
-            //Assert.Throws<ArgumentNullException>(() => _disciplina.RemoveTurno(turno));
+            Assert.Throws<ArgumentNullException>(() => _disciplina.RemoveTurno(turno));
         }
 
         [Test]
-        [ExpectedException("System.Diagnostics.Contracts.ContractException")]
         public void RemoveTurno_NullArguments_Exception()
         {
-            _disciplina.RemoveTurno(null);
-            //Assert.Throws<ArgumentNullException>(() => _disciplina.RemoveTurno(null), "Foi removido um turno nulo.");
+            Assert.Throws<ArgumentNullException>(() => _disciplina.RemoveTurno(null), "Foi removido um turno nulo.");
         }
 
         [Test]
@@ -230,7 +223,7 @@ namespace ATUM.Tests.Manual
         [Test]
         public void InequalityOperator_DisciplinasIguais_ReturnFalse()
         {
-            Assert.IsFalse(_disciplina != _disciplina, "Operador de desigualdade falha com disciplinas iguals.");
+            Assert.IsFalse(_disciplina != _disciplina, "Inequality");
         }
 
         [Test]
@@ -240,7 +233,33 @@ namespace ATUM.Tests.Manual
             Assert.IsTrue(_disciplina != d, "Operador de desigualdade falha com disciplinas diferentes.");
         }
 
+        [Test]
+        public void GetHashCode_DisciplinasIguais_MesmaHash()
+        {
+            List<Turno> turnos = new List<Turno>();
 
+            var b1 = new Disciplina("D01", turnos);
+            var b2 = new Disciplina("D01", turnos);
 
+            int hash1 = b1.GetHashCode();
+            int hash2 = b2.GetHashCode();
+
+            Assert.AreEqual(hash1, hash2, "Disciplinas iguais dão chaves diferentes.");
+        }
+
+        [Test]
+        public void GetHashCode_DisciplinasDiferentes_HashDiferentes()
+        {
+            List<Turno> turnos1 = new List<Turno>();
+            List<Turno> turnos2 = new List<Turno>();
+
+            var b1 = new Disciplina("D01", turnos1);
+            var b2 = new Disciplina("D01", turnos2);
+
+            int hash1 = b1.GetHashCode();
+            int hash2 = b2.GetHashCode();
+
+            Assert.AreNotEqual(hash1, hash2, "Disciplinas diferentes dão chaves iguais.");
+        }
     }
 }
