@@ -181,6 +181,8 @@ namespace ATUM.sistema
         protected void ObjectInvariant() {
             // Garantir que um bloco não tem turnos sem disciplina
             Contract.Invariant( (TurnosBloco == null) || Contract.ForAll(TurnosBloco, (Turno t) => t.Disciplina != null) );
+            Contract.Invariant( (TurnosBloco == null) || Contract.ForAll(TurnosBloco, (Turno t1) 
+                => Contract.ForAll(TurnosBloco, (Turno t2) => t1== t2 || t1.Spot != t2.Spot) ));
         }
         #endregion
 
