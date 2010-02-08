@@ -29,17 +29,17 @@ namespace ATUM.Tests.Manual
         }
 
         [Test]
-        [ExpectedException("System.Diagnostics.Contracts.ContractException")]
+        //[ExpectedException("System.Diagnostics.Contracts.ContractException")]
         public void Constructor_NullArguments_Exception()
         {
-            new Bloco(null);
-            new Bloco(null, null);
-            new Bloco("", null);
-            new Bloco("*", null);
-            //Assert.Throws<ArgumentNullException>(() => new Bloco(null));
-            //Assert.Throws<ArgumentNullException>(() => new Bloco(null, null));
-            //Assert.Throws<ArgumentNullException>(() => new Bloco("", null));
-            //Assert.Throws<ArgumentNullException>(() => new Bloco("*", null));
+            //new Bloco(null);
+            //new Bloco(null, null);
+            //new Bloco("", null);
+            //new Bloco("*", null);
+            Assert.Throws<ArgumentNullException>(() => new Bloco(null));
+            Assert.Throws<ArgumentNullException>(() => new Bloco(null, null));
+            Assert.Throws<ArgumentNullException>(() => new Bloco("", null));
+            Assert.Throws<ArgumentNullException>(() => new Bloco("*", null));
         }
 
         [Test]
