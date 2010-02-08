@@ -86,7 +86,7 @@ namespace ATUM.sistema
         [Pure]
         public bool TemVagas()
         {
-            Contract.Ensures(Contract.ForAll(TurnosBloco, t => t.TemVagas()));
+            Contract.Ensures(Contract.Exists(TurnosBloco, t => !t.TemVagas()) || Contract.ForAll(TurnosBloco, t => t.TemVagas()));
 
             foreach (Turno turno in TurnosBloco)
             {
@@ -131,7 +131,7 @@ namespace ATUM.sistema
         [Pure]
         private bool TurnosSobrepostos(Turno turno)
         {
-            Contract.Requires<ArgumentNullException>(turno == null);
+            Contract.Requires<ArgumentNullException>(turno != null);
 
             foreach (Turno t in TurnosBloco)
             {
