@@ -190,10 +190,6 @@ namespace ATUM.sistema
             // Garantir que um Aluno apenas é alocado em Turnos de Disciplinas em que está matriculado
             Contract.Invariant(Contract.ForAll(AlocadoTurno, (Turno t) => Inscrito.Contains(t.Disciplina) && t.Disciplina != null));
             
-            // Um aluno não pode preferir o mesmo bloco duas vezes  
-            //Contract.Invariant(Atum.NaoTemDups((List<Bloco>)PreferenciasBlocos));
-            Contract.Invariant(Atum.NaoTemDups((List<Preferencia>) PreferenciasBlocos));
-
             // Um aluno não pode estar alocado em turnos sobre opostos
 //           Contract.Invariant(Contract.ForAll(AlocadoTurno, (Turno t1)
 //               => Contract.ForAll(AlocadoTurno, (Turno t2) => t1 == t2 || !t1.Sobreposto(t2))));
