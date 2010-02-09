@@ -47,9 +47,46 @@ namespace ATUM.Tests.Manual
         }
 
         [Test]
+        public void CompareAlunoByOrd_NullArguments_Zero()
+        {
+            int resultado = Aluno.CompareAlunosByOrd(null, null);
+
+            Assert.AreEqual(resultado, 0);
+        }
+
+        [Test]
+        public void CompareAlunoByOrd_NullX_NegativeOne()
+        {
+            int resultado = Aluno.CompareAlunosByOrd(null, _aluno);
+
+            Assert.AreEqual(resultado, -1);
+        }
+
+        [Test]
+        public void CompareAlunoByOrd_NullY_PositiveOne()
+        {
+            int resutado = Aluno.CompareAlunosByOrd(_aluno, null);
+
+            Assert.AreEqual(resutado, 1);
+        }
+
+        [Test]
+        public void CompareAlunoByOrd_ValidArguments()
+        {
+            Aluno aluno1 = new Aluno("Aluno1");
+            Aluno aluno2 = new Aluno("Aluno2");
+
+            aluno1.NumOrdem = 1;
+            aluno2.NumOrdem = 2;
+
+            int resultado = Aluno.CompareAlunosByOrd(aluno1, aluno2);
+
+            Assert.AreEqual(resultado, -1);
+        }
+
+        [Test]
         public void AddInscricao_NullArguments_Exception()
         {
-            // Todo: Lançar a excepção no dódigo da classe.
             Assert.Throws<ArgumentNullException>(() => _aluno.AddInscricao(null));
         }
 
@@ -100,43 +137,85 @@ namespace ATUM.Tests.Manual
         }
 
         [Test]
-        public void CompareAlunoByOrd_NullArguments_Zero()
+        public void RemoveInscricao_NullArgument_Exception()
         {
-            int resultado = Aluno.CompareAlunosByOrd(null, null);
-
-            Assert.AreEqual(resultado, 0);
+            Assert.Throws<ArgumentNullException>(() => _aluno.RemoveInscricao(null));
         }
 
         [Test]
-        public void CompareAlunoByOrd_NullX_NegativeOne()
+        public void RemoveInscricao_ValidArgument_Removido()
         {
-            int resultado = Aluno.CompareAlunosByOrd(null, _aluno);
+            Disciplina discAux = new Disciplina("id");
 
-            Assert.AreEqual(resultado, -1);
+            _aluno.AddInscricao(discAux);
+
+            _aluno.RemoveInscricao(discAux);
+
+            CollectionAssert.DoesNotContain(_aluno.Inscrito, discAux);
         }
 
         [Test]
-        public void CompareAlunoByOrd_NullY_PositiveOne()
+        public void RemoveInscricao_InscricaoInexistente_Exception()
         {
-            int resutado = Aluno.CompareAlunosByOrd(_aluno, null);
+            Disciplina discAux = new Disciplina("id");
 
-            Assert.AreEqual(resutado, 1);
+            Assert.Throws<ArgumentNullException>(() => _aluno.RemoveInscricao(discAux));
         }
 
         [Test]
-        public void CompareAlunoByOrd_ValidArguments()
+        public void AddAlocacao_NullArguments_Exception()
         {
-            Aluno aluno1 = new Aluno("Aluno1");
-            Aluno aluno2 = new Aluno("Aluno2");
-
-            aluno1.NumOrdem = 1;
-            aluno2.NumOrdem = 2;
-
-            int resultado = Aluno.CompareAlunosByOrd(aluno1, aluno2);
-
-            Assert.AreEqual(resultado, -1);
+            Assert.Throws<ArgumentNullException>(() => _aluno.AddAlocacaoTurno(null));
         }
 
+        // Todo: Pode Haver um problema aqui.
+        [Test]
+        public void AddAlocacao_ValidArgument_Inserida()
+        {
+            Turno turnAux = new Turno("id", 10, 1, new Disciplina("Disciplina Aux"));
 
+            _aluno.Processado = true;
+            _aluno.AddAlocacaoTurno(turnAux);
+
+            CollectionAssert.Contains(_aluno.AlocadoTurno, turnAux);
+        }
+
+        [Test]
+        public void AddAlocacao_InserirDiferentes_DoisInseridos()
+        {
+            Turno turnAux1 = new Turno("id", 10, 1, new Disciplina("Disciplina1"));
+            Turno turnAux2 = new Turno("id", 10, 2, new Disciplina("Disciplina2"));
+
+            int tamInicio = _aluno.Inscrito.Count;
+
+            _aluno.Processado = true;
+            _aluno.AddAlocacaoTurno(turnAux1);
+            _aluno.AddAlocacaoTurno(turnAux2);
+
+            int tamFim = _aluno.Inscrito.Count;
+
+            CollectionAssert.Contains(_aluno.AlocadoTurno, turnAux1);
+            CollectionAssert.Contains(_aluno.AlocadoTurno, turnAux1);
+            CollectionAssert.AllItemsAreUnique(_aluno.AlocadoTurno);
+            Assert.AreEqual(tamFim, tamInicio + 2);
+        }
+
+        [Test]
+        public void AddAlocacao_InserirIguais_UmInserido()
+        {
+            Turno turnoAux = new Turno("id", 10, 1, new Disciplina("Disciplina1"));
+
+            int tamInicio = _aluno.Inscrito.Count;
+
+            _aluno.Processado = true;
+            _aluno.AddAlocacaoTurno(turnoAux);
+            _aluno.AddAlocacaoTurno(turnoAux);
+
+            int tamFim = _aluno.Inscrito.Count;
+
+            CollectionAssert.Contains(_aluno.AlocadoTurno, turnoAux);
+            CollectionAssert.AllItemsAreUnique(_aluno.AlocadoTurno);
+            Assert.AreNotEqual(tamFim, tamInicio + 2);
+        }
     }
 }
