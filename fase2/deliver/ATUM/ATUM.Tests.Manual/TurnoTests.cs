@@ -45,6 +45,7 @@ namespace ATUM.Tests.Manual
                 e.SetHandled();
                 e.SetUnwind(); //cause code to abort after event
                 Assert.Fail(e.FailureKind.ToString() + ":" + e.Message);
+
             };
 
             _disciplina = new Disciplina("DC01");

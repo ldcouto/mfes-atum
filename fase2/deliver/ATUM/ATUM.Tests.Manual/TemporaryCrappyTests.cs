@@ -23,13 +23,13 @@ namespace ATUM.Tests.Manual {
             _turno = new Turno("Turno 1", 1, 1, _disciplina);
        }
 
-        [Test]
-        public void NinguemMehor_EmptySets() {
-            _atum.Alunos.Enqueue(_aluno);
-            _disciplina.TurnosDisciplina.Add(_turno);
-            _aluno.Inscrito.Add(_disciplina);
-            _atum.NinguemPior(_aluno, _disciplina);
-        }
+        //[Test]
+        //public void NinguemMehor_EmptySets() {
+        //    _atum.Alunos.Enqueue(_aluno);
+        //    _disciplina.TurnosDisciplina.Add(_turno);
+        //    _aluno.Inscrito.Add(_disciplina);
+        //    _atum.NinguemPior(_aluno, _disciplina);
+        //}
 
     }
 }
