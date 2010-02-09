@@ -35,7 +35,8 @@ namespace ATUM.sistema
         /// <summary>
         /// Preferências de Blocos do Aluno.
         /// </summary>
-        public IList<Bloco> PreferenciasBlocos { get; private set; }
+        //public IList<Bloco> PreferenciasBlocos { get; private set; }
+        public IList<Preferencia> PreferenciasBlocos { get; private set; };
 
         /// <summary>
         /// Indica o estado do Aluno. True significa que o algoritmo de alocação já passou por ele.
@@ -60,7 +61,9 @@ namespace ATUM.sistema
             Inscrito = new List<Disciplina>();
             AlocadoTurno = new List<Turno>();
 
-            PreferenciasBlocos = new List<Bloco>();
+            //PreferenciasBlocos = new List<Bloco>();
+            PreferenciasBlocos = new List<Preferencia>();
+
             Processado = false;
             NumOrdem = 0;
         }
@@ -76,7 +79,9 @@ namespace ATUM.sistema
             Inscrito = insc;
             AlocadoTurno = new List<Turno>();
 
-            PreferenciasBlocos = new List<Bloco>();
+            //PreferenciasBlocos = new List<Bloco>();
+            PreferenciasBlocos = new List<Preferencia>();
+
             NumOrdem = 0;
             Processado = false;
         }
@@ -87,10 +92,14 @@ namespace ATUM.sistema
         /// <param name="identifier">Identificação do Aluno.</param>
         /// <param name="inscrito">Lista de Disciplinas a que o aluno está inscrito.</param>
         /// <param name="preferenciasBlocos">Preferências de Blocos do Aluno.</param>
-        public Aluno(string identifier, IList<Disciplina> inscrito, IList<Bloco> preferenciasBlocos) {
+        public Aluno(string identifier, IList<Disciplina> inscrito, IList<Preferencia> preferenciasBlocos) {
             Identifier = identifier;
+
             Inscrito = inscrito;
+            AlocadoTurno = new List<Turno>();
+
             PreferenciasBlocos = preferenciasBlocos;
+
             NumOrdem = 0;
             Processado = false;
         }
@@ -102,8 +111,11 @@ namespace ATUM.sistema
         /// </summary>
         /// <param name="d">Disciplina a adicionar.</param>
         public void AddInscricao(Disciplina d) {
-            if (!Inscrito.Contains(d))
-                Inscrito.Add(d);
+            Contract.Requires(!Inscrito.Contains(d));
+            Contract.Ensures(Inscrito.Contains(d));
+
+            //if (!Inscrito.Contains(d))
+            Inscrito.Add(d);
         }
 
         public static int CompareAlunosByOrd(Aluno x, Aluno y)
@@ -123,6 +135,9 @@ namespace ATUM.sistema
         /// <param name="d">Disciplina a remover.</param>
         /// <returns></returns>
         public bool RemoveInscricao(Disciplina d) {
+            Contract.Requires(Inscrito.Contains(d));
+            Contract.Ensures(!Inscrito.Contains(d));
+
             return Inscrito.Remove(d);
         }
 
@@ -131,8 +146,11 @@ namespace ATUM.sistema
         /// </summary>
         /// <param name="b">Bloco a adicionar.</param>
         public void AddPreferencia(Bloco b) {
-            if (!PreferenciasBlocos.Contains(b))
-                PreferenciasBlocos.Add(b);
+            Contract.Requires(!PreferenciasBlocos.Contains(b));
+            Contract.Ensures(PreferenciasBlocos.Contains(b));
+
+            //if (!PreferenciasBlocos.Contains(b))
+            PreferenciasBlocos.Add(b);
         }
         /// <summary>
         /// Adiciona um Turno aos alocados do Aluno
@@ -154,22 +172,37 @@ namespace ATUM.sistema
             // Garantir que se um aluno está alocado num bloco, então está alocado a todos os turnos dele
             Contract.Invariant(!(AlocadoBloco != null) ||
                                Enumerable.Intersect(AlocadoBloco.TurnosBloco, AlocadoTurno) == AlocadoBloco.TurnosBloco);
+
             // Garantir que um aluno só tem preferências por blocos para os quais está inscrito a todas as disciplinas
-            Contract.Invariant(Contract.ForAll(PreferenciasBlocos, (Bloco b) 
-                => Contract.ForAll(b.TurnosBloco, (Turno t) => Inscrito.Contains(t.Disciplina))) );
+//            Contract.Invariant(Contract.ForAll(PreferenciasBlocos, (Bloco b) 
+//                => Contract.ForAll(b.TurnosBloco, (Turno t) => Inscrito.Contains(t.Disciplina))) );
+            Contract.Invariant( Contract.ForAll(PreferenciasBlocos, (Preferencia p) => 
+                Contract.ForAll(p.Bloco.TurnosBloco, (Turno t) => Inscrito.Contains(t.Disciplina))) );
+
+
             // Garantir que un aluno não processado não é alocado
             Contract.Invariant(this.Processado || this.AlocadoTurno.Count==0 && this.AlocadoBloco == null);
+            
             // Garantir que um aluno só é alocado se estiver inscrito 
             // Garantir que um aluno não é alocado a Turnos "inúteis"
             // (Estes dois eram mais um workaround ao Alloy)
+            
             // Garantir que um Aluno apenas é alocado em Turnos de Disciplinas em que está matriculado
             Contract.Invariant(Contract.ForAll(AlocadoTurno, (Turno t) => Inscrito.Contains(t.Disciplina) && t.Disciplina != null));
+            
             // Um aluno não pode preferir o mesmo bloco duas vezes  
-            Contract.Invariant(Atum.NaoTemDups((List<Bloco>)PreferenciasBlocos));
+            //Contract.Invariant(Atum.NaoTemDups((List<Bloco>)PreferenciasBlocos));
+            Contract.Invariant(Atum.NaoTemDups((List<Preferencia>) PreferenciasBlocos));
+
             // Um aluno não pode estar alocado em turnos sobre opostos
-   //         Contract.Invariant(Contract.ForAll(AlocadoTurno, (Turno t1)
-     //           => Contract.ForAll(AlocadoTurno, (Turno t2) => t1 == t2 || !t1.Sobreposto(t2))));
+//           Contract.Invariant(Contract.ForAll(AlocadoTurno, (Turno t1)
+//               => Contract.ForAll(AlocadoTurno, (Turno t2) => t1 == t2 || !t1.Sobreposto(t2))));
             Contract.Invariant(Atum.NaoTemDups(AlocadoTurno.Select(x => x.Spot).ToList()));
+
+            // Um aluno não tem o mesmo grau de preferencia por dois blocos diferentes
+            Contract.ForAll(PreferenciasBlocos, p1 
+                => Contract.ForAll(PreferenciasBlocos, p2 
+                    => (p1 == p2 || (p1.Grau != p2.Grau && p1.Bloco != p2.Bloco))));
         }
         #endregion
     }
