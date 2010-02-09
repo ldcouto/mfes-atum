@@ -183,7 +183,6 @@ namespace ATUM.sistema
         /// Adiciona um Turno aos alocados do Aluno
         /// </summary>
         /// <param name="t">Turno a adicionar</param>
-        //Todo: Pode haver um problema aqui. Não consegui testar devido não conseguir passar o invariante.
         public void AddAlocacaoTurno(Turno t)
         {
             Contract.Requires(t != null, "O turno a inserir tem de existir.");
@@ -231,7 +230,7 @@ namespace ATUM.sistema
                     => (p1 == p2 || (p1.Grau != p2.Grau && p1.Bloco != p2.Bloco)))));
 
             // Garantir que um aluno processado tem no máximo um turno por disciplina
-            Contract.Invariant(!Processado || StructOps.NoDups((List<Disciplina>)AlocadoTurno.Select(x=>x.Disciplina)));
+            Contract.Invariant(!Processado || StructOps.NoDups((List<Disciplina>)AlocadoTurno.Select(x=>x.Disciplina).ToList()));
         }
         #endregion
     }
