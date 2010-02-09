@@ -255,5 +255,108 @@ namespace ATUM.Tests.Manual
 
             Assert.Throws<ApplicationException>(() => _aluno.AddAlocacaoTurno(turnAux2));
         }
+
+        [Test]
+        public void Equals_Self_ReturnTrue()
+        {
+            Assert.IsTrue(_aluno.Equals(_aluno), "O própio aluno não é igual a si mesmo.");
+        }
+
+        [Test]
+        public void Equals_Null_Argument()
+        {
+            Assert.IsFalse(_aluno.Equals(null), "Comparação com nulo dá true.");
+        }
+
+        [Test]
+        public void Equals_SomeObject_ReturnFalse()
+        {
+            Object obj = new object();
+            Assert.IsFalse(_aluno.Equals(obj), "Comparação com um objecto qualquer dá true.");
+        }
+
+        [Test]
+        public void Equals_NullObjecto_ReturnTrue()
+        {
+            const object obj = null;
+            Assert.IsFalse(_aluno.Equals(obj), "Comparação com um objecto nulo dá true.");
+        }
+
+        [Test]
+        public void Equals_AlunoObject_Return()
+        {
+            Object obj = new Aluno("AL01");
+            Assert.IsFalse(_aluno.Equals(obj),"Comparaçºao com um aluno qualquer dá true.");
+        }
+
+        [Test]
+        public void Equals_SameObject_ReturnTrue()
+        {
+            Object obj = _aluno;
+            Assert.IsTrue(_aluno.Equals(obj),"Comparação com o mesmo objecto dá false.");
+        }
+
+        [Test]
+        public void EqualityOperator_AlunosIguais_ReturnTrue()
+        {
+            Assert.IsTrue(_aluno == _aluno, "Operador de igualdade falha para objectos iguais.");
+        }
+
+        [Test]
+        public void EqualityOperator_AlunosDiferentes_ReturnFalse()
+        {
+            Aluno a = new Aluno("Aluno 2");
+            Assert.IsFalse(_aluno == a, "Operador de igualdade dá true para dois objectos diferentes.");
+        }
+
+        [Test]
+        public void InequalityOperator_AlunosIguais_ReturnFalse()
+        {
+            Assert.IsFalse(_aluno != _aluno,"Operador de desigualdade dá true para dois alunos iguais.");
+        }
+
+        [Test]
+        public void InequalityOperator_AlunosDiferentes_ReturnTrue()
+        {
+            Aluno a = new Aluno("Aluno 2");
+            Assert.IsTrue(_aluno != a, "Operador de disigualdade dá false para dois alunos diferentes.");
+        }
+
+        [Test]
+        public void GetHashCode_AlunosIguais_MesmaHash()
+        {
+            List<Disciplina> discs = new List<Disciplina>();
+            List<Preferencia> prefs = new List<Preferencia>();
+            List<Turno> turns = new List<Turno>();
+
+            Aluno a1 = new Aluno("Aluno 1", discs, prefs);
+            Aluno a2 = new Aluno("Aluno 1", discs, prefs);
+            
+            a1.AlocadoTurno = turns;
+            a2.AlocadoTurno = turns;
+            
+            int hash1 = a1.GetHashCode();
+            int hash2 = a2.GetHashCode();
+        
+            Assert.AreEqual(hash1, hash2, "Alunos iguais dão chaves diferentes.");
+        }
+
+        [Test]
+        public void GetHashCode_AlunosDiferentes_HashDiferentes()
+        {
+            List<Disciplina> discs1 = new List<Disciplina>();
+            List<Preferencia> prefs1 = new List<Preferencia>();
+            List<Disciplina> discs2 = new List<Disciplina>();
+            List<Preferencia> prefs2 = new List<Preferencia>();
+
+
+            Aluno a1 = new Aluno("Aluno 1", discs1, prefs1);
+            Aluno a2 = new Aluno("Aluno 2", discs2, prefs2);
+
+            int hash1 = a1.GetHashCode();
+            int hash2 = a2.GetHashCode();
+
+            Assert.AreNotEqual(hash1, hash2, "Alunos diferentes dão chaves iguais.");
+        }
     }
 }
