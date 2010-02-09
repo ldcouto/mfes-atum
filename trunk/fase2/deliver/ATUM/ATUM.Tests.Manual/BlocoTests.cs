@@ -8,7 +8,6 @@ using NUnit.Framework;
 
 namespace ATUM.Tests.Manual
 {
-
     [TestFixture]
     class BlocoTests
     {
@@ -183,29 +182,29 @@ namespace ATUM.Tests.Manual
             Assert.Less(fim2, inicio2, "As vagas não foram decrementadas.");
         }
 
-        [Test]
-        public void DecrementarVagas_NaoExistemVagas_VagasIguais()
-        {
-            var disAux1 = new Disciplina("DC01");
-            var disAux2 = new Disciplina("DC02");
+        //[Test]
+        //public void DecrementarVagas_NaoExistemVagas_VagasIguais()
+        //{
+        //    var disAux1 = new Disciplina("DC01");
+        //    var disAux2 = new Disciplina("DC02");
 
-            var turno1 = new Turno("TP01", 10, 1, disAux1);
-            var turno2 = new Turno("TP02", 0, 2, disAux2);
+        //    var turno1 = new Turno("TP01", 0, 1, disAux1);
+        //    var turno2 = new Turno("TP02", 0, 2, disAux2);
 
-            uint inicio1 = turno1.VagasActuais;
-            uint inicio2 = turno2.VagasActuais;
+        //    uint inicio1 = turno1.VagasActuais;
+        //    uint inicio2 = turno2.VagasActuais;
 
-            _bloco.AddTurno(turno1);
-            _bloco.AddTurno(turno2);
+        //    _bloco.AddTurno(turno1);
+        //    _bloco.AddTurno(turno2);
 
-            _bloco.DecrementarVagas();
+        //    _bloco.DecrementarVagas();
 
-            uint fim1 = turno1.VagasActuais;
-            uint fim2 = turno2.VagasActuais;
+        //    uint fim1 = turno1.VagasActuais;
+        //    uint fim2 = turno2.VagasActuais;
 
-            Assert.LessOrEqual(fim1, inicio1, "As vagas foram aumentadas.");
-            Assert.LessOrEqual(fim2, inicio2, "As vagas foram aumentadas.");
-        }
+        //    Assert.LessOrEqual(fim1, inicio1, "As vagas foram aumentadas.");
+        //    Assert.LessOrEqual(fim2, inicio2, "As vagas foram aumentadas.");
+        //}
 
         [Test]
         public void GetDiscsDoBloco_ListaCorrecta()
