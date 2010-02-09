@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="biz\AtumProc.cs" />
+    <Compile Include="libs\StructOps.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="sistema\Aluno.cs" />
     <Compile Include="sistema\Atum.cs" />
