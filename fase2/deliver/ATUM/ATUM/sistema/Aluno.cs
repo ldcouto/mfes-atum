@@ -9,7 +9,7 @@ namespace ATUM.sistema
     /// <summary>
     /// Classe para representar de forma simples um Aluno, individuo que quer ser alocado.
     /// </summary>
-    public class Aluno
+    public class Aluno : IEquatable<Aluno>
     {
         #region Propriedades
 
@@ -231,6 +231,48 @@ namespace ATUM.sistema
 
             // Garantir que um aluno processado tem no máximo um turno por disciplina
             Contract.Invariant(!Processado || StructOps.NoDups((List<Disciplina>)AlocadoTurno.Select(x=>x.Disciplina).ToList()));
+        }
+        #endregion
+
+        #region Membros da Igualdade
+        public bool Equals(Aluno other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Equals(other.Identifier, Identifier) && Equals(other.Inscrito, Inscrito) && Equals(other.AlocadoTurno, AlocadoTurno) && Equals(other.AlocadoBloco, AlocadoBloco) && Equals(other.PreferenciasBlocos, PreferenciasBlocos) && other.Processado.Equals(Processado) && other.NumOrdem == NumOrdem;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != typeof (Aluno)) return false;
+            return Equals((Aluno) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int result = (Identifier != null ? Identifier.GetHashCode() : 0);
+                result = (result*397) ^ (Inscrito != null ? Inscrito.GetHashCode() : 0);
+                result = (result*397) ^ (AlocadoTurno != null ? AlocadoTurno.GetHashCode() : 0);
+                result = (result*397) ^ (AlocadoBloco != null ? AlocadoBloco.GetHashCode() : 0);
+                result = (result*397) ^ (PreferenciasBlocos != null ? PreferenciasBlocos.GetHashCode() : 0);
+                result = (result*397) ^ Processado.GetHashCode();
+                result = (result*397) ^ NumOrdem.GetHashCode();
+                return result;
+            }
+        }
+
+        public static bool operator ==(Aluno left, Aluno right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(Aluno left, Aluno right)
+        {
+            return !Equals(left, right);
         }
         #endregion
     }
