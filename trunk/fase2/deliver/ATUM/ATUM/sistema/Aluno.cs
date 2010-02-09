@@ -117,7 +117,12 @@ namespace ATUM.sistema
             //if (!Inscrito.Contains(d))
             Inscrito.Add(d);
         }
-
+        /// <summary>
+        /// Comparador entre Alunos pelo seu número de ordem.
+        /// </summary>
+        /// <param name="x">Aluno x a comparar.</param>
+        /// <param name="y">Aluno y a comparar.</param>
+        /// <returns>0 se iguais; -1 se x maior, 1 se y maior.</returns>
         public static int CompareAlunosByOrd(Aluno x, Aluno y)
         {
             if (x == null)
@@ -141,17 +146,19 @@ namespace ATUM.sistema
             return Inscrito.Remove(d);
         }
 
-        /// <summary>
-        /// Adiciona um Bloco às preferências do Aluno.
-        /// </summary>
-        /// <param name="b">Bloco a adicionar.</param>
-        public void AddPreferencia(Bloco b) {
-            Contract.Requires(!PreferenciasBlocos.Contains(b));
-            Contract.Ensures(PreferenciasBlocos.Contains(b));
 
-            //if (!PreferenciasBlocos.Contains(b))
-            PreferenciasBlocos.Add(b);
-        }
+        //TODO refazer este método!
+        ///// <summary>
+        ///// Adiciona um Bloco às preferências do Aluno.
+        ///// </summary>
+        ///// <param name="b">Bloco a adicionar.</param>
+        //public void AddPreferencia(Bloco b) {
+        //    Contract.Requires(!PreferenciasBlocos.Select(x=>x.Bloco).Contains(b));
+        //    Contract.Ensures(PreferenciasBlocos.Select(x=>x.Bloco).Contains(b));
+
+        //    //if (!PreferenciasBlocos.Contains(b))
+        //    PreferenciasBlocos.Add(b);
+        //}
         /// <summary>
         /// Adiciona um Turno aos alocados do Aluno
         /// </summary>
