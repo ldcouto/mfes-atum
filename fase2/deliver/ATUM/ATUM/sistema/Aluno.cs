@@ -36,7 +36,7 @@ namespace ATUM.sistema
         /// Preferências de Blocos do Aluno.
         /// </summary>
         //public IList<Bloco> PreferenciasBlocos { get; private set; }
-        public IList<Preferencia> PreferenciasBlocos { get; private set; };
+        public IList<Preferencia> PreferenciasBlocos { get; private set; }
 
         /// <summary>
         /// Indica o estado do Aluno. True significa que o algoritmo de alocação já passou por ele.

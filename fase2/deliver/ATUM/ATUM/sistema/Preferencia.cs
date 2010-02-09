@@ -8,7 +8,7 @@ namespace ATUM.sistema
     /// <summary>
     /// Classe Preferência, associa o grau de preferência a um bloco para.
     /// </summary>
-    class Preferencia : IEquatable<Preferencia>
+    public class Preferencia : IEquatable<Preferencia>
     {
         /// <summary>
         /// Representa a preferência do aluno pelo bloco associado. 
