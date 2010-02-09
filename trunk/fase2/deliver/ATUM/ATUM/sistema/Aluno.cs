@@ -145,6 +145,7 @@ namespace ATUM.sistema
         /// <param name="d">Disciplina a adicionar.</param>
         public void AddInscricao(Disciplina d)
         {
+            Contract.Requires<ArgumentNullException>(d != null);
             Contract.Requires(!Inscrito.Contains(d));
             Contract.Ensures(Inscrito.Contains(d));
 
@@ -158,6 +159,7 @@ namespace ATUM.sistema
         /// <returns></returns>
         public bool RemoveInscricao(Disciplina d)
         {
+            Contract.Requires<ArgumentNullException>(d != null);
             Contract.Requires(Inscrito.Contains(d));
             Contract.Ensures(!Inscrito.Contains(d));
 
@@ -181,10 +183,12 @@ namespace ATUM.sistema
         /// Adiciona um Turno aos alocados do Aluno
         /// </summary>
         /// <param name="t">Turno a adicionar</param>
+        //Todo: Pode haver um problema aqui. Não consegui testar devido não conseguir passar o invariante.
         public void AddAlocacaoTurno(Turno t)
         {
             Contract.Requires(t != null, "O turno a inserir tem de existir.");
             Contract.Requires(!AlocadoTurno.Contains(t), "O aluno não pode já estar alocado ao turno a inserir. ");
+            Contract.Requires(!AlocadoTurno.Select(x => x.Spot).Contains(t.Spot));
             Contract.Ensures(AlocadoTurno.Contains(t));
 
             AlocadoTurno.Add(t);
@@ -206,9 +210,8 @@ namespace ATUM.sistema
             Contract.Invariant(Contract.ForAll(PreferenciasBlocos, (Preferencia p) =>
                 Contract.ForAll(p.Bloco.TurnosBloco, (Turno t) => Inscrito.Contains(t.Disciplina))));
 
-
             // Garantir que um aluno não processado não é alocado
-            Contract.Invariant(this.Processado || this.AlocadoTurno.Count == 0 && this.AlocadoBloco == null);
+            Contract.Invariant(Processado || AlocadoTurno.Count == 0 && AlocadoBloco == null);
 
             // Garantir que um aluno só é alocado se estiver inscricoes 
             // Garantir que um aluno não é alocado a Turnos "inúteis"
@@ -229,7 +232,6 @@ namespace ATUM.sistema
 
             // Garantir que um aluno processado tem no máximo um turno por disciplina
             Contract.Invariant(!Processado || StructOps.NoDups((List<Disciplina>)AlocadoTurno.Select(x=>x.Disciplina)));
-	
         }
         #endregion
     }
