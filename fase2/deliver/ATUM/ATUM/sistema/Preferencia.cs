@@ -10,6 +10,7 @@ namespace ATUM.sistema
     /// </summary>
     public class Preferencia : IEquatable<Preferencia>
     {
+        #region Propriedades
         /// <summary>
         /// Representa a preferência do aluno pelo bloco associado. 
         /// Quanto mais baixo, maior a preferência.  
@@ -20,7 +21,9 @@ namespace ATUM.sistema
         /// O Bloco associado á preferência.
         /// </summary>
         public Bloco Bloco { get; set; }
+        #endregion
 
+        #region Constructores
         /// <summary>
         /// Constructor completo de Preferencia.
         /// </summary>
@@ -31,7 +34,9 @@ namespace ATUM.sistema
             Grau = grau;
             Bloco = b; 
         }
+        #endregion
 
+        #region Métodos de Classe
         public static int ComparePreferenciaByGrau(Preferencia x, Preferencia y)
         {
             if (x == null)
@@ -43,7 +48,9 @@ namespace ATUM.sistema
 
             return x.Grau.CompareTo(y.Grau);
         }
+        #endregion
 
+        #region Membros da Igualdade
         public bool Equals(Preferencia other)
         {
             if (ReferenceEquals(null, other)) return false;
@@ -76,5 +83,6 @@ namespace ATUM.sistema
         {
             return !Equals(left, right);
         }
+        #endregion
     }
 }
