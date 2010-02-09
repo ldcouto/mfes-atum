@@ -149,10 +149,10 @@ namespace ATUM.sistema {
             Contract.Invariant(Contract.ForAll(Blocos, (Bloco b1)
                 => (Contract.ForAll(Blocos, (Bloco b2) => b1 == b2 || b1.TurnosBloco != b2.TurnosBloco))));
             // Garantir que os Alunos estão correctamente ordenados
-            Contract.Invariant(Contract.ForAll(Alunos, (Aluno a) => ) );
+            Contract.Invariant(isSorted(genMap().Keys.ToList()) && isSorted(genMap().Values.ToList()));
+          
             // ALOCAÇÃO
             // Garantir que os melhores alunos são processados primeiro
-
             //	all ap: at.processados | all anp: at.inscritos.Disciplina - at.processados | rank/lt[ap,anp]
 
         }
@@ -174,32 +174,41 @@ namespace ATUM.sistema {
                         return false;
             return true;
         }
-        /*
-                public bool NaoTemDups(List<Disciplina> l) {
-                    l.Sort();
-                    for (int i = 0; i < l.Count; i++)
-                        if (l[i] == l[i + 1])
-                            return false;
-                    return true;
-                }
 
-                public static bool NaoTemDups(List<Bloco> l) {
-                    l.Sort();
-                    for (int i = 0; i < l.Count; i++)
-                        if (l[i] == l[i + 1])
-                            return false;
-                    return true;
-                }
+        [Pure]
+        public static bool isSorted(IList<int> l)
+        {
+            for (int i = 0; i < l.Count; i++)
+                for (int j = i; j < l.Count; j++)
+                    if (i != j && l[i] >= l[j])
+                        return false;
+            return true;
+        }
+        [Pure]
+        public static bool isSorted(IList<uint> l) {
+            for (int i = 0; i < l.Count; i++)
+                for (int j = i; j < l.Count; j++)
+                    if (i != j && l[i] >= l[j])
+                        return false;
+            return true;
+        } 
 
-                public static bool NaoTemDups(List<int> l)
-                {
-                    l.Sort();
-                    for (int i = 0; i < l.Count; i++)
-                        if (l[i] == l[i + 1])
-                            return false;
-                    return true;
-                }
-                */
+        /// <summary>
+        /// Método auxiliar para construir um mapa a partir da lista de Alunos incritos no sistema.
+        /// </summary>
+        /// <returns>Um mapa de pares (Posição na Lista; Número de Ordem).</returns>
+        public Dictionary<int, uint> genMap()
+        {
+            var r = new Dictionary<int,uint>();
+            int i = 1;
+            foreach (var aluno in Alunos)
+            {
+                r.Add(i, aluno.NumOrdem);
+                i++;
+            }
+            return r;
+        }
+
         // Não tá a ser usado!
         /// <summary>
         /// Método para verificar se um Turno apenas pertence a uma Disciplina.
