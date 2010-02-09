@@ -71,10 +71,10 @@ namespace ATUM.sistema {
         /// <param name="a">O Aluno a alocar.</param>
         public void AlocaAluno(Aluno a) {
             Contract.Requires(a != null);
-            Contract.Requires(Contract.ForAll(this.Processados, (Aluno x) => ComparaAlunos(a, x) > 0));
+            Contract.Requires(Contract.ForAll(this.Processados, (Aluno x) => Aluno.CompareAlunosByOrd(a, x) > 0));
             Contract.Ensures(Processados.Contains(a));
             Contract.Ensures(a.Processado);
-            Contract.Ensures(a.AlocadoBloco != null || Contract.ForAll(a.PreferenciasBlocos, (Bloco x) => !x.TemVagas()));
+            Contract.Ensures(a.AlocadoBloco != null || Contract.ForAll(a.PreferenciasBlocos.Select(y=>y.Bloco), (Bloco x) => !x.TemVagas()));
             Contract.Ensures(Contract.ForAll(a.Inscrito, (Disciplina d)
                                 => NinguemPior(a, d) || AlunoTaNaDisc(a, d)));
 
@@ -87,7 +87,7 @@ namespace ATUM.sistema {
         /// </summary>
         /// <param name="a">O Aluno a ser alocado.</param>
         private void AlocaBloco(Aluno a) {
-            foreach (Bloco bloco in a.PreferenciasBlocos) {
+            foreach (Bloco bloco in a.PreferenciasBlocos.Select(x=>x.Bloco)) {
                 if (!bloco.TemVagas()) continue;
                 a.AlocadoTurno = bloco.TurnosBloco;
                 bloco.DecrementarVagas();
@@ -131,6 +131,19 @@ namespace ATUM.sistema {
 
             return dna;
         }
+
+        /// <summary>
+        /// Devolve a lista de Alunos que ainda não foram Processados.
+        /// </summary>
+        /// <returns> Lista de Alunos Não Processados</returns>
+        public IList<Aluno> getAlunosNaoProcessados() {
+            var r = new List<Aluno>();
+            foreach (var aluno in Alunos)
+                if (!Processados.Contains(aluno))
+                    r.Add(aluno);
+            return r;
+        }
+
         #endregion
 
         #region Invariantes
@@ -149,10 +162,14 @@ namespace ATUM.sistema {
             Contract.Invariant(Contract.ForAll(Blocos, (Bloco b1)
                 => (Contract.ForAll(Blocos, (Bloco b2) => b1 == b2 || b1.TurnosBloco != b2.TurnosBloco))));
             // Garantir que os Alunos estão correctamente ordenados
-            Contract.Invariant(isSorted(genMap().Keys.ToList()) && isSorted(genMap().Values.ToList()));
+            Contract.Invariant(isSorted(genMap(Alunos).Keys.ToList()) && isSorted(genMap(Alunos).Values.ToList()));
           
             // ALOCAÇÃO
             // Garantir que os melhores alunos são processados primeiro
+            // Garantir que os processados estão bem ordenados
+            Contract.Invariant(isSorted(genMap(Processados).Keys.ToList()) && isSorted(genMap(Processados).Values.ToList()));
+            Contract.Invariant(Aluno.CompareAlunosByOrd(Processados.Last(), getAlunosNaoProcessados().First()) < 0);
+
             //	all ap: at.processados | all anp: at.inscritos.Disciplina - at.processados | rank/lt[ap,anp]
 
         }
@@ -175,9 +192,13 @@ namespace ATUM.sistema {
             return true;
         }
 
+        /// <summary>
+        /// Método auxiliar para verificar que uma lista está ordenada.
+        /// </summary>
+        /// <param name="l">A lista a verificar.</param>
+        /// <returns>True caso a lista esteja ordenada. Falso caso contrário.</returns>
         [Pure]
-        public static bool isSorted(IList<int> l)
-        {
+        public static bool isSorted(IList<int> l) {
             for (int i = 0; i < l.Count; i++)
                 for (int j = i; j < l.Count; j++)
                     if (i != j && l[i] >= l[j])
@@ -191,18 +212,16 @@ namespace ATUM.sistema {
                     if (i != j && l[i] >= l[j])
                         return false;
             return true;
-        } 
+        }
 
         /// <summary>
         /// Método auxiliar para construir um mapa a partir da lista de Alunos incritos no sistema.
         /// </summary>
         /// <returns>Um mapa de pares (Posição na Lista; Número de Ordem).</returns>
-        public Dictionary<int, uint> genMap()
-        {
-            var r = new Dictionary<int,uint>();
+        public Dictionary<int, uint> genMap(IList<Aluno> l) {
+            var r = new Dictionary<int, uint>();
             int i = 1;
-            foreach (var aluno in Alunos)
-            {
+            foreach (var aluno in l) {
                 r.Add(i, aluno.NumOrdem);
                 i++;
             }
@@ -226,19 +245,7 @@ namespace ATUM.sistema {
             return true;
         }
 
-        /// <summary>
-        /// Método para comprar dois Alunos pela sua ordem na fila do sistema.
-        /// </summary>
-        /// <param name="a1">O primeiro Aluno a ser comparado.</param>
-        /// <param name="a2">O segundo Aluno a ser comparado.</param>
-        /// <returns>-1: a1 vem antes na ordem. 1: a2 vem antes na ordem. 0: nenhum aluno está na fila.</returns>
-        private int ComparaAlunos(Aluno a1, Aluno a2) {
-            foreach (var x in this.Alunos) {
-                if (x == a1) return -1;
-                if (x == a2) return 0;
-            }
-            return 0;
-        }
+
 
         /// <summary>
         /// Método auxiliar para garantir que nenhum Aluno pior está alocado a um Turno da Disciplina.
@@ -248,7 +255,7 @@ namespace ATUM.sistema {
         /// <returns>True caso todos os Alunos alocados a Turnos da Disciplina sejam melhores. False caso contrário.</returns>
         public bool NinguemPior(Aluno aluno, Disciplina disciplina) {
             var aux = new List<Turno>();
-            foreach (Bloco b in aluno.PreferenciasBlocos)
+            foreach (Bloco b in aluno.PreferenciasBlocos.Select(x=>x.Bloco))
                 aux.AddRange(b.TurnosBloco);
 
             foreach (Aluno x in Alunos) {
@@ -284,6 +291,20 @@ namespace ATUM.sistema {
                     r.Add(aluno);
             return r;
         }
+
+        ///// <summary>
+        ///// Método para comprar dois Alunos pela sua ordem na fila do sistema.
+        ///// </summary>
+        ///// <param name="a1">O primeiro Aluno a ser comparado.</param>
+        ///// <param name="a2">O segundo Aluno a ser comparado.</param>
+        ///// <returns>-1: a1 vem antes na ordem. 1: a2 vem antes na ordem. 0: nenhum aluno está na fila.</returns>
+        //private int ComparaAlunos(Aluno a1, Aluno a2) {
+        //    foreach (var x in this.Alunos) {
+        //        if (x == a1) return -1;
+        //        if (x == a2) return 0;
+        //    }
+        //    return 0;
+        //}
 
         #endregion
 
