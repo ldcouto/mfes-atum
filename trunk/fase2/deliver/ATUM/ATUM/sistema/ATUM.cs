@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics.Contracts;
 using ATUM.sistema;
+using ATUM.libs;
 
 namespace ATUM.sistema {
     /// <summary>
@@ -132,17 +133,7 @@ namespace ATUM.sistema {
             return dna;
         }
 
-        /// <summary>
-        /// Devolve a lista de Alunos que ainda não foram Processados.
-        /// </summary>
-        /// <returns> Lista de Alunos Não Processados</returns>
-        public IList<Aluno> getAlunosNaoProcessados() {
-            var r = new List<Aluno>();
-            foreach (var aluno in Alunos)
-                if (!Processados.Contains(aluno))
-                    r.Add(aluno);
-            return r;
-        }
+
 
         #endregion
 
@@ -154,7 +145,7 @@ namespace ATUM.sistema {
                 => (Contract.ForAll(d.TurnosDisciplina, (Turno t) => t.Disciplina == d))));
             // Garantir que um Bloco só tem um turno por disciplina
             Contract.Invariant(Contract.ForAll(Blocos, (Bloco b) =>
-                NaoTemDups((List<Disciplina>)b.GetDiscsDoBloco())));
+                StructOps.NaoTemDups((List<Disciplina>)b.GetDiscsDoBloco())));
             // Garantir que as vagas batem certo
             Contract.Invariant(Contract.ForAll(Turnos, (Turno t) => t.VagasActuais <= t.VagasInicias));
             Contract.Invariant(Contract.ForAll(Turnos, (Turno t) => t.VagasInicias == t.VagasActuais + getAlunosTurno(t).Count()));
@@ -162,13 +153,15 @@ namespace ATUM.sistema {
             Contract.Invariant(Contract.ForAll(Blocos, (Bloco b1)
                 => (Contract.ForAll(Blocos, (Bloco b2) => b1 == b2 || b1.TurnosBloco != b2.TurnosBloco))));
             // Garantir que os Alunos estão correctamente ordenados
-            Contract.Invariant(isSorted(genMap(Alunos).Keys.ToList()) && isSorted(genMap(Alunos).Values.ToList()));
+            Contract.Invariant(StructOps.IsSorted(StructOps.GenMap(Alunos).Keys.ToList()) 
+                && StructOps.IsSorted(StructOps.GenMap(Alunos).Values.ToList()));
           
             // ALOCAÇÃO
             // Garantir que os melhores alunos são processados primeiro
             // Garantir que os processados estão bem ordenados
-            Contract.Invariant(isSorted(genMap(Processados).Keys.ToList()) && isSorted(genMap(Processados).Values.ToList()));
-            Contract.Invariant(Aluno.CompareAlunosByOrd(Processados.Last(), getAlunosNaoProcessados().First()) < 0);
+            Contract.Invariant(StructOps.IsSorted(StructOps.GenMap(Processados).Keys.ToList()) 
+                && StructOps.IsSorted(StructOps.GenMap(Processados).Values.ToList()));
+            Contract.Invariant(Aluno.CompareAlunosByOrd(Processados.Last(), GetAlunosNaoProcessados().First()) < 0);
 
             //	all ap: at.processados | all anp: at.inscritos.Disciplina - at.processados | rank/lt[ap,anp]
 
@@ -178,53 +171,18 @@ namespace ATUM.sistema {
 
         #region Métodos Auxiliares de Contratos
 
-        /// <summary>
-        /// Método auxiliar para verificar a existência de duplicados numa lista.
-        /// </summary>
-        /// <param name="l">Lista a testar.</param>
-        /// <returns>True caso não haja duplicados False caso contrário.</returns>
-        [Pure]
-        public static bool NaoTemDups(IList l) {
-            for (int i = 0; i < l.Count; i++)
-                for (int j = 0; j < l.Count; j++)
-                    if (i != j && l[i] == l[j])
-                        return false;
-            return true;
-        }
+
 
         /// <summary>
-        /// Método auxiliar para verificar que uma lista está ordenada.
+        /// Devolve a lista de Alunos que ainda não foram Processados.
         /// </summary>
-        /// <param name="l">A lista a verificar.</param>
-        /// <returns>True caso a lista esteja ordenada. Falso caso contrário.</returns>
+        /// <returns> Lista de Alunos Não Processados</returns>
         [Pure]
-        public static bool isSorted(IList<int> l) {
-            for (int i = 0; i < l.Count; i++)
-                for (int j = i; j < l.Count; j++)
-                    if (i != j && l[i] >= l[j])
-                        return false;
-            return true;
-        }
-        [Pure]
-        public static bool isSorted(IList<uint> l) {
-            for (int i = 0; i < l.Count; i++)
-                for (int j = i; j < l.Count; j++)
-                    if (i != j && l[i] >= l[j])
-                        return false;
-            return true;
-        }
-
-        /// <summary>
-        /// Método auxiliar para construir um mapa a partir da lista de Alunos incritos no sistema.
-        /// </summary>
-        /// <returns>Um mapa de pares (Posição na Lista; Número de Ordem).</returns>
-        public Dictionary<int, uint> genMap(IList<Aluno> l) {
-            var r = new Dictionary<int, uint>();
-            int i = 1;
-            foreach (var aluno in l) {
-                r.Add(i, aluno.NumOrdem);
-                i++;
-            }
+        public IList<Aluno> GetAlunosNaoProcessados() {
+            var r = new List<Aluno>();
+            foreach (var aluno in Alunos)
+                if (!Processados.Contains(aluno))
+                    r.Add(aluno);
             return r;
         }
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using ATUM.libs;
 
 namespace ATUM.sistema
 {
@@ -123,6 +124,7 @@ namespace ATUM.sistema
         /// <param name="x">Aluno x a comparar.</param>
         /// <param name="y">Aluno y a comparar.</param>
         /// <returns>0 se iguais; -1 se x maior, 1 se y maior.</returns>
+        [Pure]
         public static int CompareAlunosByOrd(Aluno x, Aluno y)
         {
             if (x == null)
@@ -200,7 +202,7 @@ namespace ATUM.sistema
             // Um aluno não pode estar alocado em turnos sobre opostos
 //           Contract.Invariant(Contract.ForAll(AlocadoTurno, (Turno t1)
 //               => Contract.ForAll(AlocadoTurno, (Turno t2) => t1 == t2 || !t1.Sobreposto(t2))));
-            Contract.Invariant(Atum.NaoTemDups(AlocadoTurno.Select(x => x.Spot).ToList()));
+            Contract.Invariant(StructOps.NaoTemDups(AlocadoTurno.Select(x => x.Spot).ToList()));
 
             // Um aluno não tem o mesmo grau de preferencia por dois blocos diferentes
             Contract.ForAll(PreferenciasBlocos, p1 
