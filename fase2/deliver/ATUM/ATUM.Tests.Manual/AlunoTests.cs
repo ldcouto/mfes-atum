@@ -31,7 +31,6 @@ namespace ATUM.Tests.Manual
         [Test]
         public void Constructor_NullArguments_Exception()
         {
-            // Todo: Lançar a excepção no codigo da classe.
             Assert.Throws<ArgumentNullException>(() => new Aluno(null));
             Assert.Throws<ArgumentNullException>(() => new Aluno(""));
             Assert.Throws<ArgumentNullException>(() => new Aluno("*", null));
