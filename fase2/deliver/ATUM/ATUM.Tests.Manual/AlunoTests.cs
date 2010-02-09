@@ -168,13 +168,15 @@ namespace ATUM.Tests.Manual
             Assert.Throws<ArgumentNullException>(() => _aluno.AddAlocacaoTurno(null));
         }
 
-        // Todo: Pode Haver um problema aqui.
         [Test]
         public void AddAlocacao_ValidArgument_Inserida()
         {
-            Turno turnAux = new Turno("id", 10, 1, new Disciplina("Disciplina Aux"));
+            Disciplina discAux = new Disciplina("Disciplina Aux");
+            Turno turnAux = new Turno("id", 10, 1, discAux);
 
             _aluno.Processado = true;
+
+            _aluno.AddInscricao(discAux);
             _aluno.AddAlocacaoTurno(turnAux);
 
             CollectionAssert.Contains(_aluno.AlocadoTurno, turnAux);
@@ -183,12 +185,18 @@ namespace ATUM.Tests.Manual
         [Test]
         public void AddAlocacao_InserirDiferentes_DoisInseridos()
         {
-            Turno turnAux1 = new Turno("id", 10, 1, new Disciplina("Disciplina1"));
-            Turno turnAux2 = new Turno("id", 10, 2, new Disciplina("Disciplina2"));
+            Disciplina discAux1 = new Disciplina("Disciplina 1");
+            Disciplina discAux2 = new Disciplina("Disciplina 2");
+
+            Turno turnAux1 = new Turno("id", 10, 1, discAux1);
+            Turno turnAux2 = new Turno("id", 10, 2, discAux2);
 
             int tamInicio = _aluno.Inscrito.Count;
 
             _aluno.Processado = true;
+            _aluno.AddInscricao(discAux1);
+            _aluno.AddInscricao(discAux2);
+
             _aluno.AddAlocacaoTurno(turnAux1);
             _aluno.AddAlocacaoTurno(turnAux2);
 
@@ -201,21 +209,52 @@ namespace ATUM.Tests.Manual
         }
 
         [Test]
-        public void AddAlocacao_InserirIguais_UmInserido()
+        public void AddAlocacao_DoisTurnosMesmaDisciplina_Exception()
         {
-            Turno turnoAux = new Turno("id", 10, 1, new Disciplina("Disciplina1"));
+            Disciplina discAux1 = new Disciplina("Disciplina 1");
 
-            int tamInicio = _aluno.Inscrito.Count;
+            Turno turnAux1 = new Turno("id", 10, 1, discAux1);
+            Turno turnAux2 = new Turno("id", 10, 2, discAux1);
 
             _aluno.Processado = true;
-            _aluno.AddAlocacaoTurno(turnoAux);
-            _aluno.AddAlocacaoTurno(turnoAux);
+            _aluno.AddInscricao(discAux1);
 
-            int tamFim = _aluno.Inscrito.Count;
+            _aluno.AddAlocacaoTurno(turnAux1);
 
-            CollectionAssert.Contains(_aluno.AlocadoTurno, turnoAux);
-            CollectionAssert.AllItemsAreUnique(_aluno.AlocadoTurno);
-            Assert.AreNotEqual(tamFim, tamInicio + 2);
+            Assert.Throws<ApplicationException>(() => _aluno.AddAlocacaoTurno(turnAux2));
+        }
+
+        [Test]
+        public void AddAlocacao_InserirIguais_Exception()
+        {
+            Disciplina discAux1 = new Disciplina("Disciplina 1");
+
+            Turno turnAux1 = new Turno("id", 10, 1, discAux1);
+            Turno turnAux2 = new Turno("id", 10, 1, discAux1);
+
+            _aluno.Processado = true;
+            _aluno.AddInscricao(discAux1);
+
+            _aluno.AddAlocacaoTurno(turnAux1);
+
+            Assert.Throws<ApplicationException>(() => _aluno.AddAlocacaoTurno(turnAux2));
+        }
+
+        [Test]
+        public void AddAlocacao_TurnosSobrepostos_Exception()
+        {
+            Disciplina discAux1 = new Disciplina("Disciplina 1");
+            Disciplina discAux2 = new Disciplina("Disciplina 2");
+
+            Turno turnAux1 = new Turno("id", 10, 1, discAux1);
+            Turno turnAux2 = new Turno("id", 10, 1, discAux2);
+
+            _aluno.Processado = true;
+            _aluno.AddInscricao(discAux1);
+
+            _aluno.AddAlocacaoTurno(turnAux1);
+
+            Assert.Throws<ApplicationException>(() => _aluno.AddAlocacaoTurno(turnAux2));
         }
     }
 }
