@@ -170,12 +170,32 @@ namespace ATUM.sistema {
             // Blocos
             Contract.Invariant(Contract.ForAll(Alunos, (Aluno a) => Contract.ForAll(a.PreferenciasBlocos.Select(x => x.Bloco),
                 (Bloco b) => a.AlocadoBloco == b || BlocoBloqueadoPorMelhores(a, b))));
+
+            // Garantir que os alunos estão no melhor bloco possível.
+            Contract.Invariant(Contract.ForAll(Alunos, (Aluno a) => a.AlocadoBloco==null || EOMelhorBloco(a, a.AlocadoBloco)));
         }
 
 
         #endregion
 
         #region Métodos Auxiliares de Contratos
+
+        /// <summary>
+        /// Garante que não há Blocos melhores disponíveis para o Aluno em relação ao Bloco actual.
+        /// </summary>
+        /// <param name="aluno">O Aluno a testar.</param>
+        /// <param name="o">O Bloco a testar.</param>
+        /// <returns>True caso o Bloco seja o melhor. False caso contrário.</returns>
+        [Pure]
+        public bool EOMelhorBloco(Aluno a, Bloco b) {
+            bool r=true;
+            var lbs = new List<Bloco>();
+            foreach (var bloco in a.PreferenciasBlocos.Select(x => x.Bloco))
+                if (r && bloco != b)
+                    r = BlocoBloqueadoPorMelhores(a, bloco);      
+            return true;
+        }
+
 
         /// <summary>
         /// Devolve a lista de Alunos que ainda não foram Processados.
@@ -198,13 +218,14 @@ namespace ATUM.sistema {
         /// <returns>True caso o Bloco esteja bloqueado. False caso contrário.</returns>
         [Pure]
         private bool BlocoBloqueadoPorMelhores(Aluno a, Bloco b) {
-            var aux = new List<Turno>();
             foreach (var turno in b.TurnosBloco)
-                aux.Add(turno);
-            foreach (var turno in aux)
+            {
+                if (turno.VagasActuais != 0)
+                    return false;
                 foreach (var aluno in GetAlunosTurno(turno))
                     if (aluno.NumOrdem > a.NumOrdem)
                         return false;
+             }
             return true;
         }
 
@@ -216,12 +237,14 @@ namespace ATUM.sistema {
         /// <returns>True caso todos os Alunos alocados a Turnos da Disciplina sejam melhores. False caso contrário.</returns>
         [Pure]
         public bool NinguemPior(Aluno a, Disciplina d) {
-            var aux = new List<Turno>();
-            aux =(List<Turno>) d.TurnosDisciplina;
-            foreach (var turno in aux)
+            foreach (var turno in d.TurnosDisciplina)
+            {
+                if (turno.VagasActuais != 0)
+                    return false;
                 foreach (var aluno in GetAlunosTurno(turno))
                     if (aluno.NumOrdem > a.NumOrdem)
                         return false;
+            }
             return true;
         }
 
