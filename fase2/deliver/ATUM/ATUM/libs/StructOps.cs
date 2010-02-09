@@ -16,7 +16,7 @@ namespace ATUM.libs {
         /// <param name="l">Lista a testar.</param>
         /// <returns>True caso não haja duplicados False caso contrário.</returns>
         [Pure]
-        public static bool NaoTemDups(IList l) {
+        public static bool NoDups(IList l) {
             for (int i = 0; i < l.Count; i++)
                 for (int j = 0; j < l.Count; j++)
                     if (i != j && l[i] == l[j])
