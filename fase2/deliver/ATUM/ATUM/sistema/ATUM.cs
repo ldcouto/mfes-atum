@@ -75,7 +75,7 @@ namespace ATUM.sistema {
             Contract.Requires(Contract.ForAll(this.Processados, (Aluno x) => Aluno.CompareAlunosByOrd(a, x) > 0));
             Contract.Ensures(Processados.Contains(a));
             Contract.Ensures(a.Processado);
-            Contract.Ensures(a.AlocadoBloco != null || Contract.ForAll(a.PreferenciasBlocos.Select(y=>y.Bloco), (Bloco x) => !x.TemVagas()));
+            Contract.Ensures(a.AlocadoBloco != null || Contract.ForAll(a.PreferenciasBlocos.Select(y => y.Bloco), (Bloco x) => !x.TemVagas()));
             Contract.Ensures(Contract.ForAll(a.Inscrito, (Disciplina d)
                                 => NinguemPior(a, d) || AlunoTaNaDisc(a, d)));
 
@@ -88,7 +88,7 @@ namespace ATUM.sistema {
         /// </summary>
         /// <param name="a">O Aluno a ser alocado.</param>
         private void AlocaBloco(Aluno a) {
-            foreach (Bloco bloco in a.PreferenciasBlocos.Select(x=>x.Bloco)) {
+            foreach (Bloco bloco in a.PreferenciasBlocos.Select(x => x.Bloco)) {
                 if (!bloco.TemVagas()) continue;
                 a.AlocadoTurno = bloco.TurnosBloco;
                 bloco.DecrementarVagas();
@@ -145,7 +145,7 @@ namespace ATUM.sistema {
                 => (Contract.ForAll(d.TurnosDisciplina, (Turno t) => t.Disciplina == d))));
             // Garantir que um Bloco só tem um turno por disciplina
             Contract.Invariant(Contract.ForAll(Blocos, (Bloco b) =>
-                StructOps.NaoTemDups((List<Disciplina>)b.GetDiscsDoBloco())));
+                StructOps.NoDups((List<Disciplina>)b.GetDiscsDoBloco())));
             // Garantir que as vagas batem certo
             Contract.Invariant(Contract.ForAll(Turnos, (Turno t) => t.VagasActuais <= t.VagasInicias));
             Contract.Invariant(Contract.ForAll(Turnos, (Turno t) => t.VagasInicias == t.VagasActuais + getAlunosTurno(t).Count()));
@@ -153,17 +153,16 @@ namespace ATUM.sistema {
             Contract.Invariant(Contract.ForAll(Blocos, (Bloco b1)
                 => (Contract.ForAll(Blocos, (Bloco b2) => b1 == b2 || b1.TurnosBloco != b2.TurnosBloco))));
             // Garantir que os Alunos estão correctamente ordenados
-            Contract.Invariant(StructOps.IsSorted(StructOps.GenMap(Alunos).Keys.ToList()) 
+            Contract.Invariant(StructOps.IsSorted(StructOps.GenMap(Alunos).Keys.ToList())
                 && StructOps.IsSorted(StructOps.GenMap(Alunos).Values.ToList()));
-          
+
             // ALOCAÇÃO
             // Garantir que os melhores alunos são processados primeiro
             // Garantir que os processados estão bem ordenados
-            Contract.Invariant(StructOps.IsSorted(StructOps.GenMap(Processados).Keys.ToList()) 
+            Contract.Invariant(StructOps.IsSorted(StructOps.GenMap(Processados).Keys.ToList())
                 && StructOps.IsSorted(StructOps.GenMap(Processados).Values.ToList()));
             Contract.Invariant(Aluno.CompareAlunosByOrd(Processados.Last(), GetAlunosNaoProcessados().First()) < 0);
 
-            //	all ap: at.processados | all anp: at.inscritos.Disciplina - at.processados | rank/lt[ap,anp]
 
         }
 
@@ -171,6 +170,18 @@ namespace ATUM.sistema {
 
         #region Métodos Auxiliares de Contratos
 
+     //   [Pure]
+        //public bool SoMelhoresBloco(Aluno a)
+        //{
+        //    var lb = a.PreferenciasBlocos.Select(x => x.Bloco);
+        //    foreach (var bloco in lb)
+        //    {
+        //        if (a.AlocadoBloco!=bloco)
+        //        {
+        //            bloco.
+        //        }
+        //    }
+        //}
 
 
         /// <summary>
@@ -213,7 +224,7 @@ namespace ATUM.sistema {
         /// <returns>True caso todos os Alunos alocados a Turnos da Disciplina sejam melhores. False caso contrário.</returns>
         public bool NinguemPior(Aluno aluno, Disciplina disciplina) {
             var aux = new List<Turno>();
-            foreach (Bloco b in aluno.PreferenciasBlocos.Select(x=>x.Bloco))
+            foreach (Bloco b in aluno.PreferenciasBlocos.Select(x => x.Bloco))
                 aux.AddRange(b.TurnosBloco);
 
             foreach (Aluno x in Alunos) {
