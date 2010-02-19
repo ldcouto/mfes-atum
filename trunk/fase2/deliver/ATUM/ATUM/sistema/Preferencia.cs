@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 
@@ -31,6 +32,8 @@ namespace ATUM.sistema
         /// <param name="b">O blocoa a associar á preferência.</param>
         public Preferencia(uint grau, Bloco b)
         {
+            Contract.Requires(b != null, "O bloco que o aluno prefere tem de existir.");
+
             Grau = grau;
             Bloco = b; 
         }

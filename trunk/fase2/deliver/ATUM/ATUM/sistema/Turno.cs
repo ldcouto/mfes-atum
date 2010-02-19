@@ -8,7 +8,7 @@ namespace ATUM.sistema
     /// Classe para representar um Turno.
     /// </summary>
 
-    public class Turno
+    public class Turno : IEquatable<Turno>
     {
         #region Propriedades
         /// <summary>
@@ -89,7 +89,7 @@ namespace ATUM.sistema
         public bool Sobreposto(Turno outro)
         {
             Contract.Requires<ArgumentNullException>(outro != null, "O turno contra o qual se quer testar não pode ser nulo.");
-            Contract.Requires<ArgumentException>(outro != this, "O turno contra o qual se quer testar não pode ser o mesmo turno.");
+            //Contract.Requires<ArgumentException>(outro != this, "O turno contra o qual se quer testar não pode ser o mesmo turno.");
 
             return Spot == outro.Spot;
         }
