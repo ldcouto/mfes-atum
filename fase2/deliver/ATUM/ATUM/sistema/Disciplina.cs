@@ -7,7 +7,7 @@ namespace ATUM.sistema
     /// <summary>
     /// Classe para representar uma Disciplina, onde os alunos se encontram inscritos.
     /// </summary>
-    public class Disciplina
+    public class Disciplina : IEquatable<Disciplina>
     {
         #region Propriedades
         /// <summary>
@@ -60,7 +60,11 @@ namespace ATUM.sistema
         {
             Contract.Requires<ArgumentNullException>(turno != null, "O turno a ser inserido não pode ser nulo.");
             Contract.Requires<ArgumentException>(!TurnosDisciplina.Contains(turno), "O turno que está a tentar ser inserido já está na lista de turnos.");
+
             Contract.Ensures(TurnosDisciplina.Contains(turno), "O turno válido que está tentar inseir não foi inserido.");
+
+            Contract.EnsuresOnThrow<ArgumentNullException>(Contract.OldValue(TurnosDisciplina) == TurnosDisciplina);
+            Contract.EnsuresOnThrow<ArgumentException>(Contract.OldValue(TurnosDisciplina) == TurnosDisciplina);
 
             TurnosDisciplina.Add(turno);
         }
@@ -69,12 +73,16 @@ namespace ATUM.sistema
         /// Remove um turno da Disciplina.
         /// </summary>
         /// <param name="turno">Turno a ser removido.</param>
-        /// <returns></returns>
+        /// <returns>True se o turno for removido, falso se o contrario.</returns>
         public bool RemoveTurno(Turno turno)
         {
             Contract.Requires<ArgumentNullException>(turno != null, "O turno a ser removido nºao pode ser nulo.");
             Contract.Requires<ArgumentException>(TurnosDisciplina.Contains(turno), "O turno a remover deve estar na lista de turnos.");
+
             Contract.Ensures(!TurnosDisciplina.Contains(turno), "O turno a remover não deve estar na lista depois de removido.");
+
+            Contract.EnsuresOnThrow<ArgumentNullException>(Contract.OldValue(TurnosDisciplina) == TurnosDisciplina);
+            Contract.EnsuresOnThrow<ArgumentException>(Contract.OldValue(TurnosDisciplina) == TurnosDisciplina);
 
             return TurnosDisciplina.Remove(turno);
         }
@@ -86,6 +94,8 @@ namespace ATUM.sistema
         [Pure]
         public bool TemVagas()
         {
+            Contract.Ensures(Contract.ForAll(TurnosDisciplina, (Turno t) => !t.TemVagas()) || Contract.Exists(TurnosDisciplina, (Turno t) => t.TemVagas()), "Ou todos os turnos estão ocupados, ou então existe pelo menos um que tem vagas.");
+
             foreach (Turno turno in TurnosDisciplina)
                 if (turno.TemVagas()) return true;
 
@@ -130,6 +140,15 @@ namespace ATUM.sistema
         public static bool operator !=(Disciplina left, Disciplina right)
         {
             return !Equals(left, right);
+        }
+        #endregion
+
+        #region Invariantes
+        [ContractInvariantMethod]
+        private void ObjectInvariant()
+        {
+            // Garantir que todos os turnos da disciplina pertencem á disciplina
+            Contract.Invariant(Contract.ForAll(TurnosDisciplina, t => t.Disciplina == this));
         }
         #endregion
     }
