@@ -14,8 +14,8 @@ namespace ATUM.Tests.Manual
 
         private Bloco _bloco;
 
-        [SetUp]
-        public void Bloco_Initialize()
+        [TestFixtureSetUp]
+        public void Test_Harness()
         {
             Contract.ContractFailed += (sender, e) =>
             {
@@ -23,17 +23,18 @@ namespace ATUM.Tests.Manual
                 e.SetUnwind(); //cause code to abort after event
                 Assert.Fail(e.FailureKind.ToString() + ":" + e.Message);
             };
+        }
 
+        [SetUp]
+        public void Bloco_Initialize()
+        {
             _bloco = new Bloco("Bloco 1");
         }
 
+        #region Testes - Constructores
         [Test]
         public void Constructor_NullArguments_Exception()
         {
-            //new Bloco(null);
-            //new Bloco(null, null);
-            //new Bloco("", null);
-            //new Bloco("*", null);
             Assert.Throws<ArgumentNullException>(() => new Bloco(null));
             Assert.Throws<ArgumentNullException>(() => new Bloco(null, null));
             Assert.Throws<ArgumentNullException>(() => new Bloco("", null));
@@ -46,7 +47,9 @@ namespace ATUM.Tests.Manual
             Assert.DoesNotThrow(() => new Bloco("ID"));
             Assert.DoesNotThrow(() => new Bloco("ID", new List<Turno>()));
         }
+        #endregion
 
+        #region Testes - Adicionar Turno
         [Test]
         public void AddTurno_TurnoInexistente_TurnoAdicionado()
         {
@@ -95,7 +98,9 @@ namespace ATUM.Tests.Manual
         {
             Assert.Throws<ArgumentNullException>(() => _bloco.AddTurno(null));
         }
+        #endregion
 
+        #region Testes - Remover Turno
         [Test]
         public void RemoveTurno_TurnoExistente_TurnoRemovido()
         {
@@ -123,7 +128,9 @@ namespace ATUM.Tests.Manual
         {
             Assert.Throws<ArgumentNullException>(() => _bloco.RemoveTurno(null), "Foi removido um turno nulo.");
         }
+        #endregion
 
+        #region Testes - Tem Vagas
         [Test]
         public void TemVagas_ExistemVagas_True()
         {
@@ -157,7 +164,9 @@ namespace ATUM.Tests.Manual
 
             Assert.IsFalse(resultado, "O bloco sem vagas, tem vagas.");
         }
+        #endregion
 
+        #region Testes - Decrementar Vagas 
         [Test]
         public void DecrementarVagas_VagasExistem_VagasDecrementadas()
         {
@@ -205,7 +214,9 @@ namespace ATUM.Tests.Manual
         //    Assert.LessOrEqual(fim1, inicio1, "As vagas foram aumentadas.");
         //    Assert.LessOrEqual(fim2, inicio2, "As vagas foram aumentadas.");
         //}
+        #endregion
 
+        #region Testes - Get Disciplinas do Bloco
         [Test]
         public void GetDiscsDoBloco_ListaCorrecta()
         {
@@ -246,7 +257,9 @@ namespace ATUM.Tests.Manual
 
             CollectionAssert.AreNotEquivalent(unexpected, actual);
         }
+        #endregion
 
+        #region Testes - TurnosSobrepostos
         [Test]
         public void TurnosSobrepostos_TurnosNaoSobrepostos_False()
         {
@@ -284,7 +297,9 @@ namespace ATUM.Tests.Manual
         {
             Assert.Throws<ArgumentNullException>(() => _bloco.TurnosSobrepostos(null));
         }
+        #endregion
 
+        #region Testes - Membros da Igualdade
         [Test]
         public void Equals_Self_ReturnTrue()
         {
@@ -379,5 +394,6 @@ namespace ATUM.Tests.Manual
 
             Assert.AreNotEqual(hash1, hash2, "Blocos diferentes dão chaves iguais.");
         }
+        #endregion
     }
 }

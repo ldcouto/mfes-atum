@@ -8,15 +8,13 @@ using NUnit.Framework;
 
 namespace ATUM.Tests.Manual
 {
-
     [TestFixture]
     class AlunoTests
     {
-
         private Aluno _aluno;
 
-        [SetUp]
-        public void AlunoInitialize()
+        [TestFixtureSetUp]
+        public void Test_Harness()
         {
             Contract.ContractFailed += (sender, e) =>
             {
@@ -24,10 +22,15 @@ namespace ATUM.Tests.Manual
                 e.SetUnwind(); //cause code to abort after event
                 Assert.Fail(e.FailureKind.ToString() + ":" + e.Message);
             };
+        }
 
+        [SetUp]
+        public void AlunoInitialize()
+        {
             _aluno = new Aluno("Aluno 1");
         }
 
+        #region Testes - Constructores
         [Test]
         public void Constructor_NullArguments_Exception()
         {
@@ -44,7 +47,9 @@ namespace ATUM.Tests.Manual
             Assert.DoesNotThrow(() => new Aluno("id", new List<Disciplina>()));
             Assert.DoesNotThrow(() => new Aluno("id", new List<Disciplina>(), new List<Preferencia>()));
         }
+        #endregion
 
+        #region Testes - CompareAlunoByOrd
         [Test]
         public void CompareAlunoByOrd_NullArguments_Zero()
         {
@@ -82,7 +87,9 @@ namespace ATUM.Tests.Manual
 
             Assert.AreEqual(resultado, -1);
         }
+        #endregion
 
+        #region Testes - Adicionar Inscrição
         [Test]
         public void AddInscricao_NullArguments_Exception()
         {
@@ -134,7 +141,9 @@ namespace ATUM.Tests.Manual
             CollectionAssert.AllItemsAreUnique(_aluno.Inscrito);
             Assert.AreNotEqual(tamFim, tamInicio + 2);
         }
+        #endregion
 
+        #region Testes - Remover Inscrição
         [Test]
         public void RemoveInscricao_NullArgument_Exception()
         {
@@ -160,7 +169,9 @@ namespace ATUM.Tests.Manual
 
             Assert.Throws<ArgumentNullException>(() => _aluno.RemoveInscricao(discAux));
         }
+        #endregion
 
+        #region Testes - Adicionar Turno às alocações
         [Test]
         public void AddAlocacao_NullArguments_Exception()
         {
@@ -255,7 +266,9 @@ namespace ATUM.Tests.Manual
 
             Assert.Throws<ApplicationException>(() => _aluno.AddAlocacaoTurno(turnAux2));
         }
+        #endregion
 
+        #region Testes - Membros da Igualdade
         [Test]
         public void Equals_Self_ReturnTrue()
         {
@@ -358,5 +371,6 @@ namespace ATUM.Tests.Manual
 
             Assert.AreNotEqual(hash1, hash2, "Alunos diferentes dão chaves iguais.");
         }
+        #endregion
     }
 }

@@ -13,30 +13,8 @@ namespace ATUM.Tests.Manual
 
         private Disciplina _disciplina;
 
-        #region Additional test attributes
-        //
-        // You can use the following additional attributes as you write your tests:
-        //
-        // Use ClassInitialize to run code before running the first test in the class
-        // [ClassInitialize()]
-        // public static void MyClassInitialize(TestContext testContext) { }
-        //
-        // Use ClassCleanup to run code after all tests in a class have run
-        // [ClassCleanup()]
-        // public static void MyClassCleanup() { }
-        //
-        // Use TestInitialize to run code before running each test 
-        // [TestInitialize()]
-        // public void MyTestInitialize() { }
-        //
-        // Use TestCleanup to run code after each test has run
-        // [TestCleanup()]
-        // public void MyTestCleanup() { }
-        //
-        #endregion
-
-        [SetUp]
-        public void Disciplina_Initialize()
+        [TestFixtureSetUp]
+        public void Test_Harness()
         {
             Contract.ContractFailed += (sender, e) =>
             {
@@ -44,10 +22,15 @@ namespace ATUM.Tests.Manual
                 e.SetUnwind(); //cause code to abort after event
                 Assert.Fail(e.FailureKind.ToString() + ":" + e.Message);
             };
+        }
 
+        [SetUp]
+        public void Disciplina_Initialize()
+        {
             _disciplina = new Disciplina("Disciplina 1");
         }
 
+        #region Testes - Constructores
         [Test]
         public void Constructor_NullArguments_Exception()
         {
@@ -63,9 +46,10 @@ namespace ATUM.Tests.Manual
             Assert.DoesNotThrow(() => new Disciplina("ID"));
             Assert.DoesNotThrow(() => new Disciplina("ID", new List<Turno>()));
         }
+        #endregion
 
+        #region Testes - Adicionar Turno
         [Test]
-
         public void AddTurno_TurnoValido_TurnoAdicionado()
         {
             Turno turno = new Turno("TP01", 10, 1, _disciplina);
@@ -111,7 +95,9 @@ namespace ATUM.Tests.Manual
             _disciplina.AddTurno(null);
             Assert.Throws<ArgumentNullException>(() => _disciplina.AddTurno(null), "Foi adicionado um turno nulo.");
         }
+        #endregion
 
+        #region Testes - Remover Turno
         [Test]
         public void RemoveTurno_TurnoExistente_TurnoRemovido()
         {
@@ -138,7 +124,9 @@ namespace ATUM.Tests.Manual
         {
             Assert.Throws<ArgumentNullException>(() => _disciplina.RemoveTurno(null), "Foi removido um turno nulo.");
         }
+        #endregion
 
+        #region Testes - Tem Vagas
         [Test]
         public void TemVagas_ExistemVagas_ReturnTrue()
         {
@@ -166,7 +154,9 @@ namespace ATUM.Tests.Manual
 
             Assert.IsFalse(resultado, "Existem vagas, que não são encontradas.");
         }
+        #endregion
 
+        #region Testes - Membros da Igualdade
         [Test]
         public void Equals_Self_ReturnTrue()
         {
@@ -261,5 +251,6 @@ namespace ATUM.Tests.Manual
 
             Assert.AreNotEqual(hash1, hash2, "Disciplinas diferentes dão chaves iguais.");
         }
+        #endregion
     }
 }
