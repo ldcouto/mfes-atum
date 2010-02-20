@@ -62,9 +62,10 @@ namespace ATUM.sistema
             Contract.Requires<ArgumentException>(!TurnosSobrepostos(turno), "O turno a ser adicionado não pode estar sobreposto com outros turnos do bloco.");
 
             Contract.Ensures(TurnosBloco.Contains(turno), "Se o turno for válido ele é garantidamente adicionado.");
+            Contract.Ensures(Contract.OldValue(Identifier) == Identifier, "A execução deste método não só altera a lista de turnos.");
 
-            Contract.EnsuresOnThrow<ArgumentNullException>(Contract.OldValue(TurnosBloco) == TurnosBloco);
-            Contract.EnsuresOnThrow<ArgumentException>(Contract.OldValue(TurnosBloco) == TurnosBloco);
+            Contract.EnsuresOnThrow<ArgumentNullException>(Contract.OldValue(this) == this);
+            Contract.EnsuresOnThrow<ArgumentException>(Contract.OldValue(this) == this);
 
             TurnosBloco.Add(turno);
         }
@@ -80,9 +81,10 @@ namespace ATUM.sistema
             Contract.Requires<ArgumentException>(TurnosBloco.Contains(turno), "O turno a ser removido ainda tem de pertencer á lista de turnos do bloco.");
 
             Contract.Ensures(!TurnosBloco.Contains(turno), "Se o turno existir ele é garantidamente removido.");
+            Contract.Ensures(Contract.OldValue(Identifier) == Identifier, "A execução deste método não só altera a lista de turnos.");
 
-            Contract.EnsuresOnThrow<ArgumentNullException>(Contract.OldValue(TurnosBloco) == TurnosBloco);
-            Contract.EnsuresOnThrow<ArgumentException>(Contract.OldValue(TurnosBloco) == TurnosBloco);
+            Contract.EnsuresOnThrow<ArgumentNullException>(Contract.OldValue(this) == this);
+            Contract.EnsuresOnThrow<ArgumentException>(Contract.OldValue(this) == this);
 
             return TurnosBloco.Remove(turno);
         }
@@ -94,7 +96,13 @@ namespace ATUM.sistema
         [Pure]
         public bool TemVagas()
         {
-            Contract.Ensures(Contract.Exists(TurnosBloco, t => !t.TemVagas()) || Contract.ForAll(TurnosBloco, t => t.TemVagas()), "Ou todos os turnos têm vagas, ou existe pelo menos um que não tem vagas");
+            Contract.Requires<ApplicationException>(Contract.ForAll(TurnosBloco, (Turno t) => t != null), "Os turnos do bloco têm de existir");
+
+            Contract.Ensures(Contract.Exists(TurnosBloco, t => !t.TemVagas()) || 
+                             Contract.ForAll(TurnosBloco, t => t.TemVagas()), 
+                             "Ou todos os turnos têm vagas, ou existe pelo menos um que não tem vagas");
+
+            Contract.EnsuresOnThrow<ApplicationException>(Contract.OldValue(this) == this);
 
             foreach (Turno turno in TurnosBloco)
             {
@@ -122,6 +130,8 @@ namespace ATUM.sistema
         {
             Contract.Ensures(Contract.Result<IList<Disciplina>>() != null);
             Contract.Ensures(Contract.Result<IList<Disciplina>>().Count == TurnosBloco.Count);
+            Contract.Ensures(Contract.ForAll(Contract.Result<IList<Disciplina>>(), (Disciplina d) 
+                                          => Contract.Exists(TurnosBloco, (Turno t) => t.Disciplina == d)));
 
             var r = new List<Disciplina>();
             foreach (var turno in TurnosBloco)
@@ -143,8 +153,10 @@ namespace ATUM.sistema
         public bool TurnosSobrepostos(Turno turno)
         {
             Contract.Requires<ArgumentNullException>(turno != null, "O turno a comparar tem de existir.");
-            
-            Contract.Ensures(Contract.Exists(TurnosBloco, (Turno t) => t.Sobreposto(turno)) || Contract.ForAll(TurnosBloco, (Turno t) => !t.Sobreposto(turno)), "Garante ou que nenhum turno do bloco está sobreposto com o turno em quetão, ou então existe um turno que esta sobreposto com ele.");
+
+            Contract.Ensures(Contract.Exists(TurnosBloco, (Turno t) => t.Sobreposto(turno)) ||
+                             Contract.ForAll(TurnosBloco, (Turno t) => !t.Sobreposto(turno)),
+                             "Garante ou que nenhum turno do bloco está sobreposto com o turno em quetão, ou então existe um turno que esta sobreposto com ele.");
 
             Contract.EnsuresOnThrow<ArgumentNullException>(Contract.OldValue(TurnosBloco) == TurnosBloco);
 
@@ -197,7 +209,7 @@ namespace ATUM.sistema
         {
             // Garantir que um bloco não tem turnos sem disciplina
             Contract.Invariant((TurnosBloco == null) || Contract.ForAll(TurnosBloco, (Turno t) => t.Disciplina != null));
-            
+
             // Garantir que um bloco não tem turnos sobrepostos
             Contract.Invariant((TurnosBloco == null) || Contract.ForAll(TurnosBloco, (Turno t1)
                 => Contract.ForAll(TurnosBloco, (Turno t2) => t1 == t2 || t1.Spot != t2.Spot)));

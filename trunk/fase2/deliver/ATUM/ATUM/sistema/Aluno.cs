@@ -145,9 +145,21 @@ namespace ATUM.sistema
         /// <param name="d">Disciplina a adicionar.</param>
         public void AddInscricao(Disciplina d)
         {
-            Contract.Requires<ArgumentNullException>(d != null);
-            Contract.Requires(!Inscrito.Contains(d));
-            Contract.Ensures(Inscrito.Contains(d));
+            Contract.Requires<ArgumentNullException>(d != null, "A disciplina a ser adicionada tem de existir");
+            Contract.Requires<ArgumentException>(!Inscrito.Contains(d), "O aluno não pode estar inscrito a duas disciplinas iguais.");
+
+            Contract.Ensures(Inscrito.Contains(d), "Garante que a disciplina é inserida.");
+            Contract.Ensures(Contract.OldValue(Identifier) == Identifier &&
+                             Contract.OldValue(AlocadoTurno) == AlocadoTurno &&
+                             Contract.OldValue(AlocadoBloco) == AlocadoBloco &&
+                             Contract.OldValue(PreferenciasBlocos) == PreferenciasBlocos &&
+                             Contract.OldValue(Processado) == Processado &&
+                             Contract.OldValue(NumOrdem) == NumOrdem,
+                             "Apenas a lista de inscrições é alterada com a execução deste método."
+                             );
+
+            Contract.EnsuresOnThrow<ArgumentNullException>(Contract.OldValue(this) == this);
+            Contract.EnsuresOnThrow<ArgumentException>(Contract.OldValue(this) == this);
 
             Inscrito.Add(d);
         }
@@ -159,9 +171,21 @@ namespace ATUM.sistema
         /// <returns></returns>
         public bool RemoveInscricao(Disciplina d)
         {
-            Contract.Requires<ArgumentNullException>(d != null);
-            Contract.Requires(Inscrito.Contains(d));
-            Contract.Ensures(!Inscrito.Contains(d));
+            Contract.Requires<ArgumentNullException>(d != null, "A disciplina a remover tem de existir.");
+            Contract.Requires<ArgumentException>(Inscrito.Contains(d), "O aluno deve estar inscrito á disciplina a remover.");
+
+            Contract.Ensures(!Inscrito.Contains(d), "Garante que a disciplina é removida.");
+            Contract.Ensures(Contract.OldValue(Identifier) == Identifier &&
+                             Contract.OldValue(AlocadoTurno) == AlocadoTurno &&
+                             Contract.OldValue(AlocadoBloco) == AlocadoBloco &&
+                             Contract.OldValue(PreferenciasBlocos) == PreferenciasBlocos &&
+                             Contract.OldValue(Processado) == Processado &&
+                             Contract.OldValue(NumOrdem) == NumOrdem,
+                             "Apenas a lista de inscrições é alterada com a execução deste método."
+                             );
+
+            Contract.EnsuresOnThrow<ArgumentNullException>(Contract.OldValue(this) == this);
+            Contract.EnsuresOnThrow<ArgumentException>(Contract.OldValue(this) == this);
 
             return Inscrito.Remove(d);
         }
@@ -182,15 +206,27 @@ namespace ATUM.sistema
         /// <summary>
         /// Adiciona um Turno aos alocados do Aluno
         /// </summary>
-        /// <param name="t">Turno a adicionar</param>
-        public void AddAlocacaoTurno(Turno t)
+        /// <param name="turno">Turno a adicionar</param>
+        public void AddAlocacaoTurno(Turno turno)
         {
-            Contract.Requires(t != null, "O turno a inserir tem de existir.");
-            Contract.Requires(!AlocadoTurno.Contains(t), "O aluno não pode já estar alocado ao turno a inserir. ");
-            Contract.Requires(!AlocadoTurno.Select(x => x.Spot).Contains(t.Spot));
-            Contract.Ensures(AlocadoTurno.Contains(t));
+            Contract.Requires<ArgumentNullException>(turno != null, "O turno a inserir tem de existir.");
+            Contract.Requires<ArgumentException>(!AlocadoTurno.Contains(turno), "O aluno não pode já estar alocado ao turno a inserir. ");
+            Contract.Requires<ArgumentException>(!AlocadoTurno.Select(t => t.Spot).Contains(turno.Spot), "O turno a ser adicionado não pode estar sobreposto com os turnos a que o aluno já está alocado.");
 
-            AlocadoTurno.Add(t);
+            Contract.Ensures(AlocadoTurno.Contains(turno),"Garante que o turno é adicionado às alocações.");
+            Contract.Ensures(Contract.OldValue(Identifier) == Identifier &&
+                             Contract.OldValue(Inscrito) == Inscrito &&
+                             Contract.OldValue(AlocadoTurno) == AlocadoTurno &&
+                             Contract.OldValue(AlocadoBloco) == AlocadoBloco &&
+                             Contract.OldValue(PreferenciasBlocos) == PreferenciasBlocos &&
+                             Contract.OldValue(Processado) == Processado &&
+                             Contract.OldValue(NumOrdem) == NumOrdem, 
+                             "Apenas a lista de alocações é alterada.");
+
+            Contract.EnsuresOnThrow<ArgumentNullException>(Contract.OldValue(this) == this);
+            Contract.EnsuresOnThrow<ArgumentException>(Contract.OldValue(this) == this);
+
+            AlocadoTurno.Add(turno);
         }
 
         #endregion
@@ -205,7 +241,7 @@ namespace ATUM.sistema
 
             // Garantir que um aluno só tem preferências por blocos para os quais está inscricoes a todas as disciplinas
             //Contract.Invariant(Contract.ForAll(PreferenciasBlocos, (Bloco b) 
-            //    => Contract.ForAll(b.TurnosBloco, (Turno t) => Inscrito.Contains(t.Disciplina))) );
+            //    => Contract.ForAll(b.TurnosBloco, (Turno turno) => Inscrito.Contains(turno.Disciplina))) );
             Contract.Invariant(Contract.ForAll(PreferenciasBlocos, (Preferencia p) =>
                 Contract.ForAll(p.Bloco.TurnosBloco, (Turno t) => Inscrito.Contains(t.Disciplina))));
 
@@ -230,11 +266,12 @@ namespace ATUM.sistema
                     => (p1 == p2 || (p1.Grau != p2.Grau && p1.Bloco != p2.Bloco)))));
 
             // Garantir que um aluno processado tem no máximo um turno por disciplina
-            Contract.Invariant(!Processado || StructOps.NoDups((List<Disciplina>)AlocadoTurno.Select(x=>x.Disciplina).ToList()));
+            Contract.Invariant(!Processado || StructOps.NoDups((List<Disciplina>)AlocadoTurno.Select(x => x.Disciplina).ToList()));
         }
         #endregion
 
         #region Membros da Igualdade
+        [Pure]
         public bool Equals(Aluno other)
         {
             if (ReferenceEquals(null, other)) return false;
@@ -242,34 +279,38 @@ namespace ATUM.sistema
             return Equals(other.Identifier, Identifier) && Equals(other.Inscrito, Inscrito) && Equals(other.AlocadoTurno, AlocadoTurno) && Equals(other.AlocadoBloco, AlocadoBloco) && Equals(other.PreferenciasBlocos, PreferenciasBlocos) && other.Processado.Equals(Processado) && other.NumOrdem == NumOrdem;
         }
 
+        [Pure]
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != typeof (Aluno)) return false;
-            return Equals((Aluno) obj);
+            if (obj.GetType() != typeof(Aluno)) return false;
+            return Equals((Aluno)obj);
         }
 
+        [Pure]
         public override int GetHashCode()
         {
             unchecked
             {
                 int result = (Identifier != null ? Identifier.GetHashCode() : 0);
-                result = (result*397) ^ (Inscrito != null ? Inscrito.GetHashCode() : 0);
-                result = (result*397) ^ (AlocadoTurno != null ? AlocadoTurno.GetHashCode() : 0);
-                result = (result*397) ^ (AlocadoBloco != null ? AlocadoBloco.GetHashCode() : 0);
-                result = (result*397) ^ (PreferenciasBlocos != null ? PreferenciasBlocos.GetHashCode() : 0);
-                result = (result*397) ^ Processado.GetHashCode();
-                result = (result*397) ^ NumOrdem.GetHashCode();
+                result = (result * 397) ^ (Inscrito != null ? Inscrito.GetHashCode() : 0);
+                result = (result * 397) ^ (AlocadoTurno != null ? AlocadoTurno.GetHashCode() : 0);
+                result = (result * 397) ^ (AlocadoBloco != null ? AlocadoBloco.GetHashCode() : 0);
+                result = (result * 397) ^ (PreferenciasBlocos != null ? PreferenciasBlocos.GetHashCode() : 0);
+                result = (result * 397) ^ Processado.GetHashCode();
+                result = (result * 397) ^ NumOrdem.GetHashCode();
                 return result;
             }
         }
 
+        [Pure]
         public static bool operator ==(Aluno left, Aluno right)
         {
             return Equals(left, right);
         }
 
+        [Pure]
         public static bool operator !=(Aluno left, Aluno right)
         {
             return !Equals(left, right);

@@ -62,9 +62,10 @@ namespace ATUM.sistema
             Contract.Requires<ArgumentException>(!TurnosDisciplina.Contains(turno), "O turno que está a tentar ser inserido já está na lista de turnos.");
 
             Contract.Ensures(TurnosDisciplina.Contains(turno), "O turno válido que está tentar inseir não foi inserido.");
+            Contract.Ensures(Contract.OldValue(Identifier) == Identifier, "A execução deste método não só altera a lista de turnos.");
 
-            Contract.EnsuresOnThrow<ArgumentNullException>(Contract.OldValue(TurnosDisciplina) == TurnosDisciplina);
-            Contract.EnsuresOnThrow<ArgumentException>(Contract.OldValue(TurnosDisciplina) == TurnosDisciplina);
+            Contract.EnsuresOnThrow<ArgumentNullException>(Contract.OldValue(this) == this);
+            Contract.EnsuresOnThrow<ArgumentException>(Contract.OldValue(this) == this);
 
             TurnosDisciplina.Add(turno);
         }
@@ -80,9 +81,10 @@ namespace ATUM.sistema
             Contract.Requires<ArgumentException>(TurnosDisciplina.Contains(turno), "O turno a remover deve estar na lista de turnos.");
 
             Contract.Ensures(!TurnosDisciplina.Contains(turno), "O turno a remover não deve estar na lista depois de removido.");
+            Contract.Ensures(Contract.OldValue(Identifier) == Identifier, "A execução deste método não só altera a lista de turnos.");
 
-            Contract.EnsuresOnThrow<ArgumentNullException>(Contract.OldValue(TurnosDisciplina) == TurnosDisciplina);
-            Contract.EnsuresOnThrow<ArgumentException>(Contract.OldValue(TurnosDisciplina) == TurnosDisciplina);
+            Contract.EnsuresOnThrow<ArgumentNullException>(Contract.OldValue(this) == this);
+            Contract.EnsuresOnThrow<ArgumentException>(Contract.OldValue(this) == this);
 
             return TurnosDisciplina.Remove(turno);
         }
@@ -94,7 +96,9 @@ namespace ATUM.sistema
         [Pure]
         public bool TemVagas()
         {
-            Contract.Ensures(Contract.ForAll(TurnosDisciplina, (Turno t) => !t.TemVagas()) || Contract.Exists(TurnosDisciplina, (Turno t) => t.TemVagas()), "Ou todos os turnos estão ocupados, ou então existe pelo menos um que tem vagas.");
+            Contract.Ensures(Contract.Result<bool>() == Contract.ForAll(TurnosDisciplina, (Turno t) => !t.TemVagas()) ||
+                             Contract.Result<bool>() == Contract.Exists(TurnosDisciplina, (Turno t) => t.TemVagas()),
+                             "Ou todos os turnos estão cheios, ou então existe pelo menos um que tem vagas.");
 
             foreach (Turno turno in TurnosDisciplina)
                 if (turno.TemVagas()) return true;
