@@ -75,17 +75,39 @@ namespace ATUM.Tests.Manual
         }
 
         [Test]
-        public void CompareAlunoByOrd_ValidArguments()
+        public void CompareAlunoByOrd_SameArguments_Zero()
         {
-            Aluno aluno1 = new Aluno("Aluno1");
-            Aluno aluno2 = new Aluno("Aluno2");
+            int resultado = Aluno.CompareAlunosByOrd(_aluno, _aluno);
 
-            aluno1.NumOrdem = 1;
-            aluno2.NumOrdem = 2;
+            Assert.AreEqual(resultado, 0);
+        }
 
-            int resultado = Aluno.CompareAlunosByOrd(aluno1, aluno2);
+        [Test]
+        public void CompareAlunoByOrd_HigherY_NegativeOne()
+        {
+            Aluno a1 = new Aluno("Aluno 1");
+            a1.NumOrdem = 1;
 
-            Assert.AreEqual(resultado, -1);
+            Aluno a2 = new Aluno("Aluno 2");
+            a2.NumOrdem = 3;
+
+            int resultado = Aluno.CompareAlunosByOrd(a1, a2);
+
+            Assert.AreEqual(-1,resultado);
+        }
+
+        [Test]
+        public void CompareAlunoByOrd_HigherX_PositiveOne()
+        {
+            Aluno a1 = new Aluno("Aluno 1");
+            a1.NumOrdem = 1;
+
+            Aluno a2 = new Aluno("Aluno 2");
+            a2.NumOrdem = 3;
+
+            int resultado = Aluno.CompareAlunosByOrd(a2, a1);
+
+            Assert.AreEqual(1, resultado);
         }
         #endregion
 
@@ -289,14 +311,14 @@ namespace ATUM.Tests.Manual
         }
 
         [Test]
-        public void Equals_NullObjecto_ReturnTrue()
+        public void Equals_NullObjecto_ReturnFalse()
         {
             const object obj = null;
             Assert.IsFalse(_aluno.Equals(obj), "Comparação com um objecto nulo dá true.");
         }
 
         [Test]
-        public void Equals_AlunoObject_Return()
+        public void Equals_AlunoObject_ReturnFalse()
         {
             Object obj = new Aluno("AL01");
             Assert.IsFalse(_aluno.Equals(obj),"Comparaçºao com um aluno qualquer dá true.");
