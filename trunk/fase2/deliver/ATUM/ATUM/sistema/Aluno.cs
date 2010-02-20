@@ -206,7 +206,7 @@ namespace ATUM.sistema
         /// <summary>
         /// Adiciona um Turno aos alocados do Aluno
         /// </summary>
-        /// <param name="turno">Turno a adicionar</param>
+        /// <param name="turno">Turno a adicionar.</param>
         public void AddAlocacaoTurno(Turno turno)
         {
             Contract.Requires<ArgumentNullException>(turno != null, "O turno a inserir tem de existir.");
@@ -220,7 +220,7 @@ namespace ATUM.sistema
                              Contract.OldValue(AlocadoBloco) == AlocadoBloco &&
                              Contract.OldValue(PreferenciasBlocos) == PreferenciasBlocos &&
                              Contract.OldValue(Processado) == Processado &&
-                             Contract.OldValue(NumOrdem) == NumOrdem, 
+                             Contract.OldValue(NumOrdem) == NumOrdem,
                              "Apenas a lista de alocações é alterada.");
 
             Contract.EnsuresOnThrow<ArgumentNullException>(Contract.OldValue(this) == this);

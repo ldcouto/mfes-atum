@@ -96,8 +96,8 @@ namespace ATUM.sistema
         [Pure]
         public bool TemVagas()
         {
-            Contract.Ensures(Contract.Result<bool>() == Contract.ForAll(TurnosDisciplina, (Turno t) => !t.TemVagas()) ||
-                             Contract.Result<bool>() == Contract.Exists(TurnosDisciplina, (Turno t) => t.TemVagas()),
+            Contract.Ensures(Contract.Result<bool>() == Contract.ForAll(TurnosDisciplina, t => !t.TemVagas()) ||
+                             Contract.Result<bool>() == Contract.Exists(TurnosDisciplina, t => t.TemVagas()),
                              "Ou todos os turnos estão cheios, ou então existe pelo menos um que tem vagas.");
 
             foreach (Turno turno in TurnosDisciplina)
