@@ -37,22 +37,26 @@ namespace ATUM.Tests.Manual
         //
         #endregion
 
-        [SetUp]
-        public void Turno_Initialize()
+        [TestFixtureSetUp]
+        public void Test_Harness()
         {
             Contract.ContractFailed += (sender, e) =>
             {
                 e.SetHandled();
                 e.SetUnwind(); //cause code to abort after event
                 Assert.Fail(e.FailureKind.ToString() + ":" + e.Message);
-
             };
+        }
 
+        [SetUp]
+        public void Turno_Initialize()
+        {
             _disciplina = new Disciplina("DC01");
             _turno = new Turno("TP01", 10, 1, _disciplina);
             _disciplina.AddTurno(_turno);
         }
 
+        #region Testes - Constructores
         [Test]
         public void Constructor_NullArgument_Exception()
         {
@@ -66,7 +70,9 @@ namespace ATUM.Tests.Manual
         {
             Assert.DoesNotThrow(() => new Turno("TP01", 10, 1, _disciplina));
         }
+        #endregion
 
+        #region Testes - TemVagas
         [Test]
         public void TemVagas_ExistemVagas_ReturnTrue()
         {
@@ -93,7 +99,9 @@ namespace ATUM.Tests.Manual
 
             Assert.AreNotEqual(-1, 0, "Um turno pode ter vagas negativas.");
         }
+        #endregion
 
+        #region Testes - Sobreposto
         [Test]
         public void Sobreposto_TurnoSubreposto_ReturnTrue()
         {
@@ -116,8 +124,6 @@ namespace ATUM.Tests.Manual
             Assert.IsFalse(resultado, "Os turnos não sobrepostos, sobrepõem-se.");
         }
 
-        //TODO: Testes mais extensivos do método Sobreposto.
-
         [Test]
         public void Sobreposto_TurnoIgual_Exception()
         {
@@ -131,7 +137,9 @@ namespace ATUM.Tests.Manual
         {            
             Assert.Throws<ArgumentNullException>(() => _turno.Sobreposto(null));
         }
+        #endregion
 
+        #region Testes - Membros da Igualdade
         [Test]
         public void Equals_Self_ReturnTrue()
         {
@@ -185,5 +193,6 @@ namespace ATUM.Tests.Manual
 
             Assert.AreNotEqual(turno1.GetHashCode(), turno2.GetHashCode(), "Turno diferentes dão códigos de hash iguais.");
         }
+        #endregion
     }
 }
