@@ -16,11 +16,12 @@ namespace ATUM.libs {
         /// <param name="l">Lista a testar.</param>
         /// <returns>True caso não haja duplicados False caso contrário.</returns>
         [Pure]
-        public static bool NoDups(IList l) {
+        public static bool NoDups<T>(IList<T> l) {
             for (int i = 0; i < l.Count; i++)
                 for (int j = 0; j < l.Count; j++)
-                    if (i != j && l[i] == l[j])
+                    if (i != j && l[i].Equals(l[j]))
                         return false;
+
             return true;
         }
 
@@ -29,16 +30,10 @@ namespace ATUM.libs {
         /// </summary>
         /// <param name="l">A lista a verificar.</param>
         /// <returns>True caso a lista esteja ordenada. Falso caso contrário.</returns>
+        //Todo: Fix These
         [Pure]
-        public static bool IsSorted(IList<int> l) {
-            for (int i = 0; i < l.Count; i++)
-                for (int j = i; j < l.Count; j++)
-                    if (i != j && l[i] >= l[j])
-                        return false;
-            return true;
-        }
-        [Pure]
-        public static bool IsSorted(IList<uint> l) {
+        public static bool IsSorted(IList<int> l)
+        {
             for (int i = 0; i < l.Count; i++)
                 for (int j = i; j < l.Count; j++)
                     if (i != j && l[i] >= l[j])
@@ -46,6 +41,25 @@ namespace ATUM.libs {
             return true;
         }
 
+        [Pure]
+        public static bool IsSorted(IList<uint> l)
+        {
+            for (int i = 0; i < l.Count; i++)
+                for (int j = i; j < l.Count; j++)
+                    if (i != j && l[i] >= l[j])
+                        return false;
+            return true;
+        }
+
+        //[Pure]
+        //public static bool IsSorted<T>(IList<T> l) where T : IComparable<T>
+        //{
+        //    for (int i = 0; i < l.Count; i++)
+        //        for (int j = i; j < l.Count; j++)
+        //            if (i != j && l[i] >= l[j])
+        //                return false;
+        //    return true;
+        //}
 
 
         /// <summary>

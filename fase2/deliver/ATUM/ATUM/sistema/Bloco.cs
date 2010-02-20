@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using System.Linq;
 
 namespace ATUM.sistema
 {
@@ -96,7 +95,7 @@ namespace ATUM.sistema
         [Pure]
         public bool TemVagas()
         {
-            Contract.Requires<ApplicationException>(Contract.ForAll(TurnosBloco, (Turno t) => t != null), "Os turnos do bloco têm de existir");
+            Contract.Requires<ApplicationException>(Contract.ForAll(TurnosBloco, t => t != null), "Os turnos do bloco têm de existir");
 
             Contract.Ensures(Contract.Exists(TurnosBloco, t => !t.TemVagas()) || 
                              Contract.ForAll(TurnosBloco, t => t.TemVagas()), 
@@ -130,8 +129,8 @@ namespace ATUM.sistema
         {
             Contract.Ensures(Contract.Result<IList<Disciplina>>() != null);
             Contract.Ensures(Contract.Result<IList<Disciplina>>().Count == TurnosBloco.Count);
-            Contract.Ensures(Contract.ForAll(Contract.Result<IList<Disciplina>>(), (Disciplina d) 
-                                          => Contract.Exists(TurnosBloco, (Turno t) => t.Disciplina == d)));
+            Contract.Ensures(Contract.ForAll(Contract.Result<IList<Disciplina>>(), disciplina
+                                                => Contract.Exists(TurnosBloco, t => t.Disciplina == disciplina)));
 
             var r = new List<Disciplina>();
             foreach (var turno in TurnosBloco)
@@ -154,8 +153,8 @@ namespace ATUM.sistema
         {
             Contract.Requires<ArgumentNullException>(turno != null, "O turno a comparar tem de existir.");
 
-            Contract.Ensures(Contract.Exists(TurnosBloco, (Turno t) => t.Sobreposto(turno)) ||
-                             Contract.ForAll(TurnosBloco, (Turno t) => !t.Sobreposto(turno)),
+            Contract.Ensures(Contract.Exists(TurnosBloco, turnoLista => turnoLista.Sobreposto(turno)) ||
+                             Contract.ForAll(TurnosBloco, turnoLista => !turnoLista.Sobreposto(turno)),
                              "Garante ou que nenhum turno do bloco está sobreposto com o turno em quetão, ou então existe um turno que esta sobreposto com ele.");
 
             Contract.EnsuresOnThrow<ArgumentNullException>(Contract.OldValue(TurnosBloco) == TurnosBloco);

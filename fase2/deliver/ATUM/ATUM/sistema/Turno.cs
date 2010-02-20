@@ -57,16 +57,6 @@ namespace ATUM.sistema
             Spot = spot;
             Disciplina = disciplina;
         }
-
-        public Turno()
-        {
-            Identifier = "";
-            VagasInicias = 0;
-            VagasActuais = 0;
-            Spot = 0;
-            Disciplina = null;
-        }
-
         #endregion
 
         #region Métodos da Classe
@@ -89,11 +79,8 @@ namespace ATUM.sistema
         public bool Sobreposto(Turno outro)
         {
             Contract.Requires<ArgumentNullException>(outro != null, "O turno contra o qual se quer testar não pode ser nulo.");
-            //Contract.Requires<ArgumentException>(outro != this, "O turno contra o qual se quer testar não pode ser o mesmo turno.");
             
             Contract.Ensures(Contract.Result<bool>() == (Spot == outro.Spot), "Garante que o turno ou está sobreposto ou não.");
-            //Será Preciso?
-            //Contract.Ensures(Contract.OldValue(this) == this && Contract.OldValue(outro) == outro, "Nada é alterado no decorrer deste método.");
 
             Contract.EnsuresOnThrow<ArgumentNullException>(Contract.OldValue(this) == this && Contract.OldValue(outro) == outro);
 
