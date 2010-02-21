@@ -7,7 +7,7 @@ namespace ATUM.sistema
     /// <summary>
     /// Classe Preferência, associa o grau de preferência a um bloco para.
     /// </summary>
-    public class Preferencia : IEquatable<Preferencia>
+    public class Preferencia : IEquatable<Preferencia>, IComparable<Preferencia>
     {
         #region Propriedades
         /// <summary>
@@ -58,6 +58,7 @@ namespace ATUM.sistema
         #endregion
 
         #region Membros da Igualdade
+        [Pure]
         public bool Equals(Preferencia other)
         {
             if (ReferenceEquals(null, other)) return false;
@@ -65,6 +66,7 @@ namespace ATUM.sistema
             return other.Grau == Grau && Equals(other.Bloco, Bloco);
         }
 
+        [Pure]
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
@@ -73,6 +75,7 @@ namespace ATUM.sistema
             return Equals((Preferencia) obj);
         }
 
+        [Pure]
         public override int GetHashCode()
         {
             unchecked
@@ -81,14 +84,50 @@ namespace ATUM.sistema
             }
         }
 
+        [Pure]
         public static bool operator ==(Preferencia left, Preferencia right)
         {
             return Equals(left, right);
         }
 
+        [Pure]
         public static bool operator !=(Preferencia left, Preferencia right)
         {
             return !Equals(left, right);
+        }
+        #endregion
+
+        #region Membros da Comparação
+        [Pure]
+        public int CompareTo(Preferencia other)
+        {
+            if (other == null)
+                return 1;
+            return Grau.CompareTo(other.Grau);
+        }
+
+        [Pure]
+        public static bool operator <=(Preferencia left, Preferencia right)
+        {
+            return left.CompareTo(right) <= 0;
+        }
+
+        [Pure]
+        public static bool operator >=(Preferencia left, Preferencia right)
+        {
+            return left.CompareTo(right) >= 0;
+        }
+
+        [Pure]
+        public static bool operator <(Preferencia left, Preferencia right)
+        {
+            return left.CompareTo(right) < 0;
+        }
+
+        [Pure]
+        public static bool operator >(Preferencia left, Preferencia right)
+        {
+            return left.CompareTo(right) > 0;
         }
         #endregion
     }

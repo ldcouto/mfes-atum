@@ -9,7 +9,7 @@ namespace ATUM.sistema
     /// <summary>
     /// Classe para representar de forma simples um Aluno, individuo que quer ser alocado.
     /// </summary>
-    public class Aluno : IEquatable<Aluno>
+    public class Aluno : IEquatable<Aluno>, IComparable<Aluno>
     {
         #region Propriedades
 
@@ -314,6 +314,40 @@ namespace ATUM.sistema
         public static bool operator !=(Aluno left, Aluno right)
         {
             return !Equals(left, right);
+        }
+        #endregion
+
+        #region Membros da comparação
+        [Pure]
+        public int CompareTo(Aluno other)
+        {
+            if (other == null)
+                return 1;
+            return NumOrdem.CompareTo(other.NumOrdem);
+        }
+
+        [Pure]
+        public static bool operator <=(Aluno left, Aluno right)
+        {
+            return left.CompareTo(right) <= 0;
+        }
+
+        [Pure]
+        public static bool operator >=(Aluno left,Aluno right)
+        {
+            return left.CompareTo(right) >= 0;
+        }
+
+        [Pure]
+        public static bool operator <(Aluno left, Aluno right)
+        {
+            return left.CompareTo(right) < 0;
+        }
+
+        [Pure]
+        public static bool operator >(Aluno left, Aluno right)
+        {
+            return left.CompareTo(right) > 0;
         }
         #endregion
     }
