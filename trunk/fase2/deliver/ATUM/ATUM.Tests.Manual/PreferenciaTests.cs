@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
 using ATUM.sistema;
 using NUnit.Framework;
 
@@ -191,6 +188,159 @@ namespace ATUM.Tests.Manual
 
             Assert.AreNotEqual(hash1, hash2);
         }
+        #endregion
+
+        #region Testes - Membros da Comparação
+        
+        [Test]
+        public void CompareTo_NullArgument_PositiveSignal()
+        {
+            int resultado = _preferencia.CompareTo(null);
+
+            Assert.IsTrue(resultado > 0);
+        }
+
+        [Test]
+        public void CompareTo_OtherHigher_NegativeSignal()
+        {
+            Preferencia p1 = new Preferencia(1,_bloco);
+            Preferencia p2 = new Preferencia(2,_bloco);
+
+            int resultado = p1.CompareTo(p2);
+
+            Assert.IsTrue(resultado < 0);
+        }
+
+        [Test]
+        public void CompareTo_ThisHigher_PositiveSignal()
+        {
+            Preferencia p1 = new Preferencia(1, _bloco);
+            Preferencia p2 = new Preferencia(2, _bloco);
+
+            int resultado = p2.CompareTo(p1);
+
+            Assert.IsTrue(resultado > 0);
+        }
+
+        [Test]
+        public void CompareTo_SameOrder_Zero()
+        {
+            Preferencia p1 = new Preferencia(2, _bloco);
+            Preferencia p2 = new Preferencia(2, _bloco);
+
+            int resultado = p1.CompareTo(p2);
+
+            Assert.IsTrue(resultado == 0);
+        }
+
+        [Test]
+        public void Leq_LeftLower_ReturnTrue()
+        {
+            Preferencia p1 = new Preferencia(1, _bloco);
+            Preferencia p2 = new Preferencia(2, _bloco);
+
+            Assert.IsTrue(p1 <= p2);
+        }
+
+        [Test]
+        public void Leq_EqualSides_ReturnTrue()
+        {
+            Preferencia p1 = new Preferencia(2, _bloco);
+            Preferencia p2 = new Preferencia(2, _bloco);
+
+            Assert.IsTrue(p1 <= p2);
+        }
+
+        [Test]
+        public void Leq_RightLower_ReturnFalse()
+        {
+            Preferencia p1 = new Preferencia(2, _bloco);
+            Preferencia p2 = new Preferencia(1, _bloco);
+
+            Assert.IsFalse(p1 <= p2);
+        }
+
+        [Test]
+        public void Geq_LeftHigher_ReturnTrue()
+        {
+            Preferencia p1 = new Preferencia(2, _bloco);
+            Preferencia p2 = new Preferencia(1, _bloco);
+
+            Assert.IsTrue(p1 >= p2);
+        }
+
+        [Test]
+        public void Geq_EqualSides_ReturnTrue()
+        {
+            Preferencia p1 = new Preferencia(2, _bloco);
+            Preferencia p2 = new Preferencia(2, _bloco);
+
+            Assert.IsTrue(p1 >= p2);
+        }
+
+        [Test]
+        public void Geq_RightHigher_ReturnFalse()
+        {
+            Preferencia p1 = new Preferencia(1, _bloco);
+            Preferencia p2 = new Preferencia(2, _bloco);
+
+            Assert.IsFalse(p1 >= p2);
+        }
+
+        [Test]
+        public void Less_LeftLower_ReturnTrue()
+        {
+            Preferencia p1 = new Preferencia(1, _bloco);
+            Preferencia p2 = new Preferencia(2, _bloco);
+
+            Assert.IsTrue(p1 < p2);
+        }
+
+        [Test]
+        public void Less_EqualSides_ReturnFalse()
+        {
+            Preferencia p1 = new Preferencia(2, _bloco);
+            Preferencia p2 = new Preferencia(2, _bloco);
+
+            Assert.IsFalse(p1 < p2);
+        }
+
+        [Test]
+        public void Less_RightLower_ReturnFalse()
+        {
+            Preferencia p1 = new Preferencia(2, _bloco);
+            Preferencia p2 = new Preferencia(1, _bloco);
+
+            Assert.IsFalse(p1 < p2);
+        }
+
+        [Test]
+        public void Grt_LeftHigher_ReturnTrue()
+        {
+            Preferencia p1 = new Preferencia(2, _bloco);
+            Preferencia p2 = new Preferencia(1, _bloco);
+
+            Assert.IsTrue(p1 > p2);
+        }
+
+        [Test]
+        public void Grt_EqualSides_ReturnFalse()
+        {
+            Preferencia p1 = new Preferencia(2, _bloco);
+            Preferencia p2 = new Preferencia(2, _bloco);
+
+            Assert.IsFalse(p1 > p2);
+        }
+
+        [Test]
+        public void Grt_RightHigher_ReturnFalse()
+        {
+            Preferencia p1 = new Preferencia(1, _bloco);
+            Preferencia p2 = new Preferencia(2, _bloco);
+
+            Assert.IsFalse(p1 > p2);
+        }
+
         #endregion
     }
 }

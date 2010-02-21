@@ -394,5 +394,202 @@ namespace ATUM.Tests.Manual
             Assert.AreNotEqual(hash1, hash2, "Alunos diferentes dão chaves iguais.");
         }
         #endregion
+
+        #region Testes - Membros da Comparação
+        [Test]
+        public void CompareTo_NullArgument_PositiveOne()
+        {
+            int resultado = _aluno.CompareTo(null);
+
+            Assert.AreEqual(1,resultado);
+        }
+
+        [Test]
+        public void CompareTo_OtherHigher_NegativeSign()
+        {
+            Aluno a1 = new Aluno("Aluno 1");
+            Aluno a2 = new Aluno("Aluno 2");
+
+            a1.NumOrdem = 1;
+            a2.NumOrdem = 2;
+
+            int resultado = a1.CompareTo(a2);
+
+            Assert.IsTrue(resultado < 0);
+        }
+
+        [Test]
+        public void CompareTo_ThisHigher_PositiveSignal()
+        {
+            Aluno a1 = new Aluno("Aluno 1");
+            Aluno a2 = new Aluno("Aluno 2");
+
+            a1.NumOrdem = 1;
+            a2.NumOrdem = 2;
+
+            int resultado = a2.CompareTo(a1);
+
+            Assert.IsTrue(resultado > 0);
+        }
+
+        [Test]
+        public void CompareTo_SameOrder_Zero()
+        {
+            Aluno a1 = new Aluno("Aluno 1");
+            Aluno a2 = new Aluno("Aluno 2");
+
+            a1.NumOrdem = 1;
+            a2.NumOrdem = 1;
+
+            int resultado = a2.CompareTo(a1);
+
+            Assert.IsTrue(resultado == 0);
+        }
+
+        [Test]
+        public void Leq_LeftLower_ReturnTrue()
+        {
+            Aluno a1 = new Aluno("Aluno 1");
+            Aluno a2 = new Aluno("Aluno 2");
+
+            a1.NumOrdem = 1;
+            a2.NumOrdem = 2;
+
+            Assert.IsTrue(a1 <= a2);
+        }
+
+        [Test]
+        public void Leq_EqualSides_ReturnTrue()
+        {
+            Aluno a1 = new Aluno("Aluno 1");
+            Aluno a2 = new Aluno("Aluno 2");
+
+            a1.NumOrdem = 1;
+            a2.NumOrdem = 1;
+
+            Assert.IsTrue(a1 <= a2);
+        }
+
+        [Test]
+        public void Leq_RightLower_ReturnFalse()
+        {
+            Aluno a1 = new Aluno("Aluno 1");
+            Aluno a2 = new Aluno("Aluno 2");
+
+            a1.NumOrdem = 2;
+            a2.NumOrdem = 1;
+
+            Assert.IsFalse(a1 <= a2);
+        }
+
+        [Test]
+        public void Geq_RightHigher_ReturnFalse()
+        {
+            Aluno a1 = new Aluno("Aluno 1");
+            Aluno a2 = new Aluno("Aluno 2");
+
+            a1.NumOrdem = 1;
+            a2.NumOrdem = 2;
+
+            Assert.IsFalse(a1 >= a2);
+        }
+
+        [Test]
+        public void Geq_EqualSides_ReturnTrue()
+        {
+            Aluno a1 = new Aluno("Aluno 1");
+            Aluno a2 = new Aluno("Aluno 2");
+
+            a1.NumOrdem = 2;
+            a2.NumOrdem = 2;
+
+            Assert.IsTrue(a1 >= a2);
+        }
+
+        [Test]
+        public void Geq_LeftHigher_ReturnTrue()
+        {
+            Aluno a1 = new Aluno("Aluno 1");
+            Aluno a2 = new Aluno("Aluno 2");
+
+            a1.NumOrdem = 2;
+            a2.NumOrdem = 1;
+
+            Assert.IsTrue(a1 >= a2);
+        }
+
+        [Test]
+        public void Less_LeftLower_ReturnTrue()
+        {
+            Aluno a1 = new Aluno("Aluno 1");
+            Aluno a2 = new Aluno("Aluno 2");
+
+            a1.NumOrdem = 1;
+            a2.NumOrdem = 2;
+
+            Assert.IsTrue(a1 < a2);
+        }
+
+        [Test]
+        public void Less_EqualSides_ReturnFalse()
+        {
+            Aluno a1 = new Aluno("Aluno 1");
+            Aluno a2 = new Aluno("Aluno 2");
+
+            a1.NumOrdem = 1;
+            a2.NumOrdem = 1;
+
+            Assert.IsFalse(a1 < a2);
+        }
+
+        [Test]
+        public void Less_RightLower_ReturnFalse()
+        {
+            Aluno a1 = new Aluno("Aluno 1");
+            Aluno a2 = new Aluno("Aluno 2");
+
+            a1.NumOrdem = 2;
+            a2.NumOrdem = 1;
+
+            Assert.IsFalse(a1 < a2);
+        }
+
+        [Test]
+        public void Grt_LeftHigher_ReturnTrue()
+        {
+            Aluno a1 = new Aluno("Aluno 1");
+            Aluno a2 = new Aluno("Aluno 2");
+
+            a1.NumOrdem = 2;
+            a2.NumOrdem = 1;
+
+            Assert.IsTrue(a1 > a2);
+        }
+
+        [Test]
+        public void Grt_EqualSides_ReturnFalse()
+        {
+            Aluno a1 = new Aluno("Aluno 1");
+            Aluno a2 = new Aluno("Aluno 2");
+
+            a1.NumOrdem = 2;
+            a2.NumOrdem = 2;
+
+            Assert.IsFalse(a1 > a2);
+        }
+
+        [Test]
+        public void Grt_RightHigher_ReturnFalse()
+        {
+            Aluno a1 = new Aluno("Aluno 1");
+            Aluno a2 = new Aluno("Aluno 2");
+
+            a1.NumOrdem = 1;
+            a2.NumOrdem = 2;
+
+            Assert.IsFalse(a1 > a2);
+        }
+
+        #endregion
     }
 }
