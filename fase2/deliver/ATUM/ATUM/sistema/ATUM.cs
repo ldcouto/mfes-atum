@@ -9,8 +9,7 @@ using ATUM.libs;
 namespace ATUM.sistema {
     /// <summary>
     /// Classe ATUM. Agrega alunos, disciplinas, blocos e Turnos.
-    /// </summary>
-    /// 
+    /// </summary> 
     public class Atum {
 
         #region Propriedades
@@ -132,9 +131,6 @@ namespace ATUM.sistema {
 
             return dna;
         }
-
-
-
         #endregion
 
         #region Invariantes

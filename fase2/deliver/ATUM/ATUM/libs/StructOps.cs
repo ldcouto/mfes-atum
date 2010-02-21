@@ -7,8 +7,10 @@ using System.Diagnostics.Contracts;
 using ATUM;
 using ATUM.sistema;
 
-namespace ATUM.libs {
-    public static class StructOps {
+namespace ATUM.libs
+{
+    public static class StructOps
+    {
 
         /// <summary>
         /// Método auxiliar para verificar a existência de duplicados numa lista.
@@ -16,7 +18,8 @@ namespace ATUM.libs {
         /// <param name="l">Lista a testar.</param>
         /// <returns>True caso não haja duplicados False caso contrário.</returns>
         [Pure]
-        public static bool NoDups<T>(IList<T> l) {
+        public static bool NoDups<T>(IList<T> l) where T : IEquatable<T>
+        {
             for (int i = 0; i < l.Count; i++)
                 for (int j = 0; j < l.Count; j++)
                     if (i != j && l[i].Equals(l[j]))
@@ -31,28 +34,8 @@ namespace ATUM.libs {
         /// <param name="l">A lista a verificar.</param>
         /// <returns>True caso a lista esteja ordenada. Falso caso contrário.</returns>
         //Todo: Fix These
-        [Pure]
-        public static bool IsSorted(IList<int> l)
-        {
-            for (int i = 0; i < l.Count; i++)
-                for (int j = i; j < l.Count; j++)
-                    if (i != j && l[i] >= l[j])
-                        return false;
-            return true;
-        }
-
-        [Pure]
-        public static bool IsSorted(IList<uint> l)
-        {
-            for (int i = 0; i < l.Count; i++)
-                for (int j = i; j < l.Count; j++)
-                    if (i != j && l[i] >= l[j])
-                        return false;
-            return true;
-        }
-
         //[Pure]
-        //public static bool IsSorted<T>(IList<T> l) where T : IComparable<T>
+        //public static bool IsSorted(IList<int> l)
         //{
         //    for (int i = 0; i < l.Count; i++)
         //        for (int j = i; j < l.Count; j++)
@@ -61,16 +44,38 @@ namespace ATUM.libs {
         //    return true;
         //}
 
+        //[Pure]
+        //public static bool IsSorted(IList<uint> l)
+        //{
+        //    for (int i = 0; i < l.Count; i++)
+        //        for (int j = i; j < l.Count; j++)
+        //            if (i != j && l[i] >= l[j])
+        //                return false;
+        //    return true;
+        //}
+
+        [Pure]
+        public static bool IsSorted<T>(IList<T> l) where T : IComparable<T>
+        {
+            for (int i = 0; i < l.Count; i++)
+                for (int j = i; j < l.Count; j++)
+                    if (i != j && l[i].CompareTo(l[j]) >= 0)
+                        return false;
+            return true;
+        }
+
 
         /// <summary>
         /// Método auxiliar para construir um mapa a partir da lista de Alunos incritos no sistema.
         /// </summary>
         /// <returns>Um mapa de pares (Posição na Lista; Número de Ordem).</returns>
         [Pure]
-        public static Dictionary<int, uint> GenMap(IList<Aluno> l) {
+        public static Dictionary<int, uint> GenMap(IList<Aluno> l)
+        {
             var r = new Dictionary<int, uint>();
             int i = 1;
-            foreach (var aluno in l) {
+            foreach (var aluno in l)
+            {
                 r.Add(i, aluno.NumOrdem);
                 i++;
             }

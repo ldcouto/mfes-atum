@@ -109,7 +109,6 @@ namespace ATUM.sistema
             return !Equals(left, right);
         }
 
-        // override object.Equals
         [Pure]
         public override bool Equals(object obj)
         {
@@ -119,7 +118,6 @@ namespace ATUM.sistema
             return Equals((Turno)obj);
         }
 
-        // override object.GetHashCode
         [Pure]
         public override int GetHashCode()
         {
