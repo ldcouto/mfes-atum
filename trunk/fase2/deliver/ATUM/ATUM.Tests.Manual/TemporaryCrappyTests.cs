@@ -27,7 +27,7 @@ namespace ATUM.Tests.Manual {
         public void NinguemMehor_EmptySets() {
             _atum.Alunos.Add(_aluno);
             _disciplina.TurnosDisciplina.Add(_turno);
-            _aluno.Inscrito.Add(_disciplina);
+            _aluno.DisciplinasInscrito.Add(_disciplina);
             _atum.NinguemPior(_aluno, _disciplina);
         }
 
