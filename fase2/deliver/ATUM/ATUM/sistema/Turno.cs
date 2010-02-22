@@ -60,6 +60,7 @@ namespace ATUM.sistema
         #endregion
 
         #region Métodos da Classe
+       
         /// <summary>
         /// Averigua se um turno ainda tem vagas.
         /// </summary>

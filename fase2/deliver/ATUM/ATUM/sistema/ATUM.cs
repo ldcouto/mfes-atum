@@ -56,9 +56,9 @@ namespace ATUM.sistema
 
         #endregion
 
-        #region Métodos da Classe
+        #region Operações de Alocação
         /// <summary>
-        /// Método para processar e alocar os Alunos.
+        /// Método para processar e alocar todos os Alunos.
         /// </summary>
         public void ProcessaAlocacoes()
         {
@@ -82,18 +82,18 @@ namespace ATUM.sistema
             Contract.Ensures(Processados.Contains(a));
             Contract.Ensures(a.Processado);
             Contract.Ensures(a.AlocadoBloco != null || Contract.ForAll(a.PreferenciasBlocos.Select(y => y.Bloco), (Bloco x) => !x.TemVagas()));
-            Contract.Ensures(Contract.ForAll(a.Inscrito, (Disciplina d)
+            Contract.Ensures(Contract.ForAll(a.DisciplinasInscrito, (Disciplina d)
                                 => NinguemPior(a, d) || AlunoTaNaDisc(a, d)));
 
-            AlocaBloco(a);
-            AlocaDisciplina(a);
+            AlocaAlunoABloco(a);
+            AlocaAlunoADisciplina(a);
         }
 
         /// <summary>
         /// Método auxiliar que tenta alocar um Aluno a um Bloco da sua preferência.
         /// </summary>
         /// <param name="a">O Aluno a ser alocado.</param>
-        private void AlocaBloco(Aluno a)
+        public void AlocaAlunoABloco(Aluno a)
         {
             foreach (Bloco bloco in a.PreferenciasBlocos.Select(x => x.Bloco))
             {
@@ -110,7 +110,7 @@ namespace ATUM.sistema
         /// Método auxiliar que tenta alocar um Aluno ao máximo de Turnos de Disciplinas a que está inscrito mas não tenha sido alocado. Para usar após a alocação por Bloco.
         /// </summary>
         /// <param name="a">O Aluno a alocar.</param>
-        private void AlocaDisciplina(Aluno a)
+        public void AlocaAlunoADisciplina(Aluno a)
         {
             IList<Disciplina> dna = DisciplinasNaoAlocado(a);
 
@@ -128,27 +128,26 @@ namespace ATUM.sistema
             a.Processado = true;
         }
 
-        /// <summary>
-        /// Método auxiliar para calcular a lista de Disciplinas a que um Aluno está inscrito mas não alocado.
-        /// </summary>
-        /// <param name="a">O Aluno cuja lista se irá calcular..</param>
-        /// <returns>A lista de Disciplinas a que o Aluno não foi alocado.</returns>
-        [Pure]
-        public IList<Disciplina> DisciplinasNaoAlocado(Aluno a)
+
+        #endregion
+
+        #region Manipulação de Dados
+
+        public void AdicionarAluno(Aluno a)
         {
-            Contract.Requires<ArgumentNullException>(a != null);
-            Contract.Ensures(Contract.Result<IList<Disciplina>>().Count <= a.Inscrito.Count);
-
-            List<Disciplina> dna = new List<Disciplina>();
-
-            foreach (Disciplina disciplina in a.Inscrito)
-            {
-                if (disciplina.TurnosDisciplina.Intersect(a.AlocadoTurno).Count() == 0)
-                    dna.Add(disciplina);
-            }
-
-            return dna;
+            
         }
+
+        public void RemoverAluno(Aluno a) { }
+
+        public void AdicionarDisciplina(Disciplina d) { }
+
+        public void RemoverDisciplina(Disciplina d) { }
+
+        public void AdicionarTurno(Turno t) { }
+
+        public void RemoverTurno(Turno t) { }
+
         #endregion
 
         #region Invariantes
@@ -181,7 +180,7 @@ namespace ATUM.sistema
 
             // Garantir que apenas alunos melhores estão onde um aluno não está
             // Disciplina
-            Contract.Invariant(Contract.ForAll(Alunos, (Aluno a) => Contract.ForAll(a.Inscrito, (Disciplina d) =>
+            Contract.Invariant(Contract.ForAll(Alunos, (Aluno a) => Contract.ForAll(a.DisciplinasInscrito, (Disciplina d) =>
                 (a.AlocadoTurno.Select(x => x.Disciplina).Contains(d)) || NinguemPior(a, d))));
             // Blocos
             Contract.Invariant(Contract.ForAll(Alunos, (Aluno a) => Contract.ForAll(a.PreferenciasBlocos.Select(x => x.Bloco),
@@ -194,7 +193,7 @@ namespace ATUM.sistema
 
         #endregion
 
-        #region Métodos Auxiliares de Contratos
+        #region Métodos Auxiliares
 
         /// <summary>
         /// Garante que não há Blocos melhores disponíveis para o Aluno em relação ao Bloco actual.
@@ -309,6 +308,26 @@ namespace ATUM.sistema
                 if (aluno.AlocadoBloco == b)
                     r.Add(aluno);
             return r;
+        }
+
+        /// <summary>
+        /// Método auxiliar para calcular a lista de Disciplinas a que um Aluno está inscrito mas não alocado.
+        /// </summary>
+        /// <param name="a">O Aluno cuja lista se irá calcular..</param>
+        /// <returns>A lista de Disciplinas a que o Aluno não foi alocado.</returns>
+        [Pure]
+        public IList<Disciplina> DisciplinasNaoAlocado(Aluno a) {
+            Contract.Requires<ArgumentNullException>(a != null);
+            Contract.Ensures(Contract.Result<IList<Disciplina>>().Count <= a.DisciplinasInscrito.Count);
+
+            List<Disciplina> dna = new List<Disciplina>();
+
+            foreach (Disciplina disciplina in a.DisciplinasInscrito) {
+                if (disciplina.TurnosDisciplina.Intersect(a.AlocadoTurno).Count() == 0)
+                    dna.Add(disciplina);
+            }
+
+            return dna;
         }
 
         // Não tá a ser usado!

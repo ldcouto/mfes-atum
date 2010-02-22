@@ -50,6 +50,7 @@ namespace ATUM.sistema
         #endregion
 
         #region Métodos da classe
+
         /// <summary>
         /// Adicionar um turno ao Bloco.
         /// </summary>
