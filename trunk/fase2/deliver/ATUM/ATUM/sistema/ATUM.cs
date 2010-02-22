@@ -154,12 +154,32 @@ namespace ATUM.sistema
         [ContractInvariantMethod]
         private void ObjectInvariant()
         {
+
+
+            // Garantir que um Aluno apenas é alocado em Turnos de Disciplinas em que está matriculado
+            Contract.Invariant(Contract.ForAll(Alunos, (Aluno a) => 
+                Contract.ForAll(a.AlocadoTurno, (Turno t) => a.DisciplinasInscrito.Contains(GetDiscTurno(t)) && GetDiscTurno(t) != null)));
+
+            // Garantir que um aluno processado tem no máximo um turno por disciplina
+            Contract.Invariant(Contract.ForAll(Alunos, (Aluno a) => !a.Processado || 
+                StructOps.NoDups((List<Disciplina>)a.AlocadoTurno.Select(GetDiscTurno).ToList())));
+            
+            // Garantir que um aluno só tem preferências por blocos para os quais está inscricoes a todas as disciplinas
+            Contract.Invariant(Contract.ForAll(Alunos, (Aluno a) => 
+                Contract.ForAll(a.PreferenciasBlocos, (Preferencia p) =>
+                   Contract.ForAll(p.Bloco.TurnosBloco, (Turno t) => a.DisciplinasInscrito.Contains(GetDiscTurno(t))))));
+
+            // Garantir que um bloco não tem turnos sem disciplina
+            Contract.Invariant(Contract.ForAll(Blocos, (Bloco b) 
+                => b.TurnosBloco == null ||
+                    Contract.ForAll(b.TurnosBloco,(Turno t) => GetDiscTurno(t) != null)));
             // Garantir que um Turno pretence apenas a uma Disciplina
-            Contract.Invariant(Contract.ForAll(Disciplinas, (Disciplina d)
-                => (Contract.ForAll(d.TurnosDisciplina, (Turno t) => t.Disciplina == d))));
+            Contract.Invariant(Contract.ForAll(Disciplinas, (Disciplina d1)
+                => Contract.ForAll(Disciplinas, (Disciplina d2)
+                    => d1.TurnosDisciplina.Intersect(d2.TurnosDisciplina).Count()==0)));
             // Garantir que um Bloco só tem um turno por disciplina
             Contract.Invariant(Contract.ForAll(Blocos, (Bloco b) =>
-                StructOps.NoDups((List<Disciplina>)b.GetDiscsDoBloco())));
+                StructOps.NoDups((List<Disciplina>)b.TurnosBloco.Select(x=> GetDiscTurno(x)))));
             // Garantir que as vagas batem certo
             Contract.Invariant(Contract.ForAll(Turnos, (Turno t) => t.VagasActuais <= t.VagasInicias));
             Contract.Invariant(Contract.ForAll(Turnos, (Turno t) => t.VagasInicias == t.VagasActuais + GetAlunosTurno(t).Count()));
@@ -181,7 +201,7 @@ namespace ATUM.sistema
             // Garantir que apenas alunos melhores estão onde um aluno não está
             // Disciplina
             Contract.Invariant(Contract.ForAll(Alunos, (Aluno a) => Contract.ForAll(a.DisciplinasInscrito, (Disciplina d) =>
-                (a.AlocadoTurno.Select(x => x.Disciplina).Contains(d)) || NinguemPior(a, d))));
+                (a.AlocadoTurno.Select(x => GetDiscTurno(x)).Contains(d)) || NinguemPior(a, d))));
             // Blocos
             Contract.Invariant(Contract.ForAll(Alunos, (Aluno a) => Contract.ForAll(a.PreferenciasBlocos.Select(x => x.Bloco),
                 (Bloco b) => a.AlocadoBloco == b || BlocoBloqueadoPorMelhores(a, b))));
@@ -194,6 +214,15 @@ namespace ATUM.sistema
         #endregion
 
         #region Métodos Auxiliares
+
+        [Pure]
+        public Disciplina GetDiscTurno(Turno t)
+        {
+            foreach (var disc in Disciplinas)
+                if (disc.TurnosDisciplina.Contains(t))
+                    return disc;
+            return null;
+        }
 
         /// <summary>
         /// Garante que não há Blocos melhores disponíveis para o Aluno em relação ao Bloco actual.

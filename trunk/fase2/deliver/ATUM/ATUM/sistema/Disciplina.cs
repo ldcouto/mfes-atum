@@ -148,13 +148,5 @@ namespace ATUM.sistema
         }
         #endregion
 
-        #region Invariantes
-        [ContractInvariantMethod]
-        private void ObjectInvariant()
-        {
-            // Garantir que todos os turnos da disciplina pertencem á disciplina
-            Contract.Invariant(Contract.ForAll(TurnosDisciplina, t => t.Disciplina == this));
-        }
-        #endregion
     }
 }
