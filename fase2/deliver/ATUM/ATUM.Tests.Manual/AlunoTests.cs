@@ -125,7 +125,7 @@ namespace ATUM.Tests.Manual
 
             _aluno.AddInscricao(discAux);
 
-            CollectionAssert.Contains(_aluno.Inscrito, discAux);
+            CollectionAssert.Contains(_aluno.DisciplinasInscrito, discAux);
         }
 
         [Test]
@@ -134,16 +134,16 @@ namespace ATUM.Tests.Manual
             Disciplina discAux1 = new Disciplina("Disciplina1");
             Disciplina discAux2 = new Disciplina("Disciplina2");
 
-            int tamInicio = _aluno.Inscrito.Count;
+            int tamInicio = _aluno.DisciplinasInscrito.Count;
 
             _aluno.AddInscricao(discAux1);
             _aluno.AddInscricao(discAux2);
 
-            int tamFim = _aluno.Inscrito.Count;
+            int tamFim = _aluno.DisciplinasInscrito.Count;
 
-            CollectionAssert.Contains(_aluno.Inscrito, discAux1);
-            CollectionAssert.Contains(_aluno.Inscrito, discAux2);
-            CollectionAssert.AllItemsAreUnique(_aluno.Inscrito);
+            CollectionAssert.Contains(_aluno.DisciplinasInscrito, discAux1);
+            CollectionAssert.Contains(_aluno.DisciplinasInscrito, discAux2);
+            CollectionAssert.AllItemsAreUnique(_aluno.DisciplinasInscrito);
             Assert.AreEqual(tamFim, tamInicio + 2);
         }
 
@@ -152,15 +152,15 @@ namespace ATUM.Tests.Manual
         {
             Disciplina discAux = new Disciplina("Disciplina1");
 
-            int tamInicio = _aluno.Inscrito.Count;
+            int tamInicio = _aluno.DisciplinasInscrito.Count;
 
             _aluno.AddInscricao(discAux);
             _aluno.AddInscricao(discAux);
 
-            int tamFim = _aluno.Inscrito.Count;
+            int tamFim = _aluno.DisciplinasInscrito.Count;
 
-            CollectionAssert.Contains(_aluno.Inscrito, discAux);
-            CollectionAssert.AllItemsAreUnique(_aluno.Inscrito);
+            CollectionAssert.Contains(_aluno.DisciplinasInscrito, discAux);
+            CollectionAssert.AllItemsAreUnique(_aluno.DisciplinasInscrito);
             Assert.AreNotEqual(tamFim, tamInicio + 2);
         }
         #endregion
@@ -181,7 +181,7 @@ namespace ATUM.Tests.Manual
 
             _aluno.RemoveInscricao(discAux);
 
-            CollectionAssert.DoesNotContain(_aluno.Inscrito, discAux);
+            CollectionAssert.DoesNotContain(_aluno.DisciplinasInscrito, discAux);
         }
 
         [Test]
@@ -223,7 +223,7 @@ namespace ATUM.Tests.Manual
             Turno turnAux1 = new Turno("id", 10, 1, discAux1);
             Turno turnAux2 = new Turno("id", 10, 2, discAux2);
 
-            int tamInicio = _aluno.Inscrito.Count;
+            int tamInicio = _aluno.DisciplinasInscrito.Count;
 
             _aluno.Processado = true;
             _aluno.AddInscricao(discAux1);
@@ -232,7 +232,7 @@ namespace ATUM.Tests.Manual
             _aluno.AddAlocacaoTurno(turnAux1);
             _aluno.AddAlocacaoTurno(turnAux2);
 
-            int tamFim = _aluno.Inscrito.Count;
+            int tamFim = _aluno.DisciplinasInscrito.Count;
 
             CollectionAssert.Contains(_aluno.AlocadoTurno, turnAux1);
             CollectionAssert.Contains(_aluno.AlocadoTurno, turnAux1);
