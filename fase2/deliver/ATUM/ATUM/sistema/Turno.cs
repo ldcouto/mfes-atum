@@ -31,10 +31,6 @@ namespace ATUM.sistema
         /// </summary>
         public int Spot { get; set; }
 
-        /// <summary>
-        /// A Disciplina a que o Turno pertence. Utilizado para integridade de dados.
-        /// </summary>
-        public Disciplina Disciplina { get; set; }
         #endregion
 
         #region Construtores
@@ -46,16 +42,14 @@ namespace ATUM.sistema
         /// <param name="spot">Posição no horário.</param>
         /// <param name="disciplina">Disciplina a que o Turno pertence.</param>
         /// <requires>Nome não nulo nem vazio.</requires>
-        public Turno(String id, uint vagas, int spot, Disciplina disciplina)
+        public Turno(String id, uint vagas, int spot)
         {
             Contract.Requires<ArgumentNullException>(!String.IsNullOrEmpty(id), "O nome do turno não pode ser vazio nem nulo.");
-            Contract.Requires<ArgumentNullException>(disciplina != null);
-
+            
             Identifier = id;
             VagasInicias = vagas;
             VagasActuais = vagas;
             Spot = spot;
-            Disciplina = disciplina;
         }
         #endregion
 
@@ -95,7 +89,7 @@ namespace ATUM.sistema
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return Equals(other.Identifier, Identifier) && other.VagasInicias == VagasInicias && other.Spot == Spot && other.VagasActuais == VagasActuais && other.Disciplina == Disciplina;
+            return Equals(other.Identifier, Identifier) && other.VagasInicias == VagasInicias && other.Spot == Spot && other.VagasActuais == VagasActuais;
         }
 
         [Pure]
@@ -128,7 +122,6 @@ namespace ATUM.sistema
                 result = (result * 397) ^ VagasInicias.GetHashCode();
                 result = (result * 397) ^ Spot;
                 result = (result * 397) ^ VagasActuais.GetHashCode();
-                result = (Disciplina != null) ? (result * 397) ^ Disciplina.GetHashCode() : 0;
                 return result;
             }
         }

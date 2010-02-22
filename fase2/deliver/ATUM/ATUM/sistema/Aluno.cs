@@ -196,7 +196,11 @@ namespace ATUM.sistema
         /// <param name="b">Bloco a adicionar.</param>
         public void AddPreferencia(Bloco b) {
             Contract.Requires(!PreferenciasBlocos.Select(x=>x.Bloco).Contains(b));
-            Contract.Requires(b.TurnosBloco.Select(x=>x.Disciplina).Intersect(DisciplinasInscrito) == DisciplinasInscrito);
+            //TODO Implementar!
+    //        Contract.Requires(b.TurnosBloco.Intersect(DisciplinasInscrito.Select(x=>x.TurnosDisciplina).Aggregate()
+      //          == b.TurnosBloco);
+
+         //   Contract.Requires(b.TurnosBloco.Select(x=>x.Disciplina).Intersect(DisciplinasInscrito) == DisciplinasInscrito);
          
             Contract.Ensures(PreferenciasBlocos.Select(x=>x.Bloco).Contains(b));
             Contract.Ensures(Contract.OldValue(Identifier) == Identifier &&
@@ -248,24 +252,12 @@ namespace ATUM.sistema
             Contract.Invariant(!(AlocadoBloco != null) ||
                                AlocadoBloco.TurnosBloco.Intersect(AlocadoTurno) == AlocadoBloco.TurnosBloco);
 
-            // Garantir que um aluno só tem preferências por blocos para os quais está inscricoes a todas as disciplinas
-            //Contract.Invariant(Contract.ForAll(PreferenciasBlocos, (Bloco b) 
-            //    => Contract.ForAll(b.TurnosBloco, (Turno turno) => DisciplinasInscrito.Contains(turno.Disciplina))) );
-            
-            //// Removido
-            //Contract.Invariant(Contract.ForAll(PreferenciasBlocos, (Preferencia p) =>
-            //    Contract.ForAll(p.Bloco.TurnosBloco, (Turno t) => DisciplinasInscrito.Contains(t.Disciplina))));
-
             // Garantir que um aluno não processado não é alocado
             Contract.Invariant(Processado || AlocadoTurno.Count == 0 && AlocadoBloco == null);
 
             // Garantir que um aluno só é alocado se estiver inscricoes 
             // Garantir que um aluno não é alocado a Turnos "inúteis"
-            // (Estes dois eram mais um workaround ao Alloy)
-
-            // Garantir que um Aluno apenas é alocado em Turnos de Disciplinas em que está matriculado
-            //// Removido
-            //Contract.Invariant(Contract.ForAll(AlocadoTurno, (Turno t) => DisciplinasInscrito.Contains(t.Disciplina) && t.Disciplina != null));
+            // (Estes dois eram mais um workaround ao Alloy)  
 
             // Garantir que um aluno não pode estar alocado em turnos sobre opostos
             //Contract.Invariant(Contract.ForAll(AlocadoTurno, (Turno t1)
@@ -276,11 +268,7 @@ namespace ATUM.sistema
             Contract.Invariant(Contract.ForAll(PreferenciasBlocos, p1
                 => Contract.ForAll(PreferenciasBlocos, p2
                     => (p1 == p2 || (p1.Grau != p2.Grau && p1.Bloco != p2.Bloco)))));
-
-            // Garantir que um aluno processado tem no máximo um turno por disciplina
-            //// Removido
-            //Contract.Invariant(!Processado || StructOps.NoDups((List<Disciplina>)AlocadoTurno.Select(x => x.Disciplina).ToList()));
-        }
+ }
         #endregion
 
         #region Membros da Igualdade

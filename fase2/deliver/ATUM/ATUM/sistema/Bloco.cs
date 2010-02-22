@@ -121,26 +121,6 @@ namespace ATUM.sistema
                 turno.VagasActuais--;
         }
 
-        /// <summary>
-        /// Calcula as Disciplinas associadas ao Bloco.
-        /// </summary>
-        /// <returns>Lista de Disciplinas que têm turnos no Bloco.</returns>
-        [Pure]
-        public IList<Disciplina> GetDiscsDoBloco()
-        {
-            Contract.Ensures(Contract.Result<IList<Disciplina>>() != null);
-            Contract.Ensures(Contract.Result<IList<Disciplina>>().Count == TurnosBloco.Count);
-            Contract.Ensures(Contract.ForAll(Contract.Result<IList<Disciplina>>(), disciplina
-                                                => Contract.Exists(TurnosBloco, t => t.Disciplina == disciplina)));
-
-            var r = new List<Disciplina>();
-            foreach (var turno in TurnosBloco)
-            {
-                r.Add(turno.Disciplina);
-            }
-            return r;
-        }
-
         #endregion
 
         #region Métodos Internos
@@ -207,9 +187,6 @@ namespace ATUM.sistema
         [ContractInvariantMethod]
         private void ObjectInvariant()
         {
-            // Garantir que um bloco não tem turnos sem disciplina
-            Contract.Invariant((TurnosBloco == null) || Contract.ForAll(TurnosBloco, (Turno t) => t.Disciplina != null));
-
             // Garantir que um bloco não tem turnos sobrepostos
             Contract.Invariant((TurnosBloco == null) || Contract.ForAll(TurnosBloco, (Turno t1)
                 => Contract.ForAll(TurnosBloco, (Turno t2) => t1 == t2 || t1.Spot != t2.Spot)));
