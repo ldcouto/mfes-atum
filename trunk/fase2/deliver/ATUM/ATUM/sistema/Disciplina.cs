@@ -52,6 +52,7 @@ namespace ATUM.sistema
         #endregion
 
         #region Métodos da Classe
+
         /// <summary>
         /// Adiciona um Turno à lista de turnos da Disciplina.
         /// </summary>
