@@ -6,11 +6,13 @@ using System.Diagnostics.Contracts;
 using ATUM.sistema;
 using ATUM.libs;
 
-namespace ATUM.sistema {
+namespace ATUM.sistema
+{
     /// <summary>
     /// Classe ATUM. Agrega alunos, disciplinas, blocos e Turnos.
     /// </summary> 
-    public class Atum {
+    public class Atum
+    {
 
         #region Propriedades
         /// <summary>
@@ -42,7 +44,9 @@ namespace ATUM.sistema {
 
         #region Construtores
 
-        public Atum() {
+        //Todo: Fix this: Breaks invariant.
+        public Atum()
+        {
             Alunos = new List<Aluno>();
             Disciplinas = new List<Disciplina>();
             Turnos = new List<Turno>();
@@ -56,9 +60,11 @@ namespace ATUM.sistema {
         /// <summary>
         /// Método para processar e alocar os Alunos.
         /// </summary>
-        public void ProcessaAlocacoes() {
+        public void ProcessaAlocacoes()
+        {
             Alunos.Sort(Aluno.CompareAlunosByOrd);
-            foreach (var aluno in Alunos) {
+            foreach (var aluno in Alunos)
+            {
                 AlocaAluno(aluno);
                 Processados.Add(aluno);
             }
@@ -69,7 +75,8 @@ namespace ATUM.sistema {
         /// Tenta alocar o aluno a um Bloco da sua preferência e após isso tenta alocar o Aluno ao máximo de Turnos de Disciplinas a que não tenha sido alocado via Bloco.
         /// </summary>
         /// <param name="a">O Aluno a alocar.</param>
-        public void AlocaAluno(Aluno a) {
+        public void AlocaAluno(Aluno a)
+        {
             Contract.Requires(a != null);
             Contract.Requires(Contract.ForAll(this.Processados, (Aluno x) => Aluno.CompareAlunosByOrd(a, x) > 0));
             Contract.Ensures(Processados.Contains(a));
@@ -86,8 +93,10 @@ namespace ATUM.sistema {
         /// Método auxiliar que tenta alocar um Aluno a um Bloco da sua preferência.
         /// </summary>
         /// <param name="a">O Aluno a ser alocado.</param>
-        private void AlocaBloco(Aluno a) {
-            foreach (Bloco bloco in a.PreferenciasBlocos.Select(x => x.Bloco)) {
+        private void AlocaBloco(Aluno a)
+        {
+            foreach (Bloco bloco in a.PreferenciasBlocos.Select(x => x.Bloco))
+            {
                 if (!bloco.TemVagas()) continue;
                 a.AlocadoTurno = bloco.TurnosBloco;
                 bloco.DecrementarVagas();
@@ -101,11 +110,14 @@ namespace ATUM.sistema {
         /// Método auxiliar que tenta alocar um Aluno ao máximo de Turnos de Disciplinas a que está inscrito mas não tenha sido alocado. Para usar após a alocação por Bloco.
         /// </summary>
         /// <param name="a">O Aluno a alocar.</param>
-        private void AlocaDisciplina(Aluno a) {
+        private void AlocaDisciplina(Aluno a)
+        {
             IList<Disciplina> dna = DisciplinasNaoAlocado(a);
 
-            foreach (Disciplina disciplina in dna) {
-                foreach (Turno turno in disciplina.TurnosDisciplina) {
+            foreach (Disciplina disciplina in dna)
+            {
+                foreach (Turno turno in disciplina.TurnosDisciplina)
+                {
                     if (!turno.TemVagas()) continue;
                     a.AddAlocacaoTurno(turno);
                     turno.VagasActuais--;
@@ -121,10 +133,16 @@ namespace ATUM.sistema {
         /// </summary>
         /// <param name="a">O Aluno cuja lista se irá calcular..</param>
         /// <returns>A lista de Disciplinas a que o Aluno não foi alocado.</returns>
-        private IList<Disciplina> DisciplinasNaoAlocado(Aluno a) {
+        [Pure]
+        public IList<Disciplina> DisciplinasNaoAlocado(Aluno a)
+        {
+            Contract.Requires<ArgumentNullException>(a != null);
+            Contract.Ensures(Contract.Result<IList<Disciplina>>().Count <= a.Inscrito.Count);
+
             List<Disciplina> dna = new List<Disciplina>();
 
-            foreach (Disciplina disciplina in a.Inscrito) {
+            foreach (Disciplina disciplina in a.Inscrito)
+            {
                 if (disciplina.TurnosDisciplina.Intersect(a.AlocadoTurno).Count() == 0)
                     dna.Add(disciplina);
             }
@@ -135,7 +153,8 @@ namespace ATUM.sistema {
 
         #region Invariantes
         [ContractInvariantMethod]
-        private void ObjectInvariant() {
+        private void ObjectInvariant()
+        {
             // Garantir que um Turno pretence apenas a uma Disciplina
             Contract.Invariant(Contract.ForAll(Disciplinas, (Disciplina d)
                 => (Contract.ForAll(d.TurnosDisciplina, (Turno t) => t.Disciplina == d))));
@@ -155,9 +174,10 @@ namespace ATUM.sistema {
             // ALOCAÇÃO
             // Garantir que os melhores alunos são processados primeiro
             // Garantir que os processados estão bem ordenados
-            Contract.Invariant(StructOps.IsSorted(StructOps.GenMap(Processados).Keys.ToList())
+            // Nota: Tiago adicionou: (Processados.Count == 0 ||)
+            Contract.Invariant(Processados.Count == 0 || StructOps.IsSorted(StructOps.GenMap(Processados).Keys.ToList())
                 && StructOps.IsSorted(StructOps.GenMap(Processados).Values.ToList()));
-            Contract.Invariant(Aluno.CompareAlunosByOrd(Processados.Last(), GetAlunosNaoProcessados().First()) < 0);
+            Contract.Invariant(Processados.Count == 0 || Aluno.CompareAlunosByOrd(Processados.Last(), GetAlunosNaoProcessados().First()) < 0);
 
             // Garantir que apenas alunos melhores estão onde um aluno não está
             // Disciplina
@@ -168,7 +188,7 @@ namespace ATUM.sistema {
                 (Bloco b) => a.AlocadoBloco == b || BlocoBloqueadoPorMelhores(a, b))));
 
             // Garantir que os alunos estão no melhor bloco possível.
-            Contract.Invariant(Contract.ForAll(Alunos, (Aluno a) => a.AlocadoBloco==null || EOMelhorBloco(a, a.AlocadoBloco)));
+            Contract.Invariant(Contract.ForAll(Alunos, (Aluno a) => a.AlocadoBloco == null || EoMelhorBloco(a, a.AlocadoBloco)));
         }
 
 
@@ -179,16 +199,17 @@ namespace ATUM.sistema {
         /// <summary>
         /// Garante que não há Blocos melhores disponíveis para o Aluno em relação ao Bloco actual.
         /// </summary>
-        /// <param name="aluno">O Aluno a testar.</param>
-        /// <param name="o">O Bloco a testar.</param>
+        /// <param name="a">O Aluno a testar.</param>
+        /// <param name="b">O Bloco a testar.</param>
         /// <returns>True caso o Bloco seja o melhor. False caso contrário.</returns>
         [Pure]
-        public bool EOMelhorBloco(Aluno a, Bloco b) {
-            bool r=true;
+        public bool EoMelhorBloco(Aluno a, Bloco b)
+        {
+            bool r = true;
             var lbs = new List<Bloco>();
             foreach (var bloco in a.PreferenciasBlocos.Select(x => x.Bloco))
                 if (r && bloco != b)
-                    r = BlocoBloqueadoPorMelhores(a, bloco);      
+                    r = BlocoBloqueadoPorMelhores(a, bloco);
             return true;
         }
 
@@ -198,7 +219,8 @@ namespace ATUM.sistema {
         /// </summary>
         /// <returns> Lista de Alunos Não Processados</returns>
         [Pure]
-        public IList<Aluno> GetAlunosNaoProcessados() {
+        public IList<Aluno> GetAlunosNaoProcessados()
+        {
             var r = new List<Aluno>();
             foreach (var aluno in Alunos)
                 if (!Processados.Contains(aluno))
@@ -213,7 +235,8 @@ namespace ATUM.sistema {
         /// <param name="b">O Bloco a testar.</param>
         /// <returns>True caso o Bloco esteja bloqueado. False caso contrário.</returns>
         [Pure]
-        private bool BlocoBloqueadoPorMelhores(Aluno a, Bloco b) {
+        private bool BlocoBloqueadoPorMelhores(Aluno a, Bloco b)
+        {
             foreach (var turno in b.TurnosBloco)
             {
                 if (turno.VagasActuais != 0)
@@ -221,7 +244,7 @@ namespace ATUM.sistema {
                 foreach (var aluno in GetAlunosTurno(turno))
                     if (aluno.NumOrdem > a.NumOrdem)
                         return false;
-             }
+            }
             return true;
         }
 
@@ -232,7 +255,8 @@ namespace ATUM.sistema {
         /// <param name="disciplina">A Disciplina em que iremos testar.</param>
         /// <returns>True caso todos os Alunos alocados a Turnos da Disciplina sejam melhores. False caso contrário.</returns>
         [Pure]
-        public bool NinguemPior(Aluno a, Disciplina d) {
+        public bool NinguemPior(Aluno a, Disciplina d)
+        {
             foreach (var turno in d.TurnosDisciplina)
             {
                 if (turno.VagasActuais != 0)
@@ -250,7 +274,8 @@ namespace ATUM.sistema {
         /// <param name="a">O Aluno a testar.</param>
         /// <param name="d">A Disciplina a testar.</param>
         /// <returns>True caso o Aluno esta alocado a algum Turno da Disciplina. False caso contrário.</returns>
-        public bool AlunoTaNaDisc(Aluno a, Disciplina d) {
+        public bool AlunoTaNaDisc(Aluno a, Disciplina d)
+        {
             var turnosEmComum = a.AlocadoTurno.Intersect(d.TurnosDisciplina);
             int r = turnosEmComum.Count();
             return r == 1;
@@ -262,7 +287,8 @@ namespace ATUM.sistema {
         /// <param name="t">O Turno cuja lista de pretende.</param>
         /// <returns>A lista de Alunos que estão alocados ao Turno.</returns>
         [Pure]
-        public IList<Aluno> GetAlunosTurno(Turno t) {
+        public IList<Aluno> GetAlunosTurno(Turno t)
+        {
             var r = new List<Aluno>();
             foreach (var aluno in Alunos)
                 if (aluno.AlocadoTurno.Contains(t))
@@ -276,7 +302,8 @@ namespace ATUM.sistema {
         /// <param name="t">O Bloco cuja lista de pretende.</param>
         /// <returns>A lista de Alunos que estão alocados ao Bloco.</returns>
         [Pure]
-        public IList<Aluno> GetAlunosBloco(Bloco b) {
+        public IList<Aluno> GetAlunosBloco(Bloco b)
+        {
             var r = new List<Aluno>();
             foreach (var aluno in Alunos)
                 if (aluno.AlocadoBloco == b)
