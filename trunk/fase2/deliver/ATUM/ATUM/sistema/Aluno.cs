@@ -251,8 +251,10 @@ namespace ATUM.sistema
             // Garantir que um aluno só tem preferências por blocos para os quais está inscricoes a todas as disciplinas
             //Contract.Invariant(Contract.ForAll(PreferenciasBlocos, (Bloco b) 
             //    => Contract.ForAll(b.TurnosBloco, (Turno turno) => DisciplinasInscrito.Contains(turno.Disciplina))) );
-            Contract.Invariant(Contract.ForAll(PreferenciasBlocos, (Preferencia p) =>
-                Contract.ForAll(p.Bloco.TurnosBloco, (Turno t) => DisciplinasInscrito.Contains(t.Disciplina))));
+            
+            //// Removido
+            //Contract.Invariant(Contract.ForAll(PreferenciasBlocos, (Preferencia p) =>
+            //    Contract.ForAll(p.Bloco.TurnosBloco, (Turno t) => DisciplinasInscrito.Contains(t.Disciplina))));
 
             // Garantir que um aluno não processado não é alocado
             Contract.Invariant(Processado || AlocadoTurno.Count == 0 && AlocadoBloco == null);
@@ -262,7 +264,8 @@ namespace ATUM.sistema
             // (Estes dois eram mais um workaround ao Alloy)
 
             // Garantir que um Aluno apenas é alocado em Turnos de Disciplinas em que está matriculado
-            Contract.Invariant(Contract.ForAll(AlocadoTurno, (Turno t) => DisciplinasInscrito.Contains(t.Disciplina) && t.Disciplina != null));
+            //// Removido
+            //Contract.Invariant(Contract.ForAll(AlocadoTurno, (Turno t) => DisciplinasInscrito.Contains(t.Disciplina) && t.Disciplina != null));
 
             // Garantir que um aluno não pode estar alocado em turnos sobre opostos
             //Contract.Invariant(Contract.ForAll(AlocadoTurno, (Turno t1)
@@ -275,7 +278,8 @@ namespace ATUM.sistema
                     => (p1 == p2 || (p1.Grau != p2.Grau && p1.Bloco != p2.Bloco)))));
 
             // Garantir que um aluno processado tem no máximo um turno por disciplina
-            Contract.Invariant(!Processado || StructOps.NoDups((List<Disciplina>)AlocadoTurno.Select(x => x.Disciplina).ToList()));
+            //// Removido
+            //Contract.Invariant(!Processado || StructOps.NoDups((List<Disciplina>)AlocadoTurno.Select(x => x.Disciplina).ToList()));
         }
         #endregion
 
