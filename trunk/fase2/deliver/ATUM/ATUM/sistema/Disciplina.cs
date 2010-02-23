@@ -30,6 +30,7 @@ namespace ATUM.sistema
         public Disciplina(String id)
         {
             Contract.Requires<ArgumentNullException>(!String.IsNullOrEmpty(id), "O nome da disciplina não pode serr nulo nem vazio.");
+            Contract.Ensures(!TurnosDisciplina.IsReadOnly);
 
             Identifier = id;
             TurnosDisciplina = new List<Turno>();
@@ -44,6 +45,8 @@ namespace ATUM.sistema
         {
             Contract.Requires<ArgumentNullException>(!String.IsNullOrEmpty(id), "O nome da disciplina não pode serr nulo nem vazio.");
             Contract.Requires<ArgumentNullException>(turnos != null, "A lista de turnos não pode ser nula.");
+            Contract.Requires(!turnos.IsReadOnly);
+            Contract.Ensures(!TurnosDisciplina.IsReadOnly);
 
             Identifier = id;
             TurnosDisciplina = turnos;
