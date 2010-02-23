@@ -81,6 +81,17 @@ namespace ATUM.libs
             }
             return r;
         }
-
+        /// <summary>
+        /// Creates a new List from multiple lists. Warning: this is quite heavy.
+        /// </summary>
+        /// <param name="lists">The list of lists to be created</param>
+        /// <returns>A list with all the elements from the sublists. May have dups.</returns>
+        [Pure]
+        public static IList MergeManyLists(IEnumerable<IList<Turno>> lists) {
+            List<Turno> r = new List<Turno>();
+            foreach (var list in lists)
+                r.AddRange(list);
+            return r;
+        }
     }
 }

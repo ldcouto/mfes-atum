@@ -196,12 +196,9 @@ namespace ATUM.sistema
         /// <param name="b">Bloco a adicionar.</param>
         public void AddPreferencia(Bloco b) {
             Contract.Requires(!PreferenciasBlocos.Select(x=>x.Bloco).Contains(b));
-            //TODO Implementar!
-    //        Contract.Requires(b.TurnosBloco.Intersect(DisciplinasInscrito.Select(x=>x.TurnosDisciplina).Aggregate()
-      //          == b.TurnosBloco);
+            Contract.Requires(Contract.ForAll(b.TurnosBloco, (Turno t) =>
+                StructOps.MergeManyLists(DisciplinasInscrito.Select(x=>x.TurnosDisciplina)).Contains(t)));
 
-         //   Contract.Requires(b.TurnosBloco.Select(x=>x.Disciplina).Intersect(DisciplinasInscrito) == DisciplinasInscrito);
-         
             Contract.Ensures(PreferenciasBlocos.Select(x=>x.Bloco).Contains(b));
             Contract.Ensures(Contract.OldValue(Identifier) == Identifier &&
                  Contract.OldValue(DisciplinasInscrito) == DisciplinasInscrito &&
@@ -215,6 +212,24 @@ namespace ATUM.sistema
             var p = new Preferencia(newGrau, b);
             PreferenciasBlocos.Add(p);
 
+        }
+
+        public void RemovePreferencia(Preferencia p)
+        {
+            Contract.Requires(p!=null);
+            Contract.Requires(PreferenciasBlocos.Contains(p));
+            
+            Contract.Ensures(!PreferenciasBlocos.Contains(p));
+            Contract.Ensures(Contract.ForAll(PreferenciasBlocos, (Preferencia pref) =>
+                Contract.OldValue(pref.Grau).CompareTo(p.Grau) <0 
+                    || pref.Grau == Contract.OldValue(pref.Grau)-1));
+
+            PreferenciasBlocos.Remove(p);
+
+            foreach (var preferenciasBloco in PreferenciasBlocos)
+                if (preferenciasBloco.Grau.CompareTo(p.Grau)>0)
+                    preferenciasBloco.Grau--;
+            
         }
 
         /// <summary>
