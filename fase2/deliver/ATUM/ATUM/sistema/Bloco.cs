@@ -18,7 +18,7 @@ namespace ATUM.sistema
         /// <summary>
         /// Lista de turnos que pertencem ao bloco.
         /// </summary>
-        public IList<Turno> TurnosBloco { get; private set; }
+        public IList<Turno> TurnosBloco { get; set; }
         #endregion
 
         #region Construtores
