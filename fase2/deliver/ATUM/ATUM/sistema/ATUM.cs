@@ -155,7 +155,6 @@ namespace ATUM.sistema
         private void ObjectInvariant()
         {
 
-
             // Garantir que um Aluno apenas é alocado em Turnos de Disciplinas em que está matriculado
             Contract.Invariant(Contract.ForAll(Alunos, (Aluno a) => 
                 Contract.ForAll(a.AlocadoTurno, (Turno t) => a.DisciplinasInscrito.Contains(GetDiscTurno(t)) && GetDiscTurno(t) != null)));
