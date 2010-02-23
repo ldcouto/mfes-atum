@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using ATUM.libs;
 
 namespace ATUM.sistema
 {
@@ -187,9 +188,9 @@ namespace ATUM.sistema
         [ContractInvariantMethod]
         private void ObjectInvariant()
         {
+            Contract.Invariant(TurnosBloco!=null);
             // Garantir que um bloco não tem turnos sobrepostos
-            Contract.Invariant((TurnosBloco == null) || Contract.ForAll(TurnosBloco, (Turno t1)
-                => Contract.ForAll(TurnosBloco, (Turno t2) => t1 == t2 || t1.Spot != t2.Spot)));
+            Contract.Invariant(StructOps.NoDups(TurnosBloco));
         }
         #endregion
 
