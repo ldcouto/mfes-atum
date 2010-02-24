@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using ATUM.sistema;
 
 namespace ATUM.sistema
 {
@@ -29,7 +30,7 @@ namespace ATUM.sistema
         /// <param name="id">Identificação da disciplina.</param>
         public Disciplina(String id)
         {
-            Contract.Requires<ArgumentNullException>(!String.IsNullOrEmpty(id), "O nome da disciplina não pode serr nulo nem vazio.");
+            Contract.Requires(!String.IsNullOrEmpty(id), "O nome da disciplina não pode serr nulo nem vazio.");
             Contract.Ensures(!TurnosDisciplina.IsReadOnly);
 
             Identifier = id;
@@ -43,8 +44,11 @@ namespace ATUM.sistema
         /// <param name="turnos">Lista de turnos da Disciplina.</param>
         public Disciplina(String id, IList<Turno> turnos)
         {
-            Contract.Requires<ArgumentNullException>(!String.IsNullOrEmpty(id), "O nome da disciplina não pode serr nulo nem vazio.");
-            Contract.Requires<ArgumentNullException>(turnos != null, "A lista de turnos não pode ser nula.");
+
+            Contract.Requires(!String.IsNullOrEmpty(id), "O nome da disciplina não pode serr nulo nem vazio.");
+            Contract.Requires(turnos != null, "A lista de turnos não pode ser nula.");
+            Contract.Requires(Contract.ForAll( turnos, t => t!=null));
+           
             Contract.Requires(!turnos.IsReadOnly);
             Contract.Ensures(!TurnosDisciplina.IsReadOnly);
 
@@ -62,14 +66,11 @@ namespace ATUM.sistema
         /// <param name="turno">Turno a ser adicionado.</param>
         public void AddTurno(Turno turno)
         {
-            Contract.Requires<ArgumentNullException>(turno != null, "O turno a ser inserido não pode ser nulo.");
-            Contract.Requires<ArgumentException>(!TurnosDisciplina.Contains(turno), "O turno que está a tentar ser inserido já está na lista de turnos.");
+            Contract.Requires(turno != null, "O turno a ser inserido não pode ser nulo.");
+            Contract.Requires(!TurnosDisciplina.Contains(turno), "O turno que está a tentar ser inserido já está na lista de turnos.");
 
             Contract.Ensures(TurnosDisciplina.Contains(turno), "O turno válido que está tentar inseir não foi inserido.");
             Contract.Ensures(Contract.OldValue(Identifier) == Identifier, "A execução deste método não só altera a lista de turnos.");
-
-            Contract.EnsuresOnThrow<ArgumentNullException>(Contract.OldValue(this) == this);
-            Contract.EnsuresOnThrow<ArgumentException>(Contract.OldValue(this) == this);
 
             TurnosDisciplina.Add(turno);
         }
@@ -81,14 +82,11 @@ namespace ATUM.sistema
         /// <returns>True se o turno for removido, falso se o contrario.</returns>
         public bool RemoveTurno(Turno turno)
         {
-            Contract.Requires<ArgumentNullException>(turno != null, "O turno a ser removido nºao pode ser nulo.");
-            Contract.Requires<ArgumentException>(TurnosDisciplina.Contains(turno), "O turno a remover deve estar na lista de turnos.");
+            Contract.Requires(turno != null, "O turno a ser removido nºao pode ser nulo.");
+            Contract.Requires(TurnosDisciplina.Contains(turno), "O turno a remover deve estar na lista de turnos.");
 
             Contract.Ensures(!TurnosDisciplina.Contains(turno), "O turno a remover não deve estar na lista depois de removido.");
             Contract.Ensures(Contract.OldValue(Identifier) == Identifier, "A execução deste método não só altera a lista de turnos.");
-
-            Contract.EnsuresOnThrow<ArgumentNullException>(Contract.OldValue(this) == this);
-            Contract.EnsuresOnThrow<ArgumentException>(Contract.OldValue(this) == this);
 
             return TurnosDisciplina.Remove(turno);
         }

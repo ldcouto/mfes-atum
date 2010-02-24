@@ -44,7 +44,7 @@ namespace ATUM.sistema
         /// <requires>Nome não nulo nem vazio.</requires>
         public Turno(String id, uint vagas, int spot)
         {
-            Contract.Requires<ArgumentNullException>(!String.IsNullOrEmpty(id), "O nome do turno não pode ser vazio nem nulo.");
+            Contract.Requires(!String.IsNullOrEmpty(id), "O nome do turno não pode ser vazio nem nulo.");
             
             Identifier = id;
             VagasInicias = vagas;
@@ -73,11 +73,9 @@ namespace ATUM.sistema
         [Pure]
         public bool Sobreposto(Turno outro)
         {
-            Contract.Requires<ArgumentNullException>(outro != null, "O turno contra o qual se quer testar não pode ser nulo.");
+            Contract.Requires(outro != null, "O turno contra o qual se quer testar não pode ser nulo.");
             
             Contract.Ensures(Contract.Result<bool>() == (Spot == outro.Spot), "Garante que o turno ou está sobreposto ou não.");
-
-            Contract.EnsuresOnThrow<ArgumentNullException>(Contract.OldValue(this) == this && Contract.OldValue(outro) == outro);
 
             return Spot == outro.Spot;
         }

@@ -33,7 +33,7 @@ namespace ATUM.sistema
         /// <param name="b">O blocoa a associar á preferência.</param>
         public Preferencia(uint grau, Bloco b)
         {
-            Contract.Requires<ArgumentNullException>(b != null, "O bloco que o aluno prefere tem de existir.");
+            Contract.Requires(b != null, "O bloco que o aluno prefere tem de existir.");
 
             Grau = grau;
             Bloco = b; 
@@ -114,24 +114,32 @@ namespace ATUM.sistema
         [Pure]
         public static bool operator <=(Preferencia left, Preferencia right)
         {
+            Contract.Requires(left != null);
+
             return left.CompareTo(right) <= 0;
         }
 
         [Pure]
         public static bool operator >=(Preferencia left, Preferencia right)
         {
+            Contract.Requires(left != null);
+
             return left.CompareTo(right) >= 0;
         }
 
         [Pure]
         public static bool operator <(Preferencia left, Preferencia right)
         {
+            Contract.Requires(left != null);
+
             return left.CompareTo(right) < 0;
         }
 
         [Pure]
         public static bool operator >(Preferencia left, Preferencia right)
         {
+            Contract.Requires(left != null);
+
             return left.CompareTo(right) > 0;
         }
         #endregion
