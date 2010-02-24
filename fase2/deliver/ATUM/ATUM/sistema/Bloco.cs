@@ -31,6 +31,8 @@ namespace ATUM.sistema
         {
             Contract.Requires<ArgumentNullException>(id != null, "id");
 
+            Contract.Ensures(!TurnosBloco.IsReadOnly);
+
             Identifier = id;
             TurnosBloco = new List<Turno>();
         }
@@ -44,6 +46,9 @@ namespace ATUM.sistema
         {
             Contract.Requires<ArgumentNullException>(!String.IsNullOrEmpty(id), "O nome do bloco não pode ser vazio nem nulo.");
             Contract.Requires<ArgumentNullException>(turnos != null, "A lista de turnos do bloco não pode ser nula.");
+
+            Contract.Requires(!turnos.IsReadOnly);
+            Contract.Ensures(!TurnosBloco.IsReadOnly);
 
             Identifier = id;
             TurnosBloco = turnos;
@@ -118,6 +123,7 @@ namespace ATUM.sistema
         /// </summary>
         public void DecrementarVagas()
         {
+
             foreach (Turno turno in TurnosBloco)
                 turno.VagasActuais--;
         }
