@@ -1,0 +1,330 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{C11EF418-E087-41F7-9FD3-C214CDC068D6}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ATUM.Tests.Pex</RootNamespace>
+    <AssemblyName>ATUM.Tests.Pex</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
+    <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.ExtendedReflection, Version=0.24.50221.2, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Moles.Framework, Version=0.24.50221.2, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Pex.Framework, Version=0.24.50221.2, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Microsoft.Pex.Linq, Version=0.24.50221.2, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ATUM\ATUM.csproj">
+      <Project>{03E76D80-4647-4C76-8744-71BA93AB5E58}</Project>
+      <Name>ATUM</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Compile Include="Factories\AlunoFactory.cs" />
+    <Compile Include="Factories\BlocoFactory.cs" />
+    <Compile Include="Factories\DisciplinaFactory.cs" />
+    <Compile Include="Factories\PreferenciaFactory.cs" />
+    <Compile Include="Factories\TurnoFactory.cs" />
+    <Compile Include="libs\StructOpsTests.cs" />
+    <Compile Include="libs\StructOpsTests.GenMap.g.cs">
+      <DependentUpon>StructOpsTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="libs\StructOpsTests.MergeManyLists.g.cs">
+      <DependentUpon>StructOpsTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\PexAssemblyInfo.cs" />
+    <Compile Include="sistema\AlunoTests.AddAlocacaoTurno.g.cs">
+      <DependentUpon>AlunoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AlunoTests.AddInscricao.g.cs">
+      <DependentUpon>AlunoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AlunoTests.AddPreferencia.g.cs">
+      <DependentUpon>AlunoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AlunoTests.AlocadoBlocoGetSet.g.cs">
+      <DependentUpon>AlunoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AlunoTests.AlocadoTurnoGetSet.g.cs">
+      <DependentUpon>AlunoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AlunoTests.CompareAlunosByOrd.g.cs">
+      <DependentUpon>AlunoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AlunoTests.CompareTo.g.cs">
+      <DependentUpon>AlunoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AlunoTests.Constructor.g.cs">
+      <DependentUpon>AlunoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AlunoTests.Constructor01.g.cs">
+      <DependentUpon>AlunoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AlunoTests.Constructor02.g.cs">
+      <DependentUpon>AlunoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AlunoTests.cs" />
+    <Compile Include="sistema\AlunoTests.DisciplinasInscritoGet.g.cs">
+      <DependentUpon>AlunoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AlunoTests.Equality.g.cs">
+      <DependentUpon>AlunoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AlunoTests.Equals.g.cs">
+      <DependentUpon>AlunoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AlunoTests.Equals01.g.cs">
+      <DependentUpon>AlunoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AlunoTests.GetHashCode.g.cs">
+      <DependentUpon>AlunoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AlunoTests.GreaterThan.g.cs">
+      <DependentUpon>AlunoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AlunoTests.GreaterThanOrEqual.g.cs">
+      <DependentUpon>AlunoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AlunoTests.IdentifierGetSet.g.cs">
+      <DependentUpon>AlunoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AlunoTests.Inequality.g.cs">
+      <DependentUpon>AlunoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AlunoTests.LessThan.g.cs">
+      <DependentUpon>AlunoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AlunoTests.LessThanOrEqual.g.cs">
+      <DependentUpon>AlunoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AlunoTests.NumOrdemGetSet.g.cs">
+      <DependentUpon>AlunoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AlunoTests.PreferenciasBlocosGet.g.cs">
+      <DependentUpon>AlunoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AlunoTests.ProcessadoGetSet.g.cs">
+      <DependentUpon>AlunoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AlunoTests.RemoveInscricao.g.cs">
+      <DependentUpon>AlunoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AlunoTests.RemovePreferencia.g.cs">
+      <DependentUpon>AlunoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\BlocoTests.AddTurno.g.cs">
+      <DependentUpon>BlocoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\BlocoTests.Constructor.g.cs">
+      <DependentUpon>BlocoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\BlocoTests.Constructor01.g.cs">
+      <DependentUpon>BlocoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\BlocoTests.cs" />
+    <Compile Include="sistema\BlocoTests.DecrementarVagas.g.cs">
+      <DependentUpon>BlocoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\BlocoTests.Equality.g.cs">
+      <DependentUpon>BlocoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\BlocoTests.Equals.g.cs">
+      <DependentUpon>BlocoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\BlocoTests.Equals01.g.cs">
+      <DependentUpon>BlocoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\BlocoTests.GetHashCode.g.cs">
+      <DependentUpon>BlocoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\BlocoTests.IdentifierGetSet.g.cs">
+      <DependentUpon>BlocoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\BlocoTests.Inequality.g.cs">
+      <DependentUpon>BlocoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\BlocoTests.RemoveTurno.g.cs">
+      <DependentUpon>BlocoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\BlocoTests.TemVagas.g.cs">
+      <DependentUpon>BlocoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\BlocoTests.TurnosBlocoGetSet.g.cs">
+      <DependentUpon>BlocoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\BlocoTests.TurnosSobrepostos.g.cs">
+      <DependentUpon>BlocoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\DisciplinaTests.AddTurno.g.cs">
+      <DependentUpon>DisciplinaTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\DisciplinaTests.Constructor.g.cs">
+      <DependentUpon>DisciplinaTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\DisciplinaTests.Constructor01.g.cs">
+      <DependentUpon>DisciplinaTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\DisciplinaTests.cs" />
+    <Compile Include="sistema\DisciplinaTests.Equality.g.cs">
+      <DependentUpon>DisciplinaTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\DisciplinaTests.Equals.g.cs">
+      <DependentUpon>DisciplinaTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\DisciplinaTests.Equals01.g.cs">
+      <DependentUpon>DisciplinaTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\DisciplinaTests.GetHashCode.g.cs">
+      <DependentUpon>DisciplinaTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\DisciplinaTests.IdentifierGetSet.g.cs">
+      <DependentUpon>DisciplinaTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\DisciplinaTests.Inequality.g.cs">
+      <DependentUpon>DisciplinaTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\DisciplinaTests.RemoveTurno.g.cs">
+      <DependentUpon>DisciplinaTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\DisciplinaTests.RemoveTurno01.g.cs">
+      <DependentUpon>DisciplinaTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\DisciplinaTests.TemVagas.g.cs">
+      <DependentUpon>DisciplinaTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\DisciplinaTests.TurnosDisciplinaGet.g.cs">
+      <DependentUpon>DisciplinaTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\PreferenciaTests.BlocoGetSet.g.cs">
+      <DependentUpon>PreferenciaTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\PreferenciaTests.ComparePreferenciaByGrau.g.cs">
+      <DependentUpon>PreferenciaTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\PreferenciaTests.CompareTo.g.cs">
+      <DependentUpon>PreferenciaTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\PreferenciaTests.Constructor.g.cs">
+      <DependentUpon>PreferenciaTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\PreferenciaTests.cs" />
+    <Compile Include="sistema\PreferenciaTests.Equality.g.cs">
+      <DependentUpon>PreferenciaTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\PreferenciaTests.Equals.g.cs">
+      <DependentUpon>PreferenciaTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\PreferenciaTests.Equals01.g.cs">
+      <DependentUpon>PreferenciaTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\PreferenciaTests.GetHashCode.g.cs">
+      <DependentUpon>PreferenciaTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\PreferenciaTests.GrauGetSet.g.cs">
+      <DependentUpon>PreferenciaTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\PreferenciaTests.GreaterThan.g.cs">
+      <DependentUpon>PreferenciaTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\PreferenciaTests.GreaterThanOrEqual.g.cs">
+      <DependentUpon>PreferenciaTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\PreferenciaTests.Inequality.g.cs">
+      <DependentUpon>PreferenciaTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\PreferenciaTests.LessThan.g.cs">
+      <DependentUpon>PreferenciaTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\PreferenciaTests.LessThanOrEqual.g.cs">
+      <DependentUpon>PreferenciaTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\TurnoTests.Constructor.g.cs">
+      <DependentUpon>TurnoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\TurnoTests.cs" />
+    <Compile Include="sistema\TurnoTests.Equality.g.cs">
+      <DependentUpon>TurnoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\TurnoTests.Equals.g.cs">
+      <DependentUpon>TurnoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\TurnoTests.Equals01.g.cs">
+      <DependentUpon>TurnoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\TurnoTests.GetHashCode.g.cs">
+      <DependentUpon>TurnoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\TurnoTests.IdentifierGetSet.g.cs">
+      <DependentUpon>TurnoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\TurnoTests.Inequality.g.cs">
+      <DependentUpon>TurnoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\TurnoTests.Sobreposto.g.cs">
+      <DependentUpon>TurnoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\TurnoTests.SpotGetSet.g.cs">
+      <DependentUpon>TurnoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\TurnoTests.TemVagas.g.cs">
+      <DependentUpon>TurnoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\TurnoTests.VagasActuaisGetSet.g.cs">
+      <DependentUpon>TurnoTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\TurnoTests.VagasIniciasGet.g.cs">
+      <DependentUpon>TurnoTests.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ATUM.moles">
+      <Generator>MolesGenerator</Generator>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
