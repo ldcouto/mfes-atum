@@ -59,13 +59,16 @@ namespace ATUM.sistema
         public Aluno(String identifier)
         {
             Contract.Requires<ArgumentNullException>(!String.IsNullOrEmpty(identifier), "O nome do Aluno não pode ser nulo nem vazio.");
+            
+            Contract.Ensures(!PreferenciasBlocos.IsReadOnly);
+            Contract.Ensures(!AlocadoTurno.IsReadOnly);
+            Contract.Ensures(!DisciplinasInscrito.IsReadOnly);
 
             Identifier = identifier;
 
             DisciplinasInscrito = new List<Disciplina>();
             AlocadoTurno = new List<Turno>();
 
-            //PreferenciasBlocos = new List<Bloco>();
             PreferenciasBlocos = new List<Preferencia>();
 
             Processado = false;
@@ -81,6 +84,13 @@ namespace ATUM.sistema
         {
             Contract.Requires<ArgumentNullException>(!String.IsNullOrEmpty(identifier), "O nome do Aluno não pode ser nulo nem vazio.");
             Contract.Requires<ArgumentNullException>(inscricoes != null, "As inscrições do aluno devem ser uma lista válida.");
+            
+            Contract.Requires(!inscricoes.IsReadOnly);
+
+            Contract.Ensures(!PreferenciasBlocos.IsReadOnly);
+            Contract.Ensures(!AlocadoTurno.IsReadOnly);
+            Contract.Ensures(!DisciplinasInscrito.IsReadOnly);
+
 
             Identifier = identifier;
 
@@ -105,6 +115,13 @@ namespace ATUM.sistema
             Contract.Requires<ArgumentNullException>(!String.IsNullOrEmpty(identifier), "O nome do Aluno não pode ser nulo nem vazio.");
             Contract.Requires<ArgumentNullException>(inscricoes != null, "As inscrições do aluno devem ser uma lista existente.");
             Contract.Requires<ArgumentNullException>(preferenciasBlocos != null, "As preferências do Aluno devem ser uma lista existente.");
+
+            Contract.Requires(!inscricoes.IsReadOnly);
+            Contract.Requires(!preferenciasBlocos.IsReadOnly);
+
+            Contract.Ensures(!PreferenciasBlocos.IsReadOnly);
+            Contract.Ensures(!AlocadoTurno.IsReadOnly);
+            Contract.Ensures(!DisciplinasInscrito.IsReadOnly);
 
             Identifier = identifier;
 
