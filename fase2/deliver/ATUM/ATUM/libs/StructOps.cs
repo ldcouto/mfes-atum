@@ -22,7 +22,7 @@ namespace ATUM.libs
         {
             for (int i = 0; i < l.Count; i++)
                 for (int j = 0; j < l.Count; j++)
-                    if (i != j && l[i].Equals(l[j]))
+                    if (i != j && !l[i].Equals(null) && !l[j].Equals(null) && l[i].Equals(l[j]))
                         return false;
 
             return true;

@@ -29,7 +29,7 @@ namespace ATUM.sistema
         /// <param name="id">Identificação do Bloco.</param>
         public Bloco(String id)
         {
-            Contract.Requires<ArgumentNullException>(id != null, "id");
+            Contract.Requires(id != null, "id");
 
             Contract.Ensures(!TurnosBloco.IsReadOnly);
 
@@ -44,8 +44,9 @@ namespace ATUM.sistema
         /// <param name="turnos">Lista de turnos que pertencem ao Bloco.</param>
         public Bloco(String id, IList<Turno> turnos)
         {
-            Contract.Requires<ArgumentNullException>(!String.IsNullOrEmpty(id), "O nome do bloco não pode ser vazio nem nulo.");
-            Contract.Requires<ArgumentNullException>(turnos != null, "A lista de turnos do bloco não pode ser nula.");
+            Contract.Requires(!String.IsNullOrEmpty(id), "O nome do bloco não pode ser vazio nem nulo.");
+            Contract.Requires(turnos != null, "A lista de turnos do bloco não pode ser nula.");
+            Contract.Requires(Contract.ForAll(turnos, t => t != null));
 
             Contract.Requires(!turnos.IsReadOnly);
             Contract.Ensures(!TurnosBloco.IsReadOnly);
@@ -63,15 +64,12 @@ namespace ATUM.sistema
         /// <param name="turno">O turno a ser adicionado.</param>
         public void AddTurno(Turno turno)
         {
-            Contract.Requires<ArgumentNullException>(turno != null, "O turno a ser inserido não pode ser nulo.");
-            Contract.Requires<ArgumentException>(!TurnosBloco.Contains(turno), "O turno a ser adicionado ainda não pode pertencer á lista de turnos do bloco.");
-            Contract.Requires<ArgumentException>(!TurnosSobrepostos(turno), "O turno a ser adicionado não pode estar sobreposto com outros turnos do bloco.");
+            Contract.Requires(turno != null, "O turno a ser inserido não pode ser nulo.");
+            Contract.Requires(!TurnosBloco.Contains(turno), "O turno a ser adicionado ainda não pode pertencer á lista de turnos do bloco.");
+            Contract.Requires(!TurnosSobrepostos(turno), "O turno a ser adicionado não pode estar sobreposto com outros turnos do bloco.");
 
             Contract.Ensures(TurnosBloco.Contains(turno), "Se o turno for válido ele é garantidamente adicionado.");
             Contract.Ensures(Contract.OldValue(Identifier) == Identifier, "A execução deste método não só altera a lista de turnos.");
-
-            Contract.EnsuresOnThrow<ArgumentNullException>(Contract.OldValue(this) == this);
-            Contract.EnsuresOnThrow<ArgumentException>(Contract.OldValue(this) == this);
 
             TurnosBloco.Add(turno);
         }
@@ -83,14 +81,11 @@ namespace ATUM.sistema
         /// <returns></returns>
         public bool RemoveTurno(Turno turno)
         {
-            Contract.Requires<ArgumentNullException>(turno != null, "O turno a ser removido não pode ser nulo.");
-            Contract.Requires<ArgumentException>(TurnosBloco.Contains(turno), "O turno a ser removido ainda tem de pertencer á lista de turnos do bloco.");
+            Contract.Requires(turno != null, "O turno a ser removido não pode ser nulo.");
+            Contract.Requires(TurnosBloco.Contains(turno), "O turno a ser removido ainda tem de pertencer á lista de turnos do bloco.");
 
             Contract.Ensures(!TurnosBloco.Contains(turno), "Se o turno existir ele é garantidamente removido.");
             Contract.Ensures(Contract.OldValue(Identifier) == Identifier, "A execução deste método não só altera a lista de turnos.");
-
-            Contract.EnsuresOnThrow<ArgumentNullException>(Contract.OldValue(this) == this);
-            Contract.EnsuresOnThrow<ArgumentException>(Contract.OldValue(this) == this);
 
             return TurnosBloco.Remove(turno);
         }
@@ -102,13 +97,11 @@ namespace ATUM.sistema
         [Pure]
         public bool TemVagas()
         {
-            Contract.Requires<ApplicationException>(Contract.ForAll(TurnosBloco, t => t != null), "Os turnos do bloco têm de existir");
+            Contract.Requires(Contract.ForAll(TurnosBloco, t => t != null), "Os turnos do bloco têm de existir");
 
             Contract.Ensures(Contract.Exists(TurnosBloco, t => !t.TemVagas()) || 
                              Contract.ForAll(TurnosBloco, t => t.TemVagas()), 
                              "Ou todos os turnos têm vagas, ou existe pelo menos um que não tem vagas");
-
-            Contract.EnsuresOnThrow<ApplicationException>(Contract.OldValue(this) == this);
 
             foreach (Turno turno in TurnosBloco)
             {
@@ -123,6 +116,7 @@ namespace ATUM.sistema
         /// </summary>
         public void DecrementarVagas()
         {
+            Contract.Requires(Contract.ForAll(TurnosBloco, t => t != null));
 
             foreach (Turno turno in TurnosBloco)
                 turno.VagasActuais--;
@@ -133,7 +127,7 @@ namespace ATUM.sistema
         #region Métodos Internos
         /// <summary>
         /// Método auxiliar, para impedir que sejam adicionados turnos que se sobreponham com os que já foram adicionados.
-        /// </summary>
+        /// </summar
         /// <param name="turno">O Turno a ser comparado com os Turnos do Bloco.</param>
         /// <returns>True se o Turno se sobrepõe com algum outro Turno do Bloco.</returns>
         [Pure]
@@ -144,8 +138,6 @@ namespace ATUM.sistema
             Contract.Ensures(Contract.Exists(TurnosBloco, turnoLista => turnoLista.Sobreposto(turno)) ||
                              Contract.ForAll(TurnosBloco, turnoLista => !turnoLista.Sobreposto(turno)),
                              "Garante ou que nenhum turno do bloco está sobreposto com o turno em quetão, ou então existe um turno que esta sobreposto com ele.");
-
-            Contract.EnsuresOnThrow<ArgumentNullException>(Contract.OldValue(TurnosBloco) == TurnosBloco);
 
             foreach (Turno t in TurnosBloco)
             {
