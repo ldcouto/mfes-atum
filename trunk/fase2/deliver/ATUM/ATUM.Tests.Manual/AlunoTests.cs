@@ -204,7 +204,7 @@ namespace ATUM.Tests.Manual
         public void AddAlocacao_ValidArgument_Inserida()
         {
             Disciplina discAux = new Disciplina("Disciplina Aux");
-            Turno turnAux = new Turno("id", 10, 1, discAux);
+            Turno turnAux = new Turno("id", 10, 1);
 
             _aluno.Processado = true;
 
@@ -220,8 +220,8 @@ namespace ATUM.Tests.Manual
             Disciplina discAux1 = new Disciplina("Disciplina 1");
             Disciplina discAux2 = new Disciplina("Disciplina 2");
 
-            Turno turnAux1 = new Turno("id", 10, 1, discAux1);
-            Turno turnAux2 = new Turno("id", 10, 2, discAux2);
+            Turno turnAux1 = new Turno("id", 10, 1);
+            Turno turnAux2 = new Turno("id", 10, 2);
 
             int tamInicio = _aluno.DisciplinasInscrito.Count;
 
@@ -245,8 +245,8 @@ namespace ATUM.Tests.Manual
         {
             Disciplina discAux1 = new Disciplina("Disciplina 1");
 
-            Turno turnAux1 = new Turno("id", 10, 1, discAux1);
-            Turno turnAux2 = new Turno("id", 10, 2, discAux1);
+            Turno turnAux1 = new Turno("id", 10, 1);
+            Turno turnAux2 = new Turno("id", 10, 2);
 
             _aluno.Processado = true;
             _aluno.AddInscricao(discAux1);
@@ -261,8 +261,8 @@ namespace ATUM.Tests.Manual
         {
             Disciplina discAux1 = new Disciplina("Disciplina 1");
 
-            Turno turnAux1 = new Turno("id", 10, 1, discAux1);
-            Turno turnAux2 = new Turno("id", 10, 1, discAux1);
+            Turno turnAux1 = new Turno("id", 10, 1);
+            Turno turnAux2 = new Turno("id", 10, 1);
 
             _aluno.Processado = true;
             _aluno.AddInscricao(discAux1);
@@ -278,8 +278,8 @@ namespace ATUM.Tests.Manual
             Disciplina discAux1 = new Disciplina("Disciplina 1");
             Disciplina discAux2 = new Disciplina("Disciplina 2");
 
-            Turno turnAux1 = new Turno("id", 10, 1, discAux1);
-            Turno turnAux2 = new Turno("id", 10, 1, discAux2);
+            Turno turnAux1 = new Turno("id", 10, 1);
+            Turno turnAux2 = new Turno("id", 10, 1);
 
             _aluno.Processado = true;
             _aluno.AddInscricao(discAux1);

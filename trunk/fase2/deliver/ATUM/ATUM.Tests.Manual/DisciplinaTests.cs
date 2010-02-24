@@ -52,7 +52,7 @@ namespace ATUM.Tests.Manual
         [Test]
         public void AddTurno_TurnoValido_TurnoAdicionado()
         {
-            Turno turno = new Turno("TP01", 10, 1, _disciplina);
+            Turno turno = new Turno("TP01", 10, 1);
 
             _disciplina.AddTurno(turno);
 
@@ -63,8 +63,8 @@ namespace ATUM.Tests.Manual
         [Test]
         public void AddTurno_TurnoDuplicado_ApenasUmTurnoAdicionado()
         {
-            Turno turno1 = new Turno("TP01", 10, 1, _disciplina);
-            Turno turno2 = new Turno("TP01", 10, 1, _disciplina);
+            Turno turno1 = new Turno("TP01", 10, 1);
+            Turno turno2 = new Turno("TP01", 10, 1);
 
             _disciplina.AddTurno(turno1);
             _disciplina.AddTurno(turno2);
@@ -76,8 +76,8 @@ namespace ATUM.Tests.Manual
         [Test]
         public void AddTurno_TurnosDiferentes_DoisTurnosAdicionados()
         {
-            Turno turno1 = new Turno("TP01", 10, 1, _disciplina);
-            Turno turno2 = new Turno("TP02", 10, 1, _disciplina);
+            Turno turno1 = new Turno("TP01", 10, 1);
+            Turno turno2 = new Turno("TP02", 10, 1);
 
             int before = _disciplina.TurnosDisciplina.Count;
 
@@ -101,7 +101,7 @@ namespace ATUM.Tests.Manual
         [Test]
         public void RemoveTurno_TurnoExistente_TurnoRemovido()
         {
-            Turno turno = new Turno("TP01", 10, 1, _disciplina);
+            Turno turno = new Turno("TP01", 10, 1);
 
             _disciplina.AddTurno(turno);
 
@@ -114,7 +114,7 @@ namespace ATUM.Tests.Manual
         [Test]
         public void RemoveTurno_TurnoInexistente_TurnoNaoRemovido()
         {
-            Turno turno = new Turno("TP01", 10, 1, _disciplina);
+            Turno turno = new Turno("TP01", 10, 1);
 
             Assert.Throws<ArgumentNullException>(() => _disciplina.RemoveTurno(turno));
         }
@@ -130,8 +130,8 @@ namespace ATUM.Tests.Manual
         [Test]
         public void TemVagas_ExistemVagas_ReturnTrue()
         {
-            Turno turno1 = new Turno("TP01", 10, 1, _disciplina);
-            Turno turno2 = new Turno("TP02", 0, 2, _disciplina);
+            Turno turno1 = new Turno("TP01", 10, 1);
+            Turno turno2 = new Turno("TP02", 0, 2);
 
             _disciplina.AddTurno(turno1);
             _disciplina.AddTurno(turno2);
@@ -144,8 +144,8 @@ namespace ATUM.Tests.Manual
         [Test]
         public void TemVagas_NaoExistemVagas_ReturnFalse()
         {
-            Turno turno1 = new Turno("TP01", 0, 1, _disciplina);
-            Turno turno2 = new Turno("TP02", 0, 2, _disciplina);
+            Turno turno1 = new Turno("TP01", 0, 1);
+            Turno turno2 = new Turno("TP02", 0, 2);
 
             _disciplina.AddTurno(turno1);
             _disciplina.AddTurno(turno2);

@@ -20,7 +20,7 @@ namespace ATUM.Tests.Manual {
             _atum = new Atum();
             _aluno = new Aluno("Aluno 1");
             _disciplina = new Disciplina("Disciplina 1");
-            _turno = new Turno("Turno 1", 1, 1, _disciplina);
+            _turno = new Turno("Turno 1", 1, 1);
        }
 
         [Test]

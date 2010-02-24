@@ -51,8 +51,7 @@ namespace ATUM.Tests.Manual
         [SetUp]
         public void Turno_Initialize()
         {
-            _disciplina = new Disciplina("DC01");
-            _turno = new Turno("TP01", 10, 1, _disciplina);
+            _turno = new Turno("TP01", 10, 1);
             _disciplina.AddTurno(_turno);
         }
 
@@ -60,15 +59,15 @@ namespace ATUM.Tests.Manual
         [Test]
         public void Constructor_NullArgument_Exception()
         {
-            Assert.Throws<ArgumentNullException>(() => new Turno(null, 0, 0, _disciplina));
-            Assert.Throws<ArgumentNullException>(() => new Turno("", 0, 0, _disciplina));
-            Assert.Throws<ArgumentNullException>(() => new Turno("id", 0, 0, null));
+            Assert.Throws<ArgumentNullException>(() => new Turno(null, 0, 0));
+            Assert.Throws<ArgumentNullException>(() => new Turno("", 0, 0));
+            Assert.Throws<ArgumentNullException>(() => new Turno("id", 0, 0));
         }
 
         [Test]
         public void Constructor_ValidArgument_NoException()
         {
-            Assert.DoesNotThrow(() => new Turno("TP01", 10, 1, _disciplina));
+            Assert.DoesNotThrow(() => new Turno("TP01", 10, 1));
         }
         #endregion
 
@@ -105,8 +104,8 @@ namespace ATUM.Tests.Manual
         [Test]
         public void Sobreposto_TurnoSubreposto_ReturnTrue()
         {
-            Turno turno1 = new Turno("TP01", 10, 1, _disciplina);
-            Turno turno2 = new Turno("TP02", 10, 1, _disciplina);
+            Turno turno1 = new Turno("TP01", 10, 1);
+            Turno turno2 = new Turno("TP02", 10, 1);
 
             bool resultado = turno1.Sobreposto(turno2);
 
@@ -116,8 +115,8 @@ namespace ATUM.Tests.Manual
         [Test]
         public void Sobreposto_TurnoNaoSobreposto_ReturnFalse()
         {
-            Turno turno1 = new Turno("TP01", 10, 1, _disciplina);
-            Turno turno2 = new Turno("TP02", 11, 2, _disciplina);
+            Turno turno1 = new Turno("TP01", 10, 1);
+            Turno turno2 = new Turno("TP02", 11, 2);
 
             bool resultado = turno1.Sobreposto(turno2);
 
@@ -171,7 +170,7 @@ namespace ATUM.Tests.Manual
         [Test]
         public void Equals_TurnoObject_ReturnFalse()
         {
-            Object obj = new Turno("TP01", 5, 10, _disciplina);
+            Object obj = new Turno("TP01", 5, 10);
 
             Assert.IsFalse(_turno.Equals(obj), "Comparação com um turno qualquer diferente dá verdadeiro.");
         }
@@ -179,8 +178,8 @@ namespace ATUM.Tests.Manual
         [Test]
         public void GetHashCode_MesmoTurno_ReturnEquals()
         {
-            Turno turno1 = new Turno("TP01", 10, 10, _disciplina);
-            Turno turno2 = new Turno("TP01", 10, 10, _disciplina);
+            Turno turno1 = new Turno("TP01", 10, 10);
+            Turno turno2 = new Turno("TP01", 10, 10);
 
             Assert.AreEqual(turno1.GetHashCode(), turno2.GetHashCode(), "Turno iguais dão códigos de hash diferentes.");
         }
@@ -188,8 +187,8 @@ namespace ATUM.Tests.Manual
         [Test]
         public void GetHashCode_TurnosDiferentes_ReturnNotEquals()
         {
-            Turno turno1 = new Turno("TP01", 10, 10, _disciplina);
-            Turno turno2 = new Turno("TP01", 20, 20, _disciplina);
+            Turno turno1 = new Turno("TP01", 10, 10);
+            Turno turno2 = new Turno("TP01", 20, 20);
 
             Assert.AreNotEqual(turno1.GetHashCode(), turno2.GetHashCode(), "Turno diferentes dão códigos de hash iguais.");
         }
