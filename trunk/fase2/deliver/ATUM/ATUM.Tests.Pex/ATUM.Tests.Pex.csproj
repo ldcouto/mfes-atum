@@ -58,6 +58,7 @@
   <ItemGroup />
   <ItemGroup>
     <Compile Include="Factories\AlunoFactory.cs" />
+    <Compile Include="Factories\AtumFactory.cs" />
     <Compile Include="Factories\BlocoFactory.cs" />
     <Compile Include="Factories\DisciplinaFactory.cs" />
     <Compile Include="Factories\PreferenciaFactory.cs" />
@@ -150,6 +151,79 @@
     <Compile Include="sistema\AlunoTests.RemovePreferencia.g.cs">
       <DependentUpon>AlunoTests.cs</DependentUpon>
     </Compile>
+    <Compile Include="sistema\AtumTest.AdicionarAluno.g.cs">
+      <DependentUpon>AtumTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AtumTest.AdicionarDisciplina.g.cs">
+      <DependentUpon>AtumTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AtumTest.AdicionarTurno.g.cs">
+      <DependentUpon>AtumTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AtumTest.AlocaAluno.g.cs">
+      <DependentUpon>AtumTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AtumTest.AlocaAlunoABloco.g.cs">
+      <DependentUpon>AtumTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AtumTest.AlocaAlunoADisciplina.g.cs">
+      <DependentUpon>AtumTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AtumTest.AlunosGet.g.cs">
+      <DependentUpon>AtumTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AtumTest.AlunoTaNaDisc.g.cs">
+      <DependentUpon>AtumTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AtumTest.BlocosGetSet.g.cs">
+      <DependentUpon>AtumTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AtumTest.Constructor.g.cs">
+      <DependentUpon>AtumTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AtumTest.cs" />
+    <Compile Include="sistema\AtumTest.DisciplinasGetSet.g.cs">
+      <DependentUpon>AtumTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AtumTest.DisciplinasNaoAlocado.g.cs">
+      <DependentUpon>AtumTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AtumTest.EoMelhorBloco.g.cs">
+      <DependentUpon>AtumTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AtumTest.GetAlunosBloco.g.cs">
+      <DependentUpon>AtumTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AtumTest.GetAlunosNaoProcessados.g.cs">
+      <DependentUpon>AtumTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AtumTest.GetAlunosTurno.g.cs">
+      <DependentUpon>AtumTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AtumTest.GetDiscTurno.g.cs">
+      <DependentUpon>AtumTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AtumTest.NinguemPior.g.cs">
+      <DependentUpon>AtumTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AtumTest.ProcessaAlocacoes.g.cs">
+      <DependentUpon>AtumTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AtumTest.ProcessadosGet.g.cs">
+      <DependentUpon>AtumTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AtumTest.RemoverAluno.g.cs">
+      <DependentUpon>AtumTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AtumTest.RemoverDisciplina.g.cs">
+      <DependentUpon>AtumTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AtumTest.RemoverTurno.g.cs">
+      <DependentUpon>AtumTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sistema\AtumTest.TurnosGetSet.g.cs">
+      <DependentUpon>AtumTest.cs</DependentUpon>
+    </Compile>
     <Compile Include="sistema\BlocoTests.AddTurno.g.cs">
       <DependentUpon>BlocoTests.cs</DependentUpon>
     </Compile>
@@ -193,6 +267,7 @@
     <Compile Include="sistema\BlocoTests.TurnosSobrepostos.g.cs">
       <DependentUpon>BlocoTests.cs</DependentUpon>
     </Compile>
+    <Compile Include="sistema\DisciplinaTest.cs" />
     <Compile Include="sistema\DisciplinaTests.AddTurno.g.cs">
       <DependentUpon>DisciplinaTests.cs</DependentUpon>
     </Compile>
