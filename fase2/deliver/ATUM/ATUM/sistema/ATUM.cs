@@ -18,27 +18,27 @@ namespace ATUM.sistema
         /// <summary>
         /// Fila de Alunos. A ordem da fila será a ordem pela qual os alunos vão ser processados.
         /// </summary>
-        public List<Aluno> Alunos { get; private set; }
+        public IList<Aluno> Alunos { get; private set; }
 
         /// <summary>
         /// Lista de Alunos que já foram processados.
         /// </summary>
-        public List<Aluno> Processados { get; private set; }
+        public IList<Aluno> Processados { get; private set; }
 
         /// <summary>
         /// Lista de Disciplinas disponíveis no sistema.
         /// </summary>
-        public List<Disciplina> Disciplinas { get; set; }
+        public IList<Disciplina> Disciplinas { get; set; }
 
         /// <summary>
         /// Lista de Turnos disponíveis no sistema.
         /// </summary>
-        public List<Turno> Turnos { get; set; }
+        public IList<Turno> Turnos { get; set; }
 
         /// <summary>
         /// Lista de Blocos disponíveis no sistema.
         /// </summary>
-        public List<Bloco> Blocos { get; set; }
+        public IList<Bloco> Blocos { get; set; }
 
         #endregion
 
@@ -62,8 +62,9 @@ namespace ATUM.sistema
         /// </summary>
         public void ProcessaAlocacoes()
         {
-            Alunos.Sort(Aluno.CompareAlunosByOrd);
-            foreach (var aluno in Alunos)
+            var aux = (List<Aluno>) Alunos;
+            aux.Sort(Aluno.CompareAlunosByOrd);
+            foreach (var aluno in aux)
             {
                 AlocaAluno(aluno);
                 Processados.Add(aluno);
@@ -78,6 +79,7 @@ namespace ATUM.sistema
         public void AlocaAluno(Aluno a)
         {
             Contract.Requires(a != null);
+            Contract.Requires(a.DisciplinasInscrito.Count>0);
             Contract.Requires(Contract.ForAll(this.Processados, (Aluno x) => Aluno.CompareAlunosByOrd(a, x) > 0));
             Contract.Ensures(Processados.Contains(a));
             Contract.Ensures(a.Processado);
@@ -95,6 +97,9 @@ namespace ATUM.sistema
         /// <param name="a">O Aluno a ser alocado.</param>
         public void AlocaAlunoABloco(Aluno a)
         {
+            Contract.Requires(a!=null);
+            Contract.Requires(a.PreferenciasBlocos!=null);
+            Contract.Requires(Contract.ForAll(a.PreferenciasBlocos, p => p!=null));
             foreach (Bloco bloco in a.PreferenciasBlocos.Select(x => x.Bloco))
             {
                 if (!bloco.TemVagas()) continue;
@@ -154,6 +159,14 @@ namespace ATUM.sistema
         [ContractInvariantMethod]
         private void ObjectInvariant()
         {
+            Contract.Invariant(Blocos!=null);
+            Contract.Invariant(Contract.ForAll(Blocos, b=>b !=null));
+
+            Contract.Invariant(Disciplinas != null);
+            Contract.Invariant(Contract.ForAll(Disciplinas, d => d != null));
+
+            Contract.Invariant(Turnos !=null);
+            Contract.Invariant(Contract.ForAll(Turnos, t=> t!=null));
 
             // Garantir que um Aluno apenas é alocado em Turnos de Disciplinas em que está matriculado
             Contract.Invariant(Contract.ForAll(Alunos, (Aluno a) => 
@@ -178,7 +191,7 @@ namespace ATUM.sistema
                     => d1.TurnosDisciplina.Intersect(d2.TurnosDisciplina).Count()==0)));
             // Garantir que um Bloco só tem um turno por disciplina
             Contract.Invariant(Contract.ForAll(Blocos, (Bloco b) =>
-                StructOps.NoDups((List<Disciplina>)b.TurnosBloco.Select(x=> GetDiscTurno(x)))));
+                StructOps.NoDups((List<Disciplina>)b.TurnosBloco.Select(x=> GetDiscTurno(x)).ToList())));
             // Garantir que as vagas batem certo
             Contract.Invariant(Contract.ForAll(Turnos, (Turno t) => t.VagasActuais <= t.VagasInicias));
             Contract.Invariant(Contract.ForAll(Turnos, (Turno t) => t.VagasInicias == t.VagasActuais + GetAlunosTurno(t).Count()));
@@ -232,8 +245,13 @@ namespace ATUM.sistema
         [Pure]
         public bool EoMelhorBloco(Aluno a, Bloco b)
         {
+            Contract.Requires(a!=null);
+            Contract.Requires(b!=null);
+            Contract.Requires(a.PreferenciasBlocos!=null);
+            Contract.Requires(Contract.ForAll(a.PreferenciasBlocos, p=> p!=null));
+
             bool r = true;
-            var lbs = new List<Bloco>();
+ //           var lbs = new List<Bloco>();
             foreach (var bloco in a.PreferenciasBlocos.Select(x => x.Bloco))
                 if (r && bloco != b)
                     r = BlocoBloqueadoPorMelhores(a, bloco);
@@ -284,6 +302,11 @@ namespace ATUM.sistema
         [Pure]
         public bool NinguemPior(Aluno a, Disciplina d)
         {
+            Contract.Requires(a!=null);
+            Contract.Requires(d!=null);
+            Contract.Requires(d.TurnosDisciplina != null);
+            Contract.Requires(Contract.ForAll(d.TurnosDisciplina, t => t!=null));
+
             foreach (var turno in d.TurnosDisciplina)
             {
                 if (turno.VagasActuais != 0)
@@ -303,6 +326,13 @@ namespace ATUM.sistema
         /// <returns>True caso o Aluno esta alocado a algum Turno da Disciplina. False caso contrário.</returns>
         public bool AlunoTaNaDisc(Aluno a, Disciplina d)
         {
+            Contract.Requires(a!=null);
+            Contract.Requires(d!=null);
+            Contract.Requires(a.AlocadoTurno!=null);
+            Contract.Requires(Contract.ForAll(a.AlocadoTurno, t=>t!=null));
+            Contract.Requires(d.TurnosDisciplina!=null);
+            Contract.Requires(Contract.ForAll(d.TurnosDisciplina, t=>t!=null));
+
             var turnosEmComum = a.AlocadoTurno.Intersect(d.TurnosDisciplina);
             int r = turnosEmComum.Count();
             return r == 1;
@@ -345,7 +375,11 @@ namespace ATUM.sistema
         /// <returns>A lista de Disciplinas a que o Aluno não foi alocado.</returns>
         [Pure]
         public IList<Disciplina> DisciplinasNaoAlocado(Aluno a) {
-            Contract.Requires<ArgumentNullException>(a != null);
+            
+            Contract.Requires(a != null);
+            Contract.Requires(a.DisciplinasInscrito != null);
+            Contract.Requires(Contract.ForAll(a.DisciplinasInscrito, d => d !=null));
+            Contract.Requires(a.AlocadoTurno != null);
             Contract.Ensures(Contract.Result<IList<Disciplina>>().Count <= a.DisciplinasInscrito.Count);
 
             List<Disciplina> dna = new List<Disciplina>();
@@ -357,37 +391,6 @@ namespace ATUM.sistema
 
             return dna;
         }
-
-        // Não tá a ser usado!
-        ///// <summary>
-        ///// Método para verificar se um Turno apenas pertence a uma Disciplina.
-        ///// </summary>
-        ///// <param name="t">O Turno a verificar.</param>
-        ///// <returns>True se o Turno apenas pertencer a uma Disciplina. Falso caso contrário.</returns>
-        //public bool TurnoSoDumaDisc(Turno t) {
-        //    uint gots = 0;
-        //    foreach (var d in this.Disciplinas) {
-        //        if (d.TurnosDisciplina.Contains(t))
-        //            gots++;
-        //        if (gots > 1)
-        //            return false;
-        //    }
-        //    return true;
-        //}
-
-        ///// <summary>
-        ///// Método para comprar dois Alunos pela sua ordem na fila do sistema.
-        ///// </summary>
-        ///// <param name="a1">O primeiro Aluno a ser comparado.</param>
-        ///// <param name="a2">O segundo Aluno a ser comparado.</param>
-        ///// <returns>-1: a1 vem antes na ordem. 1: a2 vem antes na ordem. 0: nenhum aluno está na fila.</returns>
-        //private int ComparaAlunos(Aluno a1, Aluno a2) {
-        //    foreach (var x in this.Alunos) {
-        //        if (x == a1) return -1;
-        //        if (x == a2) return 0;
-        //    }
-        //    return 0;
-        //}
 
         #endregion
 

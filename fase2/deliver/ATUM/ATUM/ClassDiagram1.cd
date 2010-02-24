@@ -1,0 +1,199 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ATUM.sistema.Aluno" BaseTypeListCollapsed="true">
+    <Position X="3.25" Y="1.25" Width="1.5" />
+    <Members>
+      <Method Name="AddAlocacaoTurno" Hidden="true" />
+      <Method Name="AddInscricao" Hidden="true" />
+      <Method Name="AddPreferencia" Hidden="true" />
+      <Method Name="Aluno" Hidden="true" />
+      <Method Name="CompareAlunosByOrd" Hidden="true" />
+      <Method Name="CompareTo" Hidden="true" />
+      <Method Name="Equals" Hidden="true" />
+      <Method Name="GetHashCode" Hidden="true" />
+      <Method Name="ObjectInvariant" Hidden="true" />
+      <Method Name="operator !=" Hidden="true" />
+      <Method Name="operator &lt;" Hidden="true" />
+      <Method Name="operator &lt;=" Hidden="true" />
+      <Method Name="operator ==" Hidden="true" />
+      <Method Name="operator &gt;" Hidden="true" />
+      <Method Name="operator &gt;=" Hidden="true" />
+      <Method Name="RemoveInscricao" Hidden="true" />
+      <Method Name="RemovePreferencia" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <AssociationLine Name="PreferenciasBlocos" Type="ATUM.sistema.Preferencia">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.06" Y="0.083" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAEAAYAAAAAAEAQIhBqAAgAAAAAAEJAAAAAQQAAAByA=</HashCode>
+      <FileName>sistema\Aluno.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="AlocadoTurno" />
+      <Property Name="DisciplinasInscrito" />
+      <Property Name="PreferenciasBlocos" />
+    </ShowAsCollectionAssociation>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ATUM.sistema.Atum">
+    <Position X="8.25" Y="1.25" Width="1.5" />
+    <Members>
+      <Method Name="AdicionarAluno" Hidden="true" />
+      <Method Name="AdicionarDisciplina" Hidden="true" />
+      <Method Name="AdicionarTurno" Hidden="true" />
+      <Method Name="AlocaAluno" Hidden="true" />
+      <Method Name="AlocaAlunoABloco" Hidden="true" />
+      <Method Name="AlocaAlunoADisciplina" Hidden="true" />
+      <Method Name="AlunoTaNaDisc" Hidden="true" />
+      <Method Name="Atum" Hidden="true" />
+      <Method Name="BlocoBloqueadoPorMelhores" Hidden="true" />
+      <Method Name="DisciplinasNaoAlocado" Hidden="true" />
+      <Method Name="EoMelhorBloco" Hidden="true" />
+      <Method Name="GetAlunosBloco" Hidden="true" />
+      <Method Name="GetAlunosNaoProcessados" Hidden="true" />
+      <Method Name="GetAlunosTurno" Hidden="true" />
+      <Method Name="GetDiscTurno" Hidden="true" />
+      <Method Name="NinguemPior" Hidden="true" />
+      <Method Name="ObjectInvariant" Hidden="true" />
+      <Method Name="ProcessaAlocacoes" Hidden="true" />
+      <Method Name="RemoverAluno" Hidden="true" />
+      <Method Name="RemoverDisciplina" Hidden="true" />
+      <Method Name="RemoverTurno" Hidden="true" />
+    </Members>
+    <AssociationLine Name="Disciplinas" Type="ATUM.sistema.Disciplina" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="8.812" Y="1.25" />
+        <Point X="8.812" Y="0.947" />
+        <Point X="1.75" Y="0.947" />
+        <Point X="1.75" Y="2" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="Alunos" Type="ATUM.sistema.Aluno" FixedToPoint="true">
+      <Path>
+        <Point X="8.25" Y="1.5" />
+        <Point X="4.75" Y="1.5" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="Processados" Type="ATUM.sistema.Aluno" FixedFromPoint="true">
+      <Path>
+        <Point X="8.25" Y="1.812" />
+        <Point X="4.75" Y="1.812" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.11" Y="0.015" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAACQAAGEAAAAGAgQBQBAAQIAAAABRAAEAAQBACBDAA=</HashCode>
+      <FileName>sistema\Atum.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Blocos" />
+      <Property Name="Disciplinas" />
+      <Property Name="Alunos" />
+      <Property Name="Processados" />
+      <Property Name="Turnos" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="ATUM.sistema.Bloco" BaseTypeListCollapsed="true">
+    <Position X="6.75" Y="4.25" Width="1.5" />
+    <Members>
+      <Method Name="AddTurno" Hidden="true" />
+      <Method Name="Bloco" Hidden="true" />
+      <Method Name="DecrementarVagas" Hidden="true" />
+      <Method Name="Equals" Hidden="true" />
+      <Method Name="GetHashCode" Hidden="true" />
+      <Method Name="ObjectInvariant" Hidden="true" />
+      <Method Name="operator !=" Hidden="true" />
+      <Method Name="operator ==" Hidden="true" />
+      <Method Name="RemoveTurno" Hidden="true" />
+      <Method Name="TemVagas" Hidden="true" />
+      <Method Name="TurnosSobrepostos" Hidden="true" />
+    </Members>
+    <AssociationLine Name="TurnosBloco" Type="ATUM.sistema.Turno">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.331" Y="-0.275" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAIEAAAAgABAAAEAAAAAAIAAAAAQSAAAAiA=</HashCode>
+      <FileName>sistema\Bloco.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="TurnosBloco" />
+    </ShowAsCollectionAssociation>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ATUM.sistema.Disciplina" BaseTypeListCollapsed="true">
+    <Position X="1" Y="2" Width="1.5" />
+    <Members>
+      <Method Name="AddTurno" Hidden="true" />
+      <Method Name="Disciplina" Hidden="true" />
+      <Method Name="Equals" Hidden="true" />
+      <Method Name="GetHashCode" Hidden="true" />
+      <Method Name="operator !=" Hidden="true" />
+      <Method Name="operator ==" Hidden="true" />
+      <Method Name="RemoveTurno" Hidden="true" />
+      <Method Name="TemVagas" Hidden="true" />
+    </Members>
+    <AssociationLine Name="TurnosDisciplina" Type="ATUM.sistema.Turno" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="1.812" Y="3.103" />
+        <Point X="1.812" Y="4.562" />
+        <Point X="3.25" Y="4.562" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>CAAACAAAAAAEAAAAgAAAAAEAAAAAAIAAAAAAQAAAAiA=</HashCode>
+      <FileName>sistema\Disciplina.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="TurnosDisciplina" />
+    </ShowAsCollectionAssociation>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ATUM.sistema.Preferencia" BaseTypeListCollapsed="true">
+    <Position X="5.75" Y="2" Width="1.5" />
+    <Members>
+      <Method Name="ComparePreferenciaByGrau" Hidden="true" />
+      <Method Name="CompareTo" Hidden="true" />
+      <Method Name="Equals" Hidden="true" />
+      <Method Name="GetHashCode" Hidden="true" />
+      <Method Name="operator !=" Hidden="true" />
+      <Method Name="operator &lt;" Hidden="true" />
+      <Method Name="operator &lt;=" Hidden="true" />
+      <Method Name="operator ==" Hidden="true" />
+      <Method Name="operator &gt;" Hidden="true" />
+      <Method Name="operator &gt;=" Hidden="true" />
+      <Method Name="Preferencia" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAAQQgACAAgQAAAAAAIAAAAAAAAAAByA=</HashCode>
+      <FileName>sistema\Preferencia.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ATUM.sistema.Turno" BaseTypeListCollapsed="true">
+    <Position X="3.25" Y="3.75" Width="1.5" />
+    <Members>
+      <Method Name="Equals" Hidden="true" />
+      <Method Name="GetHashCode" Hidden="true" />
+      <Method Name="operator !=" Hidden="true" />
+      <Method Name="operator ==" Hidden="true" />
+      <Method Name="Sobreposto" Hidden="true" />
+      <Method Name="TemVagas" Hidden="true" />
+      <Method Name="Turno" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAgAAAAAEAAUAAAIAAAAgAQAAAAiA=</HashCode>
+      <FileName>sistema\Turno.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

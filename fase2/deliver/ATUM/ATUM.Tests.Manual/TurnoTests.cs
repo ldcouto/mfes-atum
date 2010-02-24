@@ -52,7 +52,6 @@ namespace ATUM.Tests.Manual
         public void Turno_Initialize()
         {
             _turno = new Turno("TP01", 10, 1);
-            _disciplina.AddTurno(_turno);
         }
 
         #region Testes - Constructores
