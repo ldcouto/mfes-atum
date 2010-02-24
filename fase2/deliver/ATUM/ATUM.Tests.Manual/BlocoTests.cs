@@ -54,7 +54,7 @@ namespace ATUM.Tests.Manual
         public void AddTurno_TurnoInexistente_TurnoAdicionado()
         {
             var disAux = new Disciplina("DC01");
-            var turno1 = new Turno("TP01", 10, 1, disAux);
+            var turno1 = new Turno("TP01", 10, 1);
 
             _bloco.AddTurno(turno1);
 
@@ -65,8 +65,8 @@ namespace ATUM.Tests.Manual
         public void AddTurno_TurnoDuplicado_ApenasUmTurnoAdicionado()
         {
             var disAux = new Disciplina("DC01");
-            var turno1 = new Turno("TP01", 10, 1, disAux);
-            var turno2 = new Turno("TP01", 10, 1, disAux);
+            var turno1 = new Turno("TP01", 10, 1);
+            var turno2 = new Turno("TP01", 10, 1);
 
             int antes = _bloco.TurnosBloco.Count;
 
@@ -85,8 +85,8 @@ namespace ATUM.Tests.Manual
             var disAux1 = new Disciplina("DC01");
             var disAux2 = new Disciplina("DC02");
 
-            var turno1 = new Turno("TP01", 10, 1, disAux1);
-            var turno2 = new Turno("TP02", 20, 1, disAux2);
+            var turno1 = new Turno("TP01", 10, 1);
+            var turno2 = new Turno("TP02", 20, 1);
 
             _bloco.AddTurno(turno1);
 
@@ -104,8 +104,7 @@ namespace ATUM.Tests.Manual
         [Test]
         public void RemoveTurno_TurnoExistente_TurnoRemovido()
         {
-            var disAux = new Disciplina("DC01");
-            var turno1 = new Turno("TP01", 10, 1, disAux);
+            var turno1 = new Turno("TP01", 10, 1);
 
             _bloco.AddTurno(turno1);
 
@@ -117,8 +116,7 @@ namespace ATUM.Tests.Manual
         [Test]
         public void RemoveTurno_TurnoInexistente_Exception()
         {
-            var disAux = new Disciplina("DC01");
-            var turno1 = new Turno("TP01", 10, 1, disAux);
+            var turno1 = new Turno("TP01", 10, 1);
 
             Assert.Throws<ArgumentException>(() => _bloco.RemoveTurno(turno1), "O turno a ser removido, que não estava na lista foi removido.");
         }
@@ -134,11 +132,8 @@ namespace ATUM.Tests.Manual
         [Test]
         public void TemVagas_ExistemVagas_True()
         {
-            var disAux1 = new Disciplina("DC01");
-            var disAux2 = new Disciplina("DC02");
-
-            var turno1 = new Turno("TP01", 10, 1, disAux1);
-            var turno2 = new Turno("TP02", 20, 2, disAux2);
+            var turno1 = new Turno("TP01", 10, 1);
+            var turno2 = new Turno("TP02", 20, 2);
 
             _bloco.AddTurno(turno1);
             _bloco.AddTurno(turno2);
@@ -151,11 +146,8 @@ namespace ATUM.Tests.Manual
         [Test]
         public void TemVagas_NaoExistemVagas_False()
         {
-            var disAux1 = new Disciplina("DC01");
-            var disAux2 = new Disciplina("DC02");
-
-            var turno1 = new Turno("TP01", 10, 1, disAux1);
-            var turno2 = new Turno("TP02", 0, 2, disAux2);
+            var turno1 = new Turno("TP01", 10, 1);
+            var turno2 = new Turno("TP02", 0, 2);
 
             _bloco.AddTurno(turno1);
             _bloco.AddTurno(turno2);
@@ -170,11 +162,8 @@ namespace ATUM.Tests.Manual
         [Test]
         public void DecrementarVagas_VagasExistem_VagasDecrementadas()
         {
-            var disAux1 = new Disciplina("DC01");
-            var disAux2 = new Disciplina("DC02");
-
-            var turno1 = new Turno("TP01", 10, 1, disAux1);
-            var turno2 = new Turno("TP02", 20, 2, disAux2);
+            var turno1 = new Turno("TP01", 10, 1);
+            var turno2 = new Turno("TP02", 20, 2);
 
             uint inicio1 = turno1.VagasActuais;
             uint inicio2 = turno2.VagasActuais;
@@ -216,58 +205,12 @@ namespace ATUM.Tests.Manual
         //}
         #endregion
 
-        #region Testes - Get Disciplinas do Bloco
-        [Test]
-        public void GetDiscsDoBloco_ListaCorrecta()
-        {
-            var disAux1 = new Disciplina("DC01");
-            var disAux2 = new Disciplina("DC02");
-
-            var turno1 = new Turno("TP01", 10, 1, disAux1);
-            var turno2 = new Turno("TP02", 10, 2, disAux2);
-
-            _bloco.AddTurno(turno1);
-            _bloco.AddTurno(turno2);
-
-            IList<Disciplina> expected = new List<Disciplina>();
-            expected.Add(disAux1);
-            expected.Add(disAux2);
-
-            IList<Disciplina> actual = _bloco.GetDiscsDoBloco();
-
-            CollectionAssert.AreEquivalent(expected, actual);
-        }
-
-        [Test]
-        public void GetDiscsDoBloco_ListaIncorrecta()
-        {
-            var disAux1 = new Disciplina("DC01");
-            var disAux2 = new Disciplina("DC02");
-
-            var turno1 = new Turno("TP01", 10, 1, disAux1);
-            var turno2 = new Turno("TP02", 10, 2, disAux2);
-
-            _bloco.AddTurno(turno1);
-
-            IList<Disciplina> unexpected = new List<Disciplina>();
-            unexpected.Add(disAux1);
-            unexpected.Add(disAux2);
-
-            IList<Disciplina> actual = _bloco.GetDiscsDoBloco();
-
-            CollectionAssert.AreNotEquivalent(unexpected, actual);
-        }
-        #endregion
-
         #region Testes - TurnosSobrepostos
         [Test]
         public void TurnosSobrepostos_TurnosNaoSobrepostos_False()
         {
-            var disAux1 = new Disciplina("DC01");
-            var disAux2 = new Disciplina("DC02");
-
-            var turno1 = new Turno("TP01", 10, 1, disAux1);
-            var turno2 = new Turno("TP02", 10, 2, disAux2);
+            var turno1 = new Turno("TP01", 10, 1);
+            var turno2 = new Turno("TP02", 10, 2);
 
             _bloco.AddTurno(turno1);
 
@@ -279,11 +222,8 @@ namespace ATUM.Tests.Manual
         [Test]
         public void TurnosSobrepostos_TurnoSobreposto_True()
         {
-            var disAux1 = new Disciplina("DC01");
-            var disAux2 = new Disciplina("DC02");
-
-            var turno1 = new Turno("TP01", 10, 1, disAux1);
-            var turno2 = new Turno("TP02", 10, 1, disAux2);
+            var turno1 = new Turno("TP01", 10, 1);
+            var turno2 = new Turno("TP02", 10, 1);
 
             _bloco.AddTurno(turno1);
 

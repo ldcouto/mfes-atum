@@ -50,10 +50,10 @@ namespace ATUM.Tests.Manual
             a.AddInscricao(d4);
 
             Turno t1, t2, t3, t4;
-            t1 = new Turno("Turno 1", 10, 10, d1);
-            t2 = new Turno("Turno 2", 15, 15, d2);
-            t3 = new Turno("Turno 3", 20, 20, d3);
-            t4 = new Turno("Turno 4", 10, 25, d4);
+            t1 = new Turno("Turno 1", 10, 10);
+            t2 = new Turno("Turno 2", 15, 15);
+            t3 = new Turno("Turno 3", 20, 20);
+            t4 = new Turno("Turno 4", 10, 25);
 
             d1.AddTurno(t1);
             d2.AddTurno(t2);
@@ -88,10 +88,10 @@ namespace ATUM.Tests.Manual
             a.AddInscricao(d4);
 
             Turno t1, t2, t3, t4;
-            t1 = new Turno("Turno 1", 10, 10, d1);
-            t2 = new Turno("Turno 2", 15, 15, d2);
-            t3 = new Turno("Turno 3", 20, 20, d3);
-            t4 = new Turno("Turno 4", 10, 25, d4);
+            t1 = new Turno("Turno 1", 10, 10);
+            t2 = new Turno("Turno 2", 15, 15);
+            t3 = new Turno("Turno 3", 20, 20);
+            t4 = new Turno("Turno 4", 10, 25);
 
             d1.AddTurno(t1);
             d2.AddTurno(t2);
@@ -111,7 +111,7 @@ namespace ATUM.Tests.Manual
             CollectionAssert.Contains(resultado, d4);
             CollectionAssert.DoesNotContain(resultado,d1);
             CollectionAssert.DoesNotContain(resultado,d2);
-            CollectionAssert.IsSubsetOf(resultado,a.Inscrito);
+            CollectionAssert.IsSubsetOf(resultado,a.DisciplinasInscrito);
         }
 
         [Test]
@@ -131,10 +131,10 @@ namespace ATUM.Tests.Manual
             a.AddInscricao(d4);
 
             Turno t1, t2, t3, t4;
-            t1 = new Turno("Turno 1", 10, 10, d1);
-            t2 = new Turno("Turno 2", 15, 15, d2);
-            t3 = new Turno("Turno 3", 20, 20, d3);
-            t4 = new Turno("Turno 4", 10, 25, d4);
+            t1 = new Turno("Turno 1", 10, 10);
+            t2 = new Turno("Turno 2", 15, 15);
+            t3 = new Turno("Turno 3", 20, 20);
+            t4 = new Turno("Turno 4", 10, 25);
 
             d1.AddTurno(t1);
             d2.AddTurno(t2);
@@ -150,7 +150,7 @@ namespace ATUM.Tests.Manual
             IList<Disciplina> resultado = _atum.DisciplinasNaoAlocado(a);
 
             CollectionAssert.IsNotEmpty(resultado);
-            CollectionAssert.AreEquivalent(resultado,a.Inscrito);
+            CollectionAssert.AreEquivalent(resultado,a.DisciplinasInscrito);
         }
 
         [Test]
