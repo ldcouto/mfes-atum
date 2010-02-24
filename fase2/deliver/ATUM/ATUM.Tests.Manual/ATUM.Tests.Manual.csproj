@@ -62,9 +62,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlunoTests.cs" />
+    <Compile Include="AtumTests.cs" />
     <Compile Include="BlocoTests.cs" />
     <Compile Include="DisciplinaTests.cs" />
+    <Compile Include="PreferenciaTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StructOpsTests.cs" />
     <Compile Include="TemporaryCrappyTests.cs" />
     <Compile Include="TurnoTests.cs" />
   </ItemGroup>
